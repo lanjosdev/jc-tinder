@@ -113,4 +113,23 @@ class User extends Authenticatable
             'phone.min' => 'Campo número celular deve conter no mínimo 11 digitos.',
         ];
     }
+
+    public function rulesAttributionOfGenderAndSexuality()
+    {
+        return [
+            'fk_gender_user_id' => 'required|exists:genders,id',
+            'fk_sexuality_user_id' => 'required|exists:sexualities,id',
+        ];
+    }
+
+    public function feedbackAttributionOfGenderAndSexuality()
+    {
+        return [
+            'fk_gender_user_id.required' => 'O campo gênero é obrigátorio.',
+            'fk_gender_user_id.exists' => 'Nenhum resultado encontrado, por favor verifique.',
+
+            'fk_sexuality_user_id.required' => 'O campo sexualidade é obrigátorio.',
+            'fk_sexuality_user_id.exists' => 'Nenhum resultado encontrado, por favor verifique.',
+        ];
+    }
 }

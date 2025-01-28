@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
@@ -19,6 +20,20 @@ return new class extends Migration
             $table->timestamps();
             $table->softDeletes();
         });
+
+        DB::table('gender_not_binarys')->insert([
+            ['name' => 'Agênero', 'description' => 'Uma pessoa que não tem gênero.'],
+            ['name' => 'Arromântico','description' => 'Uma pessoa que não tem gênero.' ],
+            ['name' => 'Assexual','description' => 'Uma pessoa que não tem gênero.' ],
+            ['name' => 'Bissexual' ,'description' => 'Uma pessoa que não tem gênero.' ],
+            ['name' => 'Demissexual','description' => 'Uma pessoa que não tem gênero.' ],
+            ['name' => 'Homossexual','description' => 'Uma pessoa que não tem gênero.' ],
+            ['name' => 'Lésbica' ,'description' => 'Uma pessoa que não tem gênero.' ],
+            ['name' => 'Onissexual' ,'description' => 'Uma pessoa que não tem gênero.' ],
+            ['name' => 'Pansexual','description' => 'Uma pessoa que não tem gênero.' ],
+            ['name' => 'Queer' ,'description' => 'Uma pessoa que não tem gênero.' ],
+            ['name' => 'Questionando','description' => 'Uma pessoa que não tem gênero.' ],
+        ]);
     }
 
     /**

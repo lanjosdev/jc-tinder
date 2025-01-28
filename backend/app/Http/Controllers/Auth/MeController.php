@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\User;
 use App\Models\Utils;
 use Exception;
 use Illuminate\Database\QueryException;
@@ -13,10 +14,12 @@ use Illuminate\Validation\ValidationException;
 class MeController extends Controller
 {
     protected $utils;
+    protected $gender_sexuality;
 
-    public function __construct(Utils $utils)
+    public function __construct(Utils $utils, User $gender_sexuality)
     {
         $this->utils = $utils;
+        $this->gender_sexuality = $gender_sexuality;
     }
 
     public function me(Request $request)
@@ -72,8 +75,58 @@ class MeController extends Controller
         }
     }
 
-    public function genderAndSexuality()
+    public function assingnedGenderAndSexuality(Request $request)
     {
-        
+        DB::beginTransaction();
+        try {
+            $user = $request->user();
+
+            $validatedData = $request->validate(
+                $this->gender_sexuality->rulesAttributionOfGenderAndSexuality(),
+                $this->gender_sexuality->feedbackAttributionOfGenderAndSexuality()
+            );
+
+            $fk_gender_user_id = $request->fk_gender_user_id;
+            $fk_sexuality_user_id = $request->fk_sexuality_user_id;
+
+            if ($validatedData) {
+                $user->update([
+                    'fk_gender_id' => $fk_gender_user_id,
+                    'fk_sexuality_user_id' => $fk_sexuality_user_id
+                ]);
+            }
+            if ($user) {
+                DB::commit();
+
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Gênero e sexualidade atribuídos com sucesso.',
+                    'data' => $user,
+                ]);
+            }
+        } catch (ValidationException $ve) {
+            DB::rollBack();
+            $errorMessages = collect($ve->errors())
+                ->flatten()
+                ->all();
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Erro de validação.',
+                'errors' => $errorMessages,
+            ]);
+        } catch (QueryException $qe) {
+            DB::rollBack();
+            return response()->json([
+                'success' => false,
+                'message' => "Error DB: " . $qe->getMessage(),
+            ]);
+        } catch (Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'success' => false,
+                'message' => "Error: " . $e->getMessage(),
+            ]);
+        }
     }
 }

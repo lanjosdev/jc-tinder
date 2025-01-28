@@ -2,39 +2,38 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Gender;
+use App\Models\Sexuality;
 use Exception;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 
-class GenderController extends Controller
+class SexualityController extends Controller
 {
-    protected $gender;
+    protected $sexuality;
 
-    public function __construct(Gender $gender)
+    public function __construct(Sexuality $sexuality)
     {
-        $this->gender = $gender;
+        $this->sexuality = $sexuality;
     }
-    /**
-     * Display a listing of the resource.
-     */
+
     public function getAll()
     {
         try {
-            $getAllGenders = Gender::all();
+            $getAllSexualities = Sexuality::all();
 
-            $genders = $getAllGenders->map(function ($gender) {
+            $sexualities = $getAllSexualities->map(function ($sexuality) {
                 return [
-                    'id' => $gender->id,
-                    'name' => $gender->name,
+                    'id' => $sexuality->id,
+                    'name' => $sexuality->name,
+                    'description' => $sexuality->description,
                 ];
             });
-            
-            if ($genders) {
+
+            if ($sexualities) {
                 return response()->json([
                     'success' => true,
-                    'message' => 'Gêneros recuperados com sucesso.',
-                    'data' => $genders,
+                    'message' => 'Sexualidades recuperadas com sucesso.',
+                    'data' => $sexualities,
                 ]);
             }
         } catch (QueryException $qe) {
@@ -50,8 +49,4 @@ class GenderController extends Controller
         }
     }
 
-    public function gendersNotBinary()
-    {
-        
-    }
 }

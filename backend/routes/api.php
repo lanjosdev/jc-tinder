@@ -6,6 +6,7 @@ use App\Http\Controllers\Auth\MeController as AuthMeController;
 use App\Http\Controllers\Auth\RegisterController as AuthRegisterController;
 use App\Http\Controllers\Auth\RemoveAccountController as AuthRemoveAccountController;
 use App\Http\Controllers\GenderController;
+use App\Http\Controllers\SexualityController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -25,5 +26,12 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/my-profile', [AuthMeController::class, 'me']);
 
     //genders
-    Route::get('/get-all-genders', [GenderController::class. 'getAll']);
+    Route::get('/get-all-genders', [GenderController::class ,'getAll']);
+    
+    //sexualities
+    Route::get('/get-all-sexualities', [SexualityController::class ,'getAll']);
+    
+
+    //atribuindo sexualidade e genero para o user
+    Route::post('/attribution-gender-sexuality', [AuthMeController::class, 'assingnedGenderAndSexuality']);
 });
