@@ -2,7 +2,11 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Schema;
+
+use function Laravel\Prompts\table;
 
 return new class extends Migration
 {
@@ -14,11 +18,19 @@ return new class extends Migration
         Schema::create('users', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('email')->unique();
-            $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
+            $table->boolean('+18')->default(0);
+            $table->string('phone');
+            $table->string('birth_data');
+            $table->boolean('level')->default(0);
+            $table->foreignId('fk_gender_user_id')->nullable()->constrained('genders')->onUpdate('cascade');
+            $table->foreignId('fk_sexuality_user_id')->nullable()->constrained('sexualities')->onUpdate('cascade');
+            $table->integer('minimum_age')->default(18);
+            $table->integer('maximum_age')->default(100);
+            $table->timestamp('email_verified_at')->nullable();
             $table->rememberToken();
             $table->timestamps();
+            $table->softDeletes();
         });
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {
@@ -35,6 +47,20 @@ return new class extends Migration
             $table->longText('payload');
             $table->integer('last_activity')->index();
         });
+
+        DB::table('users')->insert([
+            'name' => 'admin-bizsys',
+            'email' => 'ti.datacenter@bizsys.com.br',
+            'password' => Hash::make('r4bhvp2h372020'),
+            '+18' => 1,
+            'level' => 1,
+            'phone' => '00000000',
+            'birth_data' => '2000-01-01',
+            'minimum_age' => 18,
+            'maximum_age' => 100,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
     }
 
     /**
