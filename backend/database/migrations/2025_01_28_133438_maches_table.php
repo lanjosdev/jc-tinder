@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('matches', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('fk_user_matches_id')->nullable()->constrained('users')->onUpdate();
-            $table->foreignId('fk_target_user_matches_id')->nullable()->constrained('users')->onUpdate();
+            $table->foreignId('fk_user_matches_id')->nullable()->constrained('users')->onUpdate('cascade');
+            $table->foreignId('fk_target_user_matches_id')->nullable()->constrained('users')->onUpdate('cascade');
             $table->boolean('status')->default(0);
             $table->timestamps();
             $table->softDeletes();

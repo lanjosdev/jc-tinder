@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('habit_groups', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->foreignId('fk_habits_habit_groups_id')->nullable()->constrained('habits')->onUpdate();
+            $table->foreignId('fk_habits_habit_groups_id')->nullable()->constrained('habits')->onUpdate('cascade');
             $table->timestamps();
             $table->softDeletes();
         });

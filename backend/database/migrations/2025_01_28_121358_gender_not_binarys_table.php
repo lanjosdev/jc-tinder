@@ -14,8 +14,8 @@ return new class extends Migration
         Schema::create('gender_not_binarys', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->foreignId('fk_genders_gender_not_binarys')->nullable()->constrained('genders')->onUpdate();
-            $table->foreignId('fk_user_gender_not_binarys')->nullable()->constrained('users')->onUpdate();
+            $table->foreignId('fk_genders_gender_not_binarys')->nullable()->constrained('genders')->onUpdate('cascade');
+            $table->foreignId('fk_user_gender_not_binarys')->nullable()->constrained('users')->onUpdate('cascade');
             $table->timestamps();
             $table->softDeletes();
         });

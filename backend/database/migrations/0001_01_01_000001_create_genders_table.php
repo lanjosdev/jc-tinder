@@ -14,20 +14,20 @@ return new class extends Migration
     {
         Schema::create('genders', function (Blueprint $table) {
             $table->id();
-            $table->name();
+            $table->string('name');
             $table->timestamps();
             $table->softDeletes();
         });
 
-        DB::table()->insert([
+        DB::table('genders')->insert([
             'name' => 'Homem',
         ]);
         
-        DB::table()->insert([
+        DB::table('genders')->insert([
             'name' => 'Mulher',
         ]);
         
-        DB::table()->insert([
+        DB::table('genders')->insert([
             'name' => 'Além de binário',
         ]);
     }

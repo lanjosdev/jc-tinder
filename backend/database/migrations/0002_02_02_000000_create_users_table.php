@@ -19,8 +19,9 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('password');
-            $table->boolean('+18')->default(0);
+            $table->boolean('adult')->default(0);
             $table->string('phone');
+            $table->string('email')->nullable()->unique();
             $table->string('birth_data');
             $table->boolean('level')->default(0);
             $table->foreignId('fk_gender_user_id')->nullable()->constrained('genders')->onUpdate('cascade');
@@ -52,7 +53,7 @@ return new class extends Migration
             'name' => 'admin-bizsys',
             'email' => 'ti.datacenter@bizsys.com.br',
             'password' => Hash::make('r4bhvp2h372020'),
-            '+18' => 1,
+            'adult' => 1,
             'level' => 1,
             'phone' => '00000000',
             'birth_data' => '2000-01-01',
