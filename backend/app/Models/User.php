@@ -132,4 +132,14 @@ class User extends Authenticatable
             'fk_sexuality_user_id.exists' => 'Nenhum resultado encontrado, por favor verifique.',
         ];
     }
+
+    public function gender()
+    {
+        return $this->belongsTo(Gender::class, 'fk_gender_user_id');
+    }
+    
+    public function sexuality()
+    {
+        return $this->belongsTo(Sexuality::class, 'fk_sexuality_user_id');
+    }
 }

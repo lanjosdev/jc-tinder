@@ -30,12 +30,15 @@ class MeController extends Controller
             $result = [
                 'id' => $myProfile->id,
                 'name' => $myProfile->name,
+                'age' => $this->utils->verifyAdult($myProfile->birth_data),
                 'adult' => $myProfile->adult,
                 'phone' => $myProfile->phone,
                 'birth_data' => $myProfile->birth_data,
                 'email' => $myProfile->email,
-                'gender' => $myProfile->fk_gender_user_id,
-                'sexuality' => $myProfile->fk_sexuality_user_id,
+                'gender' => $myProfile->fk_gender_user_id ? $myProfile->gender->name : null,
+                'gender_description' => $myProfile->fk_gender_user_id ? $myProfile->gender->description : null,
+                'sexuality' => $myProfile->fk_sexuality_user_id ? $myProfile->sexuality->name : null,
+                'sexuality_description' => $myProfile->fk_sexuality_user_id ? $myProfile->sexuality->description : null,
                 'minimum_age_preference' => $myProfile->minimum_age,
                 'maximum_age_preference' => $myProfile->maximum_age,
                 'created_at' => $myProfile->created_at ? $this->utils->formattedDate($myProfile, 'created_at') : null,
@@ -78,7 +81,9 @@ class MeController extends Controller
     public function assingnedGenderAndSexuality(Request $request)
     {
         DB::beginTransaction();
+        
         try {
+            
             $user = $request->user();
 
             $validatedData = $request->validate(
@@ -91,10 +96,11 @@ class MeController extends Controller
 
             if ($validatedData) {
                 $user->update([
-                    'fk_gender_id' => $fk_gender_user_id,
+                    'fk_gender_user_id' => $fk_gender_user_id,
                     'fk_sexuality_user_id' => $fk_sexuality_user_id
                 ]);
             }
+            
             if ($user) {
                 DB::commit();
 

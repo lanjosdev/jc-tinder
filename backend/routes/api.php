@@ -22,7 +22,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     
     //logout
     Route::post('/logout', [AuthLogoutController::class, 'logout']);
-    Route::post('/remove-account', [AuthRemoveAccountController::class, 'removeAccount']);
+    Route::delete('/remove-account', [AuthRemoveAccountController::class, 'removeAccount']);
     Route::get('/my-profile', [AuthMeController::class, 'me']);
 
     //genders
@@ -30,7 +30,6 @@ Route::middleware(['auth:sanctum'])->group(function () {
     
     //sexualities
     Route::get('/get-all-sexualities', [SexualityController::class ,'getAll']);
-    
 
     //atribuindo sexualidade e genero para o user
     Route::post('/attribution-gender-sexuality', [AuthMeController::class, 'assingnedGenderAndSexuality']);

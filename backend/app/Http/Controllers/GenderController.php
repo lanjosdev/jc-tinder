@@ -27,6 +27,7 @@ class GenderController extends Controller
                 return [
                     'id' => $gender->id,
                     'name' => $gender->name,
+                    'description' => $gender->description,
                 ];
             });
             
