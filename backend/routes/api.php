@@ -7,6 +7,8 @@ use App\Http\Controllers\Auth\RegisterController as AuthRegisterController;
 use App\Http\Controllers\Auth\RemoveAccountController as AuthRemoveAccountController;
 use App\Http\Controllers\GenderController;
 use App\Http\Controllers\SexualityController;
+use App\Http\Controllers\SubGenderController;
+use App\Models\SubGender;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -25,12 +27,21 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::delete('/remove-account', [AuthRemoveAccountController::class, 'removeAccount']);
     Route::get('/my-profile', [AuthMeController::class, 'me']);
 
-    //genders
+    //get-all-genders
     Route::get('/get-all-genders', [GenderController::class ,'getAll']);
     
-    //sexualities
+    //get-all-sexualities
     Route::get('/get-all-sexualities', [SexualityController::class ,'getAll']);
+    
+    //get-all-sub-genders
+    Route::get('/get-all-sub-genders', [SubGenderController::class ,'getAll']);
 
-    //atribuindo sexualidade e genero para o user
+    //attribution genders and sexualities
     Route::post('/attribution-gender-sexuality', [AuthMeController::class, 'assingnedGenderAndSexuality']);
+
+    //preferences
+    Route::post('/preferences', [AuthMeController::class, 'preferences']);
+    
+    //photos
+    Route::post('/photos', [AuthMeController::class, 'photos']);
 });

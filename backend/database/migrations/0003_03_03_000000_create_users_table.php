@@ -26,6 +26,7 @@ return new class extends Migration
             $table->boolean('level')->default(0);
             $table->foreignId('fk_gender_user_id')->nullable()->constrained('genders')->onUpdate('cascade');
             $table->foreignId('fk_sexuality_user_id')->nullable()->constrained('sexualities')->onUpdate('cascade');
+            $table->foreignId('fk_sub_gender_user_id')->nullable()->constrained('sub_genders')->onUpdate('cascade');
             $table->integer('minimum_age')->default(18);
             $table->integer('maximum_age')->default(100);
             $table->timestamp('email_verified_at')->nullable();

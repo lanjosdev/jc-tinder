@@ -32,6 +32,7 @@ class User extends Authenticatable
         'level',
         'fk_gender_user_id',
         'fk_sexuality_user_id',
+        'fk_sub_gender_user_id',
         'minimum_age',
         'maximum_age',
     ];
@@ -119,6 +120,7 @@ class User extends Authenticatable
         return [
             'fk_gender_user_id' => 'required|exists:genders,id',
             'fk_sexuality_user_id' => 'required|exists:sexualities,id',
+            'fk_sub_gender_user_id' => 'exists:sub_genders,id',
         ];
     }
 
@@ -128,8 +130,27 @@ class User extends Authenticatable
             'fk_gender_user_id.required' => 'O campo gênero é obrigátorio.',
             'fk_gender_user_id.exists' => 'Nenhum resultado encontrado, por favor verifique.',
 
+            'fk_sub_gender_user_id' => 'Nenhum resultado encontrado, por favor verifique.',
+
             'fk_sexuality_user_id.required' => 'O campo sexualidade é obrigátorio.',
             'fk_sexuality_user_id.exists' => 'Nenhum resultado encontrado, por favor verifique.',
+        ];
+    }
+
+    public function rulesPreference()
+    {
+        return [
+            'fk_gender_preferences_id' => 'required|array|exists:genders,id',
+        ];
+    }
+
+    public function feedbackPreference()
+    {
+        return [
+            
+            'fk_gender_preferences_id.required' => 'Escolha no mínimo um.',
+            'fk_gender_preferences_id.array' => 'Formato inválido (necessário array).',
+            'fk_gender_preferences_id.exists' => 'Nenhum resultado encontrado, por favor verifique.',
         ];
     }
 
@@ -137,9 +158,24 @@ class User extends Authenticatable
     {
         return $this->belongsTo(Gender::class, 'fk_gender_user_id');
     }
-    
+
+    public function sub_gender()
+    {
+        return $this->belongsTo(SubGender::class, 'fk_sub_gender_user_id');
+    }
+
     public function sexuality()
     {
         return $this->belongsTo(Sexuality::class, 'fk_sexuality_user_id');
+    }
+
+    public function preferences()
+    {
+        return $this->belongsToMany(Preference::class, 'preferences', 'fk_user_preferences_id', 'fk_gender_preferences_id');
+    }
+    
+    public function photos()
+    {
+        return $this->belongsToMany(Photo::class);
     }
 }

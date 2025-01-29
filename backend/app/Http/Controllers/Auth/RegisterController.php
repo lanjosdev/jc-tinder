@@ -10,6 +10,7 @@ use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\ValidationException;
 
 class RegisterController extends Controller
@@ -68,6 +69,12 @@ class RegisterController extends Controller
 
             if ($createdUser) {
                 DB::commit();
+
+                $directoryPath = 'images';
+
+                if (!Storage::disk('public')->exists($directoryPath)) {
+                    Storage::disk('public')->makeDirectory($directoryPath);
+                }
 
                 return response()->json([
                     'success' => true,
