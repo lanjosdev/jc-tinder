@@ -27,14 +27,10 @@ class RemoveAccountController extends Controller
             }
         } catch (ValidationException $ve) {
             DB::rollBack();
-            $errorMessages = collect($ve->errors())
-                ->flatten() // Garante que todas as mensagens fiquem em um array único
-                ->all();
-
             return response()->json([
                 'success' => false,
                 'message' => 'Erro de validação.',
-                'errors' => $errorMessages,
+                'errors' => $ve->errors(),
             ]);
         } catch (QueryException $qe) {
             DB::rollBack();
