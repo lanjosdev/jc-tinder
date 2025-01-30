@@ -50,4 +50,12 @@ class GenderController extends Controller
             ]);
         }
     }
+<<<<<<< HEAD
+=======
+
+    public function gendersNotBinary()
+    {
+        
+    }
+>>>>>>> 70d749c491aded7597d1c381ee048208cbe5d2ce
 }
