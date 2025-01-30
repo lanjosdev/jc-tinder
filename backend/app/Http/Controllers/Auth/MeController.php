@@ -38,6 +38,19 @@ class MeController extends Controller
                 ->whereIn('id', $habitsUser)
                 ->pluck('name');
 
+            $preferencesUser = DB::table('preferences')
+                ->where('fk_user_preferences_id', $myProfile->id)
+                ->pluck('fk_gender_preferences_id')
+                ->toArray();
+
+            $preferences = DB::table('genders')
+                ->whereIn('id', $preferencesUser)
+                ->pluck('name');
+
+            $photosUser = DB::table('photos')
+                ->where('fk_user_photos_id', $myProfile->id)
+                ->pluck('thumb_photo')
+                ->toArray();
 
             $result = [
                 'id' => $myProfile->id,
@@ -53,6 +66,8 @@ class MeController extends Controller
                 'sub_gender_description' => $myProfile->fk_sub_gender_user_id ? $myProfile->sub_gender->description : null,
                 'sexuality' => $myProfile->fk_sexuality_user_id ? $myProfile->sexuality->name : null,
                 'sexuality_description' => $myProfile->fk_sexuality_user_id ? $myProfile->sexuality->description : null,
+                'preferences' => $preferences,
+                'photos' => $photosUser,
                 'minimum_age_preference' => $myProfile->minimum_age,
                 'maximum_age_preference' => $myProfile->maximum_age,
                 'habits' => $habits,

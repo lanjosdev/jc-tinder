@@ -40,7 +40,7 @@ class PhotoController extends Controller
 
             $savedImages = [];
             $thumbnailPaths = [];
-
+            
             if ($request->hasFile('name_photo') && $validatedData) {
                 $photos = $request->file('name_photo');
 
