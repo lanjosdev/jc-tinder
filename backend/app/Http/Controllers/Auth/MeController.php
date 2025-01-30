@@ -100,6 +100,7 @@ class MeController extends Controller
             $fk_gender_user_id = $request->fk_gender_user_id;
             $fk_sexuality_user_id = $request->fk_sexuality_user_id;
             $fk_sub_gender_user_id = $request->fk_sub_gender_user_id;
+            $about_me = $request->about_me;
 
             if ($fk_sub_gender_user_id != null) {
 
@@ -122,6 +123,7 @@ class MeController extends Controller
                     'fk_gender_user_id' => $fk_gender_user_id,
                     'fk_sexuality_user_id' => $fk_sexuality_user_id,
                     'fk_sub_gender_user_id' => $fk_sub_gender_user_id,
+                    'about_me' => $about_me,
                 ]);
             }
 
