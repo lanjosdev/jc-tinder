@@ -44,7 +44,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/attribution-gender-sexuality', [AuthMeController::class, 'assingnedGenderAndSexuality']);
 
     //preferences
-    Route::post('/preferences', [AuthMeController::class, 'preferences']);
+    Route::post('/preferences-habits', [AuthMeController::class, 'preferences']);
     
     //photos
     Route::post('/photos', [AuthMeController::class, 'photos']);

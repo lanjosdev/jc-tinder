@@ -145,16 +145,22 @@ class User extends Authenticatable
     {
         return [
             'fk_gender_preferences_id' => 'required|array|exists:genders,id',
+            
+            'habits' => 'array|exists:habits,id',
         ];
     }
 
     public function feedbackPreference()
     {
         return [
-            
+
             'fk_gender_preferences_id.required' => 'Escolha no mínimo um.',
             'fk_gender_preferences_id.array' => 'Formato inválido (necessário array).',
             'fk_gender_preferences_id.exists' => 'Nenhum resultado encontrado, por favor verifique.',
+            
+            'habits.' => 'Escolha no mínimo um.',
+            'habits.array' => 'Formato inválido (necessário array).',
+            'habits.exists' => 'Nenhum resultado encontrado, por favor verifique.',
         ];
     }
 
@@ -177,7 +183,12 @@ class User extends Authenticatable
     {
         return $this->belongsToMany(Preference::class, 'preferences', 'fk_user_preferences_id', 'fk_gender_preferences_id');
     }
-    
+
+    public function habits()
+    {
+        return $this->belongsToMany(Habit::class, 'user_habits', 'fk_user_user_habits_id', 'fk_habits_user_habits_id');
+    }
+
     public function photos()
     {
         return $this->belongsToMany(Photo::class);

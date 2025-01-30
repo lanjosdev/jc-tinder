@@ -31,6 +31,16 @@ class MeController extends Controller
         try {
             $myProfile = $request->user();
 
+            $habitsUser = DB::table('user_habits')
+                ->where('fk_user_user_habits_id', $myProfile->id)
+                ->pluck('fk_habits_user_habits_id')
+                ->toArray();
+
+            $habits = DB::table('habits')
+                ->whereIn('id', $habitsUser)
+                ->pluck('name');
+
+
             $result = [
                 'id' => $myProfile->id,
                 'name' => $myProfile->name,
@@ -47,6 +57,7 @@ class MeController extends Controller
                 'sexuality_description' => $myProfile->fk_sexuality_user_id ? $myProfile->sexuality->description : null,
                 'minimum_age_preference' => $myProfile->minimum_age,
                 'maximum_age_preference' => $myProfile->maximum_age,
+                'habits' => $habits,
                 'created_at' => $myProfile->created_at ? $this->utils->formattedDate($myProfile, 'created_at') : null,
                 'updated_at' => $myProfile->updated_at ? $this->utils->formattedDate($myProfile, 'updated_at') : null,
                 'deleted_at' => $myProfile && $myProfile->trashed()
@@ -164,20 +175,22 @@ class MeController extends Controller
 
             $validatedData = $request->validate(
                 $this->user->rulesPreference(),
-                $this->user->feedbackPreference()
+                $this->user->feedbackPreference(),
             );
 
             $fk_gender_preferences_id = $request->input('fk_gender_preferences_id');
+            $habits = $request->input('habits');
 
             if ($validatedData) {
                 $user->preferences()->sync($fk_gender_preferences_id);
+                $user->habits()->sync($habits);
             }
 
             DB::commit();
 
             return response()->json([
                 'success' => true,
-                'message' => 'Preferencia atribuida com sucesso.',
+                'message' => 'Preferencia/hábito atribuído com sucesso.',
             ]);
         } catch (ValidationException $ve) {
             DB::rollBack();
