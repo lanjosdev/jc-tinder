@@ -29,7 +29,7 @@ return new class extends Migration
         ]);
         
         DB::table('genders')->insert([
-            'name' => 'Além de binário',
+            'name' => 'Não binário',
         ]);
     }
 

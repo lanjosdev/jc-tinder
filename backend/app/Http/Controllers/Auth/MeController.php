@@ -229,13 +229,13 @@ class MeController extends Controller
 
                 if ($request->hasFile('name_photo')) {
 
-                    // dd($request->file('name_photo'));
+                    dd($request->file('name_photo'));
                     foreach ($request->file('photos') as $photo) {
                         $path = $photo->store('photos', 'public');
-                        // $photos[] = Photo::create(['path' => $path]);
+                        $photos[] = Photo::create(['path' => $path]);
                     }
 
-                    // $user->photos()->syncWithoutDetaching($photos);
+                    $user->photos()->syncWithoutDetaching($photos);
                 }
             }
         } catch (ValidationException $ve) {
