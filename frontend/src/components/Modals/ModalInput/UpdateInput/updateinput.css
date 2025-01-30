@@ -1,0 +1,12 @@
+.Window.UpdateInput {
+
+    .top-window {
+        display: flex;
+        flex-direction: column;
+        gap: 2rem;
+
+        > p{
+            margin-bottom: -1rem;
+        }
+    }
+}

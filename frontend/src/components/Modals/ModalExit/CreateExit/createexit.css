@@ -1,0 +1,76 @@
+.Window.CreateExit {
+
+    .tabs {
+        background-color: var(--color-bg-2);
+        min-width: 22rem;
+        /* max-width: fit-content; */
+        border-radius: 7px;
+        padding: 4px;
+        box-shadow: 0 4px 6px -1px rgba(49, 49, 49, 0.11), 0 2px 4px -2px rgba(49, 49, 49, 0.18);
+
+        display: flex;
+
+        margin-bottom: 0.5rem;
+
+        button {
+            background-color: transparent;
+            width: 100%;
+            border-radius: 5px;
+            padding: 1px 12px;
+            color: #000;
+            font-size: 1.4rem;
+            font-weight: 600;
+            opacity: .7;
+
+            transition: all .2s ease-in-out;
+
+            &.tab-ativa {
+                background-color: var(--color-w);
+                box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+                opacity: 1;
+            }
+            &:active {
+                background-color: var(--color-w);
+                box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+                opacity: 1;                    
+            }
+        }
+    }
+
+    .content-window {
+        /* background-color: aqua; */
+
+        .label--input .msg {
+
+            p {
+                display: flex;
+                gap: 1rem;
+
+                span {
+                    color: #2221219c;
+    
+                    b {
+                        font-weight: 400;
+                        color: var(--color-text);
+                    }
+                }
+            }
+        }
+    }
+
+    .content-window:not(:has(.none)) > .more-datas {
+        /* border: 1px solid yellow; */
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+
+        .label--input:last-child {
+            grid-column:  1 / -1;
+        }
+
+        @media (max-width: 400px) {
+            display: flex;
+            flex-direction: column;
+        }
+    }
+}
