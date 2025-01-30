@@ -238,21 +238,10 @@ class MeController extends Controller
             }
         } catch (ValidationException $ve) {
             DB::rollBack();
-<<<<<<< HEAD
             return response()->json([
                 'success' => false,
                 'message' => 'Erro de validação.',
                 'errors' => $ve->errors(),
-=======
-            $errorMessages = collect($ve->errors())
-                ->flatten()
-                ->all();
-
-            return response()->json([
-                'success' => false,
-                'message' => 'Erro de validação.',
-                'errors' => $errorMessages,
->>>>>>> 70d749c491aded7597d1c381ee048208cbe5d2ce
             ]);
         } catch (QueryException $qe) {
             DB::rollBack();
