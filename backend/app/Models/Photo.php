@@ -23,7 +23,6 @@ class Photo extends Model
     {
         return [
             'name_photo' => 'file|mimes:png,jpg',
-            'thumb_photo' => 'file|mimes:png,jpg',
             'fk_user_photos_id' => 'exists:users,id'
         ];
     }
@@ -32,8 +31,6 @@ class Photo extends Model
     {
         return [
             'name_photo.mimes' => 'A imagem deve estar no formato jpg ou png.',
-
-            'thumb_photo.mimes' => 'A imagem deve estar no formato jpg ou png.',
 
             'fk_user_photos_id.exists' => 'Nenhum resultado encontrado, por favor verifique.',
         ];

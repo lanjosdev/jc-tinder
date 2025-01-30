@@ -7,6 +7,7 @@ use App\Http\Controllers\Auth\RegisterController as AuthRegisterController;
 use App\Http\Controllers\Auth\RemoveAccountController as AuthRemoveAccountController;
 use App\Http\Controllers\GenderController;
 use App\Http\Controllers\HabitController;
+use App\Http\Controllers\PhotoController;
 use App\Http\Controllers\SexualityController;
 use App\Http\Controllers\SubGenderController;
 use App\Models\SubGender;
@@ -47,5 +48,5 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/preferences-habits', [AuthMeController::class, 'preferences']);
     
     //photos
-    Route::post('/photos', [AuthMeController::class, 'photos']);
+    Route::post('/photos', [PhotoController::class, 'photoStore']);
 });

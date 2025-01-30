@@ -17,13 +17,11 @@ class MeController extends Controller
 {
     protected $utils;
     protected $user;
-    protected $photo;
 
-    public function __construct(Utils $utils, User $user, Photo $photo)
+    public function __construct(Utils $utils, User $user)
     {
         $this->utils = $utils;
         $this->user = $user;
-        $this->photo = $photo;
     }
 
     public function me(Request $request)
@@ -190,55 +188,8 @@ class MeController extends Controller
 
             return response()->json([
                 'success' => true,
-                'message' => 'Preferencia/hábito atribuído com sucesso.',
+                'message' => 'Preferencia/hábito(s) atribuído(s) com sucesso.',
             ]);
-        } catch (ValidationException $ve) {
-            DB::rollBack();
-            return response()->json([
-                'success' => false,
-                'message' => 'Erro de validação.',
-                'errors' => $ve->errors(),
-            ]);
-        } catch (QueryException $qe) {
-            DB::rollBack();
-            return response()->json([
-                'success' => false,
-                'message' => "Error DB: " . $qe->getMessage(),
-            ]);
-        } catch (Exception $e) {
-            DB::rollBack();
-            return response()->json([
-                'success' => false,
-                'message' => "Error: " . $e->getMessage(),
-            ]);
-        }
-    }
-
-    public function photos(Request $request)
-    {
-        DB::beginTransaction();
-        try {
-            $user = $request->user();
-
-            $validatedData = $request->validate(
-                $this->photo->rulesPhoto(),
-                $this->photo->feedbackPhoto()
-            );
-
-            if ($validatedData) {
-                $photos = [];
-
-                if ($request->hasFile('name_photo')) {
-
-                    dd($request->file('name_photo'));
-                    foreach ($request->file('photos') as $photo) {
-                        $path = $photo->store('photos', 'public');
-                        $photos[] = Photo::create(['path' => $path]);
-                    }
-
-                    $user->photos()->syncWithoutDetaching($photos);
-                }
-            }
         } catch (ValidationException $ve) {
             DB::rollBack();
             return response()->json([
