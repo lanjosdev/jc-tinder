@@ -1,0 +1,17 @@
+.WindowFilterUser {
+
+    .content-window {
+
+        .radios-group {
+            /* background-color: aqua; */
+            display: flex;
+            justify-content: center;
+            gap: 0.7rem;
+
+            label {
+                width: 100%;
+                text-align: center;
+            }
+        }
+    }
+}

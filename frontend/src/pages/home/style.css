@@ -1,0 +1,48 @@
+.Page {
+    border: 3px solid red;
+    min-height: 100vh;
+    min-height: 100dvh;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; 
+}
+
+.PageContent {
+    /* border: 1px solid blue; */
+    flex: 1;
+    padding: var(--p-vertical) var(--p-lateral);
+}
+
+
+.HomeContent {
+
+    .persons {
+        border: 1px solid black;
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        .card {
+            width: 100%;
+
+            img {
+                max-width: 100%;
+            }
+        }
+        .card.fixed {
+            visibility: hidden;
+        }
+        .card.person {
+            background-color: var(--color-w);
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+        .msg {
+            position: absolute;
+        }
+    }
+    
+}

@@ -1,0 +1,67 @@
+.Page.Forms {
+    border: 3px solid blue;
+    height: 100dvh;
+    overflow: auto;
+}
+
+.FormsContent {
+    /* background-color: yellow; */
+
+    .content_main {
+
+        .form {
+            .label--input {
+                /* background-color: red; */
+
+                .btns_radio_container {
+                    display: flex;
+                    gap: .5rem;
+
+                    .btn_radio {
+                        flex: 1;
+                    }
+                }
+
+                .gender_optional {
+                    margin-top: .5rem;
+                    background-color: var(--color-neutral-border);
+                    border-radius: 10px;
+                    padding: 1rem;
+                    cursor: pointer;
+    
+                    .list_gender_optional {
+                        margin-top: 1rem;
+                        display: flex;
+                        flex-direction: column;
+                        gap: .5rem;
+                        overflow: hidden;
+    
+                        transition: all .3s ease-in-out;
+    
+                        li {
+                            background-color: white;
+                            border: 1px solid rgba(0, 0, 0, 0.404);
+                            border-radius: 5px;
+                            padding: .2rem .5rem;
+                        }
+                    }
+                    .list_gender_optional.hide {
+                        height: 0;
+                        margin-top: 0rem;
+                    }
+                }
+            }
+
+
+            .btns_container {
+                background-color: aquamarine;
+                position: absolute;
+                bottom: 0;
+                left: 0;
+
+                width: 100%;
+            }
+        }
+        
+    }
+}

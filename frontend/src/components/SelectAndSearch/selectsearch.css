@@ -1,0 +1,113 @@
+.SelectSearch {
+    /* border: 2px solid blue; */
+    background-color: var(--color-w);
+    border-radius: 7px;
+
+    .search {
+        /* background-color: red; */
+        display: flex;
+        max-width: 49rem;
+
+        button {
+            background-color: var(--color-secundary);
+            color: var(--color-w);
+
+            padding: 0 1rem;
+            border-radius: 7px;
+            line-height: 0;
+        }
+        input {
+            padding: .7rem;
+            border-radius: 7px;
+            width: 100%;
+            max-width: 520px;
+        }
+    }
+
+    .select {
+        border-radius: 7px;
+        height: 100%;
+        min-height: 0;
+        max-height: 0;
+        max-width: 49rem;
+        overflow-y: auto;
+
+        li {
+            opacity: 0;
+        }
+
+        transition: all .4s ease;
+
+        &.mostra {
+            min-height: 12rem;
+            max-height: 35rem;
+
+            li {
+                opacity: 1;
+                padding: .7rem;
+            }
+            .title-group {
+                font-weight: 600;
+            }
+            .item-group {
+                background-color: var(--color-w);
+                cursor: pointer;
+
+                transition: all .3s ease;
+
+                &:hover {
+                    filter: brightness(0.8);
+                }
+                &.selecionado {
+                    background-color: var(--color-primary);
+                    color: var(--color-w);
+
+                    &:hover {
+                        filter: brightness(1);
+                    }
+                }
+            }
+            .item-group.input {
+                display: flex;
+                gap: 1rem;
+
+                span {
+                    color: #2221219c;
+    
+                    b {
+                        font-weight: 400;
+                        color: var(--color-text);
+                    }
+                }
+
+                &:has(.Em) {
+                    span b {
+                        color: var(--color-warning);
+                    }
+                }
+                &:has(.Vencido) {
+                    span b {
+                        color: var(--color-danger);
+                    }
+                }
+                &.selecionado {
+                    background-color: var(--color-primary);
+                    color: var(--color-w);
+                    span {
+                        color: var(--color-w);
+        
+                        b {
+                            color: var(--color-w);
+                        }
+                    }
+
+                    &:hover {
+                        filter: brightness(1);
+                    }
+                }
+
+                
+            }
+        }
+    }
+}

@@ -1,0 +1,15 @@
+.RegisterContent {
+    background-color: antiquewhite;
+
+
+
+    .content_main {
+        
+        .form {
+            /* background-color: aqua; */
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+    }
+}

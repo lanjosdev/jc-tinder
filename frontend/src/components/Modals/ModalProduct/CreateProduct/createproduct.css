@@ -1,0 +1,93 @@
+.Window.CreateProduct {
+
+    .tabs {
+        background-color: var(--color-bg-2);
+        min-width: 22rem;
+        /* max-width: fit-content; */
+        border-radius: 7px;
+        padding: 4px;
+        box-shadow: 0 4px 6px -1px rgba(49, 49, 49, 0.11), 0 2px 4px -2px rgba(49, 49, 49, 0.18);
+
+        display: flex;
+
+        margin-bottom: 0.5rem;
+
+        button {
+            background-color: transparent;
+            width: 100%;
+            border-radius: 5px;
+            padding: 1px 12px;
+            color: #000;
+            font-size: 1.4rem;
+            font-weight: 600;
+            opacity: .7;
+
+            transition: all .2s ease-in-out;
+
+            &.tab-ativa {
+                background-color: var(--color-w);
+                box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+                opacity: 1;
+            }
+            &:active {
+                background-color: var(--color-w);
+                box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+                opacity: 1;                    
+            }
+        }
+    }
+
+    .content-window .label--input .radio-group {
+        background-color: var(--color-w);
+        border-radius: 7px;
+        padding: .7rem;
+
+        display: flex;
+        max-width: 52rem;
+        flex-wrap: wrap;
+        gap: .7rem 1.3rem;        
+
+        > label {
+            display: flex;
+            gap: .2rem;
+        }
+    }
+
+    .content-window .label--input {
+        
+        .checkbox-group {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            max-height: 26rem;
+            overflow-y: auto;
+
+            .see-more {
+                /* background-color: red; */
+                margin-top: .5rem;
+                /* text-align: center; */
+                cursor: pointer;
+                transition: all .3s ease;
+
+                &:hover {
+                    font-weight: 600 !important;
+                }
+            }
+        }
+
+        .show-selected {
+            /* border: 1px solid red; */
+            margin-top: .7rem;
+            
+            display: flex;
+            align-items: center;
+            gap: .7rem .7rem;
+            flex-wrap: wrap;
+
+            height: 100%;
+            max-height: 13rem;
+            overflow-y: auto;
+        }
+    }
+
+}
