@@ -71,14 +71,10 @@ class LoginController extends Controller
             }
         } catch (ValidationException $ve) {
             DB::rollBack();
-            $errorMessages = collect($ve->errors())
-                ->flatten()
-                ->all();
-
             return response()->json([
                 'success' => false,
                 'message' => 'Erro de validação.',
-                'errors' => $errorMessages,
+                'errors' => $ve->errors(),
             ]);
         } catch (QueryException $qe) {
             DB::rollBack();
