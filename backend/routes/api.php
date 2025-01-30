@@ -6,6 +6,7 @@ use App\Http\Controllers\Auth\MeController as AuthMeController;
 use App\Http\Controllers\Auth\RegisterController as AuthRegisterController;
 use App\Http\Controllers\Auth\RemoveAccountController as AuthRemoveAccountController;
 use App\Http\Controllers\GenderController;
+use App\Http\Controllers\HabitController;
 use App\Http\Controllers\SexualityController;
 use App\Http\Controllers\SubGenderController;
 use App\Models\SubGender;
@@ -35,6 +36,9 @@ Route::middleware(['auth:sanctum'])->group(function () {
     
     //get-all-sub-genders
     Route::get('/get-all-sub-genders', [SubGenderController::class ,'getAll']);
+    
+    //get-all-habits
+    Route::get('/get-all-habits', [HabitController::class ,'getAll']);
 
     //attribution genders and sexualities
     Route::post('/attribution-gender-sexuality', [AuthMeController::class, 'assingnedGenderAndSexuality']);
