@@ -24,6 +24,7 @@ return new class extends Migration
             $table->string('email')->nullable()->unique();
             $table->string('birth_data');
             $table->boolean('level')->default(0);
+            $table->text('about_me')->nullable();
             $table->foreignId('fk_gender_user_id')->nullable()->constrained('genders')->onUpdate('cascade');
             $table->foreignId('fk_sexuality_user_id')->nullable()->constrained('sexualities')->onUpdate('cascade');
             $table->foreignId('fk_sub_gender_user_id')->nullable()->constrained('sub_genders')->onUpdate('cascade');

@@ -30,6 +30,7 @@ class User extends Authenticatable
         'phone',
         'birth_data',
         'level',
+        'about_me',
         'fk_gender_user_id',
         'fk_sexuality_user_id',
         'fk_sub_gender_user_id',
@@ -121,6 +122,7 @@ class User extends Authenticatable
             'fk_gender_user_id' => 'required|exists:genders,id',
             'fk_sexuality_user_id' => 'required|exists:sexualities,id',
             'fk_sub_gender_user_id' => 'exists:sub_genders,id',
+            'about_me' => 'max:1000',
         ];
     }
 
@@ -134,6 +136,8 @@ class User extends Authenticatable
 
             'fk_sexuality_user_id.required' => 'O campo sexualidade é obrigátorio.',
             'fk_sexuality_user_id.exists' => 'Nenhum resultado encontrado, por favor verifique.',
+
+            'about_me.max' => 'O campo sobre mim deve conter até 1000 caracteres.'
         ];
     }
 
