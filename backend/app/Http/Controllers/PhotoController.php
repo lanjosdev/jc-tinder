@@ -27,12 +27,12 @@ class PhotoController extends Controller
 
     public function photoStore(Request $request)
     {
+
         DB::beginTransaction();
 
         try {
             $user = $request->user();
 
-            // Validações
             $validatedData = $request->validate(
                 $this->photo->rulesPhoto(),
                 $this->photo->feedbackPhoto()
@@ -40,28 +40,86 @@ class PhotoController extends Controller
 
             $savedImages = [];
             $thumbnailPaths = [];
-            
-            if ($request->hasFile('name_photo') && $validatedData) {
+
+            // if ($validatedData) {
+
+            //     $photos = [];
+            //     $photos = $request->file('name_photo');
+
+            //     if (count($photos) > 4) {
+            //         return response()->json([
+            //             'success' => false,
+            //             'message' => 'Permitido até 4 fotos.',
+            //         ]);
+            //     }
+
+            //     foreach ($photos as $photo) {
+            //         if ($photo->isValid()) {
+
+            //             // Gerar nome do arquivo
+            //             $filename = $user->id . '-' . now()->format('Y-m-d_H-i-s') . '.' . $photo->getClientOriginalExtension();
+
+            //             // Caminho de destino
+            //             $destinationPath = public_path('images/');
+            //             if (!file_exists($destinationPath)) {
+            //                 mkdir($destinationPath, 0775, true);
+            //             }
+
+            //             // Verifique se o arquivo foi movido com sucesso
+            //             $photo->move($destinationPath, $filename);
+
+            //             $fullPath = 'images/' . $filename;
+            //             $savedImages[] = $fullPath;
+
+            //             // Verificar e criar pasta para thumbnails
+            //             $destinationPathThumbnail = public_path('images/thumbnails/');
+            //             if (!file_exists($destinationPathThumbnail)) {
+            //                 mkdir($destinationPathThumbnail, 0775, true);
+            //             }
+
+            //             // Gerar miniatura
+            //             $thumbnailPath = 'images/thumbnails/thumb_' . $filename;
+            //             $this->utils->createThumbnail(public_path($fullPath), public_path($thumbnailPath), 150, 150);
+            //             $thumbnailPaths[] = 'images/thumbnails/thumb_' . $filename;
+
+            //             // Salvar no banco de dados
+            //             $this->photo->create([
+            //                 'name_photo' => $filename,
+            //                 'thumb_photo' => $thumbnailPath,
+            //                 'fk_user_photos_id' => $user->id,
+            //             ]);
+            //         }
+            //     }
+            // }
+
+            if ($validatedData) {
                 $photos = $request->file('name_photo');
 
-                // Certifique-se de que o `$photos` é um array
+                // Garante que sempre será tratado como array
                 if (!is_array($photos)) {
                     $photos = [$photos];
+                }
+
+                if (count($photos) > 4) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Permitido até 4 fotos.',
+                    ]);
                 }
 
                 foreach ($photos as $photo) {
                     if ($photo->isValid()) {
 
-                        // Gerar nome do arquivo
-                        $filename = $user->id . '-' . now()->format('Y-m-d_H-i-s') . '.' . $photo->getClientOriginalExtension();
+                        // Gerar nome de arquivo único
+                        $filename = $user->id . '-' . now()->format('Y-m-d_H-i-s') . '-' . uniqid() . '.' . $photo->getClientOriginalExtension();
 
-                        // Caminho de destino
+                        // Caminho de destino para imagem original
                         $destinationPath = public_path('images/');
                         if (!file_exists($destinationPath)) {
                             mkdir($destinationPath, 0775, true);
                         }
 
-                        // Verifique se o arquivo foi movido com sucesso
+                        // Mover imagem para destino
                         $photo->move($destinationPath, $filename);
 
                         $fullPath = 'images/' . $filename;
@@ -76,11 +134,11 @@ class PhotoController extends Controller
                         // Gerar miniatura
                         $thumbnailPath = 'images/thumbnails/thumb_' . $filename;
                         $this->utils->createThumbnail(public_path($fullPath), public_path($thumbnailPath), 150, 150);
-                        $thumbnailPaths[] = 'images/thumbnails/thumb_' . $filename;
+                        $thumbnailPaths[] = $thumbnailPath;
 
                         // Salvar no banco de dados
                         $this->photo->create([
-                            'name_photo' => $filename,
+                            'name_photo' => $fullPath,
                             'thumb_photo' => $thumbnailPath,
                             'fk_user_photos_id' => $user->id,
                         ]);
@@ -92,15 +150,25 @@ class PhotoController extends Controller
 
             return response()->json([
                 'success' => true,
-                'files' => $savedImages,
-                'thumbnails' => $thumbnailPaths
+                'message' => 'Fotos(s) salva(s) com sucesso.',
+                'data' => [$savedImages, $thumbnailPath],
             ]);
-        } catch (Exception $e) {
-            DB::rollBack();
+        } catch (ValidationException $ve) {
             return response()->json([
                 'success' => false,
-                'message' => 'Erro ao salvar imagens: ' . $e->getMessage()
-            ], 500);
+                'message' => 'Erro de validação.',
+                'errors' => $ve->errors(),
+            ]);
+        } catch (QueryException $qe) {
+            return response()->json([
+                'success' => false,
+                'message' => "Error DB: " . $qe->getMessage(),
+            ]);
+        } catch (Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => "Error: " . $e->getMessage(),
+            ]);
         }
     }
 }
