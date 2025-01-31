@@ -12,4 +12,16 @@
             gap: 1.5rem;
         }
     }
+
+    
+
+    /* Tratamento de erros */
+    .label--input {
+
+        &:not(:has([data-error='null'])) {
+            input {
+                border: 0.2rem solid var(--color-danger);
+            }
+        }
+    }
 }

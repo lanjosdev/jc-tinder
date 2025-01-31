@@ -31,7 +31,7 @@ export function UserProvider({ children }) {
 
     
     // Logar usuario:
-    async function logarUser(email, senha) {
+    async function logarUser(email, senha, direct='/home') {
         setLoading(true);    
         console.log('Call function Logar do Context...');
 
@@ -42,7 +42,7 @@ export function UserProvider({ children }) {
             if(response.success) {
                 // toast.success('Login realizado com sucesso!');
                 Cookies.set('token_jc', JSON.stringify(response.data), { expires: 1 });
-                navigate('/home');
+                navigate(direct);
             }
             else if(response.success == false) {
                 if(!response.errors) {

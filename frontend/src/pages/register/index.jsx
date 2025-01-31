@@ -1,11 +1,12 @@
 // Funcionalidades / Libs:
 // import Cookies from "js-cookie";
-import { useState, useEffect } from "react";
+import { useContext, useState, useEffect } from "react";
 import { Link } from "react-router";
 import { USER_REGISTER } from "../../API/userApi";
 
 // Contexts:
 // import UserContext from "../../contexts/userContext";
+import UserContext from "../../contexts/userContext";
 
 // Components:
 import { toast } from "react-toastify";
@@ -24,9 +25,14 @@ import './style.css';
 
 
 export default function Register() {
-    const [loading, setLoading] = useState(false);
+    const { loading, logarUser } = useContext(UserContext);
+
+    const [loadingSubmit, setLoadingSubmit] = useState(false);
     const [error, setError] = useState({
         error: null,
+        name: null,
+        dateBirth: null,
+        phone: null,
         password: null
     });
     
@@ -79,15 +85,22 @@ export default function Register() {
     // SUBMIT API
     async function handleSubmitRegister(e) {
         e.preventDefault();
-        setLoading(true);
-
-        // Validações
+        setLoadingSubmit(true);
+        setError({
+            error: null,
+            name: null,
+            dateBirth: null,
+            phone: null,
+            password: null
+        });
         console.log(name)
         console.log(phone)
         console.log(dateBirth)
         console.log(password)
         console.log(passwordConfirm)
 
+
+        // VALIDAÇÕES
         if(passwordConfirm != password) {
             setError((prev) => ({
                 ...prev, 
@@ -95,7 +108,7 @@ export default function Register() {
             }));
             toast.error('Confirme a senha corretamente');
 
-            setLoading(false);
+            setLoadingSubmit(false);
             return;
         }
 
@@ -107,15 +120,21 @@ export default function Register() {
 
             if(response.success) {
                 toast.success('Cadastro realizado!');
+
+                await logarUser(phone, password, '/forms');
             }
             else if(response.success == false) {
-                if(!response.errors) {
-                    toast.error(response.message);
-                    // setLoading(false); 
-                    // return;
+                toast.error(response.message);
+                
+                if(response.errors?.name) {
+                    setError(prev => ({...prev, name: response.errors.name[0]})); //=// Campo nome é obrigatório. > fazer nas validações
                 }
-
-                //=// Restante das validações
+                if(response.message == "Não é possível particpar do app sendo menor de idade.") {
+                    setError(prev => ({...prev, dateBirth: true}));
+                }
+                if(response.errors?.phone || response.message == "Já existe um registro com esse número, por favor verifique.") {
+                    setError(prev => ({...prev, phone: true})); //=// Campo número celular deve conter no mínimo 11 digitos. > fazer nas validações
+                }
             }
             else {
                 toast.error('Erro inesperado.');
@@ -132,7 +151,7 @@ export default function Register() {
             }
         }
 
-        setLoading(false);
+        setLoadingSubmit(false);
     }
 
     
@@ -162,17 +181,25 @@ export default function Register() {
                             placeholder="Digite seu nome" 
                             value={name}
                             onChange={(e)=> setName(e.target.value)}
+                            data-error={`${error.name}`}
                             required 
                             />
+
+                            {error.name && (
+                                <span className="txt-erro">{error.name}</span>
+                            )}
                         </div>
 
                         <div className="label--input">
                             <label htmlFor="nascimento">Data de nascimento</label>
-                            <small>Para cadastrar é necessário ser maior de idade.</small>
+                            <small className={error.dateBirth ? 'txt-erro' : ''}>
+                                Para cadastrar é necessário ser maior de idade.
+                            </small>
                             <input id="nascimento" className="input" 
                             type="date" 
                             value={dateBirth}
                             onChange={(e)=> setDateBirth(e.target.value)}
+                            data-error={`${error.dateBirth}`}
                             required 
                             />
                         </div>
@@ -184,8 +211,13 @@ export default function Register() {
                             placeholder="(99) 99999-9999" 
                             value={phone}
                             onChange={(e)=> setPhone(e.target.value)}
+                            data-error={`${error.phone}`}
                             required 
                             />
+
+                            {error.phone && (
+                                <span className="txt-erro">{error.phone}</span>
+                            )}
                         </div>
 
                         {/* Senhas */}
@@ -197,6 +229,7 @@ export default function Register() {
                             funcSetValue={handleChangePassword} 
                             />
                         </div>
+
                         <div className="label--input">
                             <label>Confirmar senha</label>
 
@@ -209,9 +242,10 @@ export default function Register() {
                         </div>
 
 
+
                         {/* Butão submit */}
                         <div className="btns_container">
-                            <button className="btn primary" disabled={loading}>Cadastrar com Telefone</button>
+                            <button className="btn primary" disabled={loading || loadingSubmit}>Cadastrar com Telefone</button>
                         </div>
                     </form>
 
