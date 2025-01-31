@@ -49,8 +49,13 @@ class MeController extends Controller
 
             $photosUser = DB::table('photos')
                 ->where('fk_user_photos_id', $myProfile->id)
-                ->pluck('thumb_photo')
+                ->pluck('thumb_photo', 'id')
                 ->toArray();
+
+            // Converte para array de objetos
+            $photosUserArray = array_map(function ($id, $thumbPhoto) {
+                return (object) ['id' => $id, 'thumb_photo' => $thumbPhoto];
+            }, array_keys($photosUser), $photosUser);
 
             $result = [
                 'id' => $myProfile->id,
@@ -67,7 +72,7 @@ class MeController extends Controller
                 'sexuality' => $myProfile->fk_sexuality_user_id ? $myProfile->sexuality->name : null,
                 'sexuality_description' => $myProfile->fk_sexuality_user_id ? $myProfile->sexuality->description : null,
                 'preferences' => $preferences,
-                'photos' => $photosUser,
+                'photos' => $photosUserArray,
                 'minimum_age_preference' => $myProfile->minimum_age,
                 'maximum_age_preference' => $myProfile->maximum_age,
                 'habits' => $habits,

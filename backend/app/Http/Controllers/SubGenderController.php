@@ -33,7 +33,7 @@ class SubGenderController extends Controller
                 return response()->json([
                     'success' => true,
                     'message' => 'Sub-generos recuperados com sucesso.',
-                    'date' => $subGender,
+                    'data' => $subGender,
                 ]);
             }
         } catch (QueryException $qe) {

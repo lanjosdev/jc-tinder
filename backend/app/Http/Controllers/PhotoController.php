@@ -25,7 +25,7 @@ class PhotoController extends Controller
     }
 
 
-    public function photoStore(Request $request)
+    public function store(Request $request)
     {
 
         DB::beginTransaction();
@@ -86,7 +86,7 @@ class PhotoController extends Controller
                         $thumbnailPaths[] = $thumbnailPath;
 
                         // Salvar no banco de dados
-                        $this->photo->create([
+                        $photoUser = $this->photo->create([
                             'name_photo' => $fullPath,
                             'thumb_photo' => $thumbnailPath,
                             'fk_user_photos_id' => $user->id,
@@ -95,13 +95,54 @@ class PhotoController extends Controller
                 }
             }
 
-            DB::commit();
-
+            if ($photoUser) {
+                DB::commit();
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Fotos(s) salva(s) com sucesso.',
+                    'data' => [$savedImages, $thumbnailPath],
+                ]);
+            }
+        } catch (ValidationException $ve) {
+            DB::rollBack();
             return response()->json([
-                'success' => true,
-                'message' => 'Fotos(s) salva(s) com sucesso.',
-                'data' => [$savedImages, $thumbnailPath],
+                'success' => false,
+                'message' => 'Erro de validação.',
+                'errors' => $ve->errors(),
             ]);
+        } catch (QueryException $qe) {
+            DB::rollBack();
+            return response()->json([
+                'success' => false,
+                'message' => "Error DB: " . $qe->getMessage(),
+            ]);
+        } catch (Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'success' => false,
+                'message' => "Error: " . $e->getMessage(),
+            ]);
+        }
+    }
+
+    public function delete(Request $request, $id)
+    {
+        DB::beginTransaction();
+        try {
+
+            $user = $request->user();
+
+            $photo = Photo::where('id', $id)->get();
+
+            if (!$photo) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Nenhum resultado encontrado, por favor verifique.'
+                ]);
+            }
+
+            $photo
+            
         } catch (ValidationException $ve) {
             DB::rollBack();
             return response()->json([

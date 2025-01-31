@@ -48,5 +48,5 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/preferences-habits', [AuthMeController::class, 'preferences']);
     
     //photos
-    Route::post('/photos', [PhotoController::class, 'photoStore']);
+    Route::post('/photos', [PhotoController::class, 'store']);
 });
