@@ -41,7 +41,7 @@ class LoginController extends Controller
                 if (!$user || !Hash::check($request->password, $user->password)) {
                     return response()->json([
                         'success' => false,
-                        'message' => 'E-mail ou senha inválidos.'
+                        'message' => 'Celular ou senha inválidos.'
                     ]);
                 }
 
