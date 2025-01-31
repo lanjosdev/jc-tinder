@@ -4,14 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Models\Photo;
 use App\Models\Utils;
-use DateTime;
 use Exception;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
-
-use Intervention\Image\Facades\Image;
 
 class PhotoController extends Controller
 {
