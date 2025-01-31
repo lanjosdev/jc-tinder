@@ -24,7 +24,6 @@ class PhotoController extends Controller
         $this->utils = $utils;
     }
 
-
     public function store(Request $request)
     {
 
@@ -56,43 +55,16 @@ class PhotoController extends Controller
                     ]);
                 }
 
-                foreach ($photos as $photo) {
-                    if ($photo->isValid()) {
+                $result = $this->utils->handleImageUploads($photos, $user);
+                $savedImages = $result['savedImages'];
+                $thumbnailPaths = $result['thumbnailPaths'];
 
-                        // Gerar nome de arquivo único
-                        $filename = $user->id . '-' . now()->format('Y-m-d_H-i-s') . '-' . uniqid() . '.' . $photo->getClientOriginalExtension();
-
-                        // Caminho de destino para imagem original
-                        $destinationPath = public_path('images/');
-                        if (!file_exists($destinationPath)) {
-                            mkdir($destinationPath, 0775, true);
-                        }
-
-                        // Mover imagem para destino
-                        $photo->move($destinationPath, $filename);
-
-                        $fullPath = 'images/' . $filename;
-                        $savedImages[] = $fullPath;
-
-                        // Verificar e criar pasta para thumbnails
-                        $destinationPathThumbnail = public_path('images/thumbnails/');
-                        if (!file_exists($destinationPathThumbnail)) {
-                            mkdir($destinationPathThumbnail, 0775, true);
-                        }
-
-                        // Gerar miniatura
-                        $thumbnailPath = 'images/thumbnails/thumb_' . $filename;
-                        $this->utils->createThumbnail(public_path($fullPath), public_path($thumbnailPath), 150, 150);
-                        $thumbnailPaths[] = $thumbnailPath;
-
-                        // Salvar no banco de dados
-                        $photoUser = $this->photo->create([
-                            'name_photo' => $fullPath,
-                            'thumb_photo' => $thumbnailPath,
-                            'fk_user_photos_id' => $user->id,
-                        ]);
-                    }
-                }
+                // Salvar no banco de dados
+                $photoUser = $this->photo->create([
+                    'name_photo' => $savedImages = $result['savedImages'][0],
+                    'thumb_photo' => $thumbnailPaths = $result['thumbnailPaths'][0],
+                    'fk_user_photos_id' => $user->id,
+                ]);
             }
 
             if ($photoUser) {
@@ -100,7 +72,6 @@ class PhotoController extends Controller
                 return response()->json([
                     'success' => true,
                     'message' => 'Fotos(s) salva(s) com sucesso.',
-                    'data' => [$savedImages, $thumbnailPath],
                 ]);
             }
         } catch (ValidationException $ve) {
@@ -164,16 +135,41 @@ class PhotoController extends Controller
                 $this->photo->feedbackPhotoUpdate()
             );
 
-            $photo->fill($validatedData);
-            $photo->save();
+            $newPhoto = $request->file('name_photo');
 
-            if ($photo) {
+            if (!is_array($newPhoto)) {
+                $newPhoto = [$newPhoto];
+            }
+
+            if (count($newPhoto) > 1) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Permitido 1 fotos apenas.',
+                ]);
+            }
+
+            $result = $this->utils->handleImageUploads($newPhoto, $user);
+            $savedImages = $result['savedImages'][0];
+            $thumbnailPaths = $result['thumbnailPaths'][0];
+
+            //deleta img antiga no DB
+            $photo->delete();
+
+            if ($validatedData) {
+                $newPhotoUser = $this->photo->create([
+                    'name_photo' => $savedImages,
+                    'thumb_photo' => $thumbnailPaths,
+                    'fk_user_photos_id' => $user->id,
+                ]);
+            }
+
+            if ($newPhotoUser) {
                 DB::commit();
 
                 return response()->json([
                     'success' => true,
                     'message' => 'Foto atualizada com sucesso.',
-                    'data' => $photo,
+                    'data' => $newPhotoUser->id,
                 ]);
             }
         } catch (ValidationException $ve) {
@@ -238,14 +234,6 @@ class PhotoController extends Controller
                     'message' => 'Não é possível executar essa ação. Usuário deve ter no mínimo uma foto no perfil.'
                 ]);
             }
-
-            // if (file_exists(public_path($photo->name_photo))) {
-            //     unlink(public_path($photo->name_photo));
-            // }
-
-            // if (file_exists(public_path($photo->thumb_photo))) {
-            //     unlink(public_path($photo->thumb_photo));
-            // }
 
             $photo->delete();
 

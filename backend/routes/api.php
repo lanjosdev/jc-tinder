@@ -49,5 +49,6 @@ Route::middleware(['auth:sanctum'])->group(function () {
     
     //photos
     Route::post('/photos', [PhotoController::class, 'store']);
-    Route::delete('/photos-delete/{id}', [PhotoController::class, 'delete']);
+    Route::delete('/photo-delete/{id}', [PhotoController::class, 'delete']);
+    Route::post('/photo-update/{id}', [PhotoController::class, 'update']);
 });
