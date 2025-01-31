@@ -49,6 +49,7 @@ class MeController extends Controller
 
             $photosUser = DB::table('photos')
                 ->where('fk_user_photos_id', $myProfile->id)
+                ->whereNull('deleted_at')
                 ->pluck('thumb_photo', 'id')
                 ->toArray();
 

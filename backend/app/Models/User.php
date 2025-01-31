@@ -121,7 +121,7 @@ class User extends Authenticatable
         return [
             'fk_gender_user_id' => 'required|exists:genders,id',
             'fk_sexuality_user_id' => 'required|exists:sexualities,id',
-            'fk_sub_gender_user_id' => 'exists:sub_genders,id',
+            'fk_sub_gender_user_id' => 'nullable|exists:sub_genders,id',
             'about_me' => 'max:500',
         ];
     }

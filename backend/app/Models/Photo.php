@@ -38,4 +38,20 @@ class Photo extends Model
             'fk_user_photos_id.exists' => 'Nenhum resultado encontrado, por favor verifique.',
         ];
     }
+
+    public function rulesPhotoUpdate()
+    {
+        return [
+            'name_photo' => 'required|image|mimes:jpeg,png,jpg',
+        ];
+    }
+    
+    public function feedbackPhotoUpdate()
+    {
+        return [
+            'name_photo.mimes' => 'A imagem deve estar no formato jpeg, jpg ou png.',
+            'name_photo.required' => 'Por favor, envie ao menos uma imagem para prosseguir.',
+
+        ];
+    }
 }

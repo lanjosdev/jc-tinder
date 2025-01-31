@@ -125,14 +125,22 @@ class PhotoController extends Controller
         }
     }
 
-    public function delete(Request $request, $id)
+    public function update(Request $request, $id)
     {
         DB::beginTransaction();
         try {
-
             $user = $request->user();
 
-            $photo = Photo::where('id', $id)->get();
+            $quantityPhotosUser = Photo::where('fk_user_photos_id', $user->id)->get();
+
+            if ($quantityPhotosUser->isEmpty()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Usuário não tem nenhuma foto.'
+                ]);
+            }
+
+            $photo = Photo::where('id', $id)->first();
 
             if (!$photo) {
                 return response()->json([
@@ -141,8 +149,113 @@ class PhotoController extends Controller
                 ]);
             }
 
-            $photo
-            
+
+            $photosUser = $photo->fk_user_photos_id;
+
+            if ($photosUser != $user->id) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Essa foto não pertence ao usuário desta requisição.'
+                ]);
+            }
+
+            $validatedData = $request->validate(
+                $this->photo->rulesPhotoUpdate(),
+                $this->photo->feedbackPhotoUpdate()
+            );
+
+            $photo->fill($validatedData);
+            $photo->save();
+
+            if ($photo) {
+                DB::commit();
+
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Foto atualizada com sucesso.',
+                    'data' => $photo,
+                ]);
+            }
+        } catch (ValidationException $ve) {
+            DB::rollBack();
+            return response()->json([
+                'success' => false,
+                'message' => 'Erro de validação.',
+                'errors' => $ve->errors(),
+            ]);
+        } catch (QueryException $qe) {
+            DB::rollBack();
+            return response()->json([
+                'success' => false,
+                'message' => "Error DB: " . $qe->getMessage(),
+            ]);
+        } catch (Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'success' => false,
+                'message' => "Error: " . $e->getMessage(),
+            ]);
+        }
+    }
+
+    public function delete(Request $request, $id)
+    {
+        DB::beginTransaction();
+        try {
+
+            $user = $request->user();
+
+            $quantityPhotosUser = Photo::where('fk_user_photos_id', $user->id)->get();
+
+            if ($quantityPhotosUser->isEmpty()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Usuário não tem nenhuma foto.'
+                ]);
+            }
+
+            $photo = Photo::where('id', $id)->first();
+
+            if (!$photo) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Nenhum resultado encontrado, por favor verifique.'
+                ]);
+            }
+
+            $photosUser = $photo->fk_user_photos_id;
+
+            if ($photosUser != $user->id) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Essa foto não pertence ao usuário desta requisição.'
+                ]);
+            }
+
+            if (count($quantityPhotosUser) < 2) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Não é possível executar essa ação. Usuário deve ter no mínimo uma foto no perfil.'
+                ]);
+            }
+
+            // if (file_exists(public_path($photo->name_photo))) {
+            //     unlink(public_path($photo->name_photo));
+            // }
+
+            // if (file_exists(public_path($photo->thumb_photo))) {
+            //     unlink(public_path($photo->thumb_photo));
+            // }
+
+            $photo->delete();
+
+            if ($photo) {
+                DB::commit();
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Foto removida com sucesso.'
+                ]);
+            }
         } catch (ValidationException $ve) {
             DB::rollBack();
             return response()->json([
