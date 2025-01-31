@@ -41,57 +41,6 @@ class PhotoController extends Controller
             $savedImages = [];
             $thumbnailPaths = [];
 
-            // if ($validatedData) {
-
-            //     $photos = [];
-            //     $photos = $request->file('name_photo');
-
-            //     if (count($photos) > 4) {
-            //         return response()->json([
-            //             'success' => false,
-            //             'message' => 'Permitido até 4 fotos.',
-            //         ]);
-            //     }
-
-            //     foreach ($photos as $photo) {
-            //         if ($photo->isValid()) {
-
-            //             // Gerar nome do arquivo
-            //             $filename = $user->id . '-' . now()->format('Y-m-d_H-i-s') . '.' . $photo->getClientOriginalExtension();
-
-            //             // Caminho de destino
-            //             $destinationPath = public_path('images/');
-            //             if (!file_exists($destinationPath)) {
-            //                 mkdir($destinationPath, 0775, true);
-            //             }
-
-            //             // Verifique se o arquivo foi movido com sucesso
-            //             $photo->move($destinationPath, $filename);
-
-            //             $fullPath = 'images/' . $filename;
-            //             $savedImages[] = $fullPath;
-
-            //             // Verificar e criar pasta para thumbnails
-            //             $destinationPathThumbnail = public_path('images/thumbnails/');
-            //             if (!file_exists($destinationPathThumbnail)) {
-            //                 mkdir($destinationPathThumbnail, 0775, true);
-            //             }
-
-            //             // Gerar miniatura
-            //             $thumbnailPath = 'images/thumbnails/thumb_' . $filename;
-            //             $this->utils->createThumbnail(public_path($fullPath), public_path($thumbnailPath), 150, 150);
-            //             $thumbnailPaths[] = 'images/thumbnails/thumb_' . $filename;
-
-            //             // Salvar no banco de dados
-            //             $this->photo->create([
-            //                 'name_photo' => $filename,
-            //                 'thumb_photo' => $thumbnailPath,
-            //                 'fk_user_photos_id' => $user->id,
-            //             ]);
-            //         }
-            //     }
-            // }
-
             if ($validatedData) {
                 $photos = $request->file('name_photo');
 
@@ -154,17 +103,20 @@ class PhotoController extends Controller
                 'data' => [$savedImages, $thumbnailPath],
             ]);
         } catch (ValidationException $ve) {
+            DB::rollBack();
             return response()->json([
                 'success' => false,
                 'message' => 'Erro de validação.',
                 'errors' => $ve->errors(),
             ]);
         } catch (QueryException $qe) {
+            DB::rollBack();
             return response()->json([
                 'success' => false,
                 'message' => "Error DB: " . $qe->getMessage(),
             ]);
         } catch (Exception $e) {
+            DB::rollBack();
             return response()->json([
                 'success' => false,
                 'message' => "Error: " . $e->getMessage(),

@@ -129,12 +129,12 @@ class User extends Authenticatable
     public function feedbackAttributionOfGenderAndSexuality()
     {
         return [
-            'fk_gender_user_id.required' => 'O campo gênero é obrigátorio.',
+            'fk_gender_user_id.required' => 'O campo gênero é obrigatório.',
             'fk_gender_user_id.exists' => 'Nenhum resultado encontrado, por favor verifique.',
 
-            'fk_sub_gender_user_id' => 'Nenhum resultado encontrado, por favor verifique.',
+            'fk_sub_gender_user_id.exists' => 'Nenhum resultado encontrado, por favor verifique.',
 
-            'fk_sexuality_user_id.required' => 'O campo sexualidade é obrigátorio.',
+            'fk_sexuality_user_id.required' => 'O campo sexualidade é obrigatório.',
             'fk_sexuality_user_id.exists' => 'Nenhum resultado encontrado, por favor verifique.',
 
             'about_me.max' => 'O campo sobre mim deve conter até 500 caracteres.'
@@ -145,7 +145,7 @@ class User extends Authenticatable
     {
         return [
             'fk_gender_preferences_id' => 'required|array|exists:genders,id',
-            
+
             'habits' => 'array|exists:habits,id',
         ];
     }
@@ -157,7 +157,7 @@ class User extends Authenticatable
             'fk_gender_preferences_id.required' => 'Escolha no mínimo um.',
             'fk_gender_preferences_id.array' => 'Formato inválido (necessário array).',
             'fk_gender_preferences_id.exists' => 'Nenhum resultado encontrado, por favor verifique.',
-            
+
             'habits.' => 'Escolha no mínimo um.',
             'habits.array' => 'Formato inválido (necessário array).',
             'habits.exists' => 'Nenhum resultado encontrado, por favor verifique.',
