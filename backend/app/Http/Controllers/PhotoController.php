@@ -136,8 +136,6 @@ class PhotoController extends Controller
                 $newPhoto = [$newPhoto];
             }
 
-            // dd(count($newPhoto));
-
             if (count($newPhoto) > 1) {
                 return response()->json([
                     'success' => false,
