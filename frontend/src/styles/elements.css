@@ -231,25 +231,26 @@ body:has(.Checkout) {
 }
 
 .btn_radio {
-    input[type="radio"] {
-        opacity: 0;
+    input[type="radio"],
+    input[type="checkbox"]
+    {
+        display: none;
     }
 
-    display: flex;
-    gap: .3rem;
+    /* display: flex;
+    justify-content: center;
+    gap: .3rem; */
 
     background-color: var(--color-w);
     border: 1px solid var(--color-b);
     border-radius: 7px;
-    padding: .2rem 1rem .2rem .3rem;
+    padding: .2rem 1rem;
     font-weight: 600;
+    text-align: center;
 
     transition: all .3s ease;
 
     &:has(input:checked) {
-        input[type="radio"] {
-            opacity: 1;
-        }
         background-color: palevioletred;
         color: var(--color-w);
     }

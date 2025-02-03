@@ -28,6 +28,15 @@
                         flex: 1;
                     }
                 }
+                .btns_radio_container.habits {
+                    /* background-color: red; */
+                    flex-wrap: wrap;
+                    gap: 1rem .7rem;
+
+                    .btn_radio {
+                        flex: none;
+                    }
+                }
 
                 .gender_optional {
                     margin-top: .5rem;
@@ -49,7 +58,7 @@
                         height: 100%;
                         max-height: 37rem;
     
-                        transition: all .4s ease-in-out;
+                        transition: all .4s ease;
     
                         .item {
                             cursor: pointer;
@@ -59,6 +68,13 @@
                             padding: .5rem;
 
                             line-height: 110%;
+
+                            transition: all .3s ease;
+
+                            &.checked {
+                                background-color: palevioletred;
+                                color: var(--color-w);
+                            }
                         }
                     }
                     .list_gender_optional.hide {
@@ -104,7 +120,8 @@
                         transition: all .3s ease-in-out;
                         
                         &.checked {
-                            border: 2px solid var(--color-primary);
+                            background-color: palevioletred;
+                            color: var(--color-w);
                         }
                     }
                 }
@@ -117,6 +134,13 @@
                         opacity: 1;
                     } */
                 }
+            }
+
+            .show_more {
+                margin-top: 1rem;
+                background-color: transparent;
+                font-weight: 600;
+                text-transform: uppercase;
             }
 
             .btns_container {

@@ -11,13 +11,29 @@ export const API_URL = api.api_url;
 // End-Points/Rotas da API:
 // Registra dados do perfil (POST):
 export async function FORMS_CREATE_PROFILE(token, idGender, idGenderOptional, idSexuality, aboutMe) {
-   console.log('CALL FUNCTION APIIII');
+   console.log('CALL FUNCTION API');
 
    const response = await axios.post(`${API_URL}/attribution-gender-sexuality`, {
       "fk_gender_user_id": idGender,
       "fk_sub_gender_user_id": idGenderOptional,
       "fk_sexuality_user_id": idSexuality,
       "about_me": aboutMe
+   },
+   { 
+      headers: { "Accept": "application/json", Authorization: "Bearer " + token }
+   });
+   
+   // console.log(response.data);
+   return response.data;
+}
+
+// Registra dados de preferenciua (POST):
+export async function FORMS_CREATE_PREFERENCES(token, idsGenders, idsHabits) {
+   console.log('CALL FUNCTION API');
+
+   const response = await axios.post(`${API_URL}/preferences-habits`, {
+      "fk_gender_preferences_id": idsGenders,
+      "habits": idsHabits
    },
    { 
       headers: { "Accept": "application/json", Authorization: "Bearer " + token }

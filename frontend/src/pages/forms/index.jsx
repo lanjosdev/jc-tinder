@@ -6,7 +6,8 @@ import { useState, useEffect } from "react";
 // API:
 import { GENDER_GET_ALL, GENDER_OPTIONAL_GET_ALL } from "../../API/genderApi";
 import { SEXUALITY_GET_ALL } from "../../API/sexualityApi";
-import { FORMS_CREATE_PROFILE } from "../../API/formsApi";
+import { FORMS_CREATE_PROFILE, FORMS_CREATE_PREFERENCES } from "../../API/formsApi";
+import { HABIT_GET_ALL } from "../../API/habitsApi";
 
 // Contexts:
 // import UserContext from "../../contexts/userContext";
@@ -34,21 +35,31 @@ export default function Forms() {
     const [genders, setGenders] = useState([]);
     const [gendersOptionals, setGendersOptionals] = useState([]);
     const [sexualities, setSexualities] = useState([]);
+    const [habits, setHabits] = useState([]);
 
     // Logica da UI:
+    //const totalSteps = 3;
+    const [step, setStep] = useState(1);
+    // const [animateMode, setAnimateMode] = useState('');
     const [showOptinalGender, setShowOptinalGender] = useState(false);
     const [showSexualities, setShowSexualities] = useState(false);
-    //const totalSteps = 3;
-    //const [step, setStep] = useState(1);
-    // const [animateMode, setAnimateMode] = useState('');
+    //step 2
+    const [qtdPreview, setQtdPreview] = useState(30);
+    const [habitsPreview, setHabitsPreview] = useState([]);
+
     
     // Dados a submeter
+    // step 1
     const [genderSelect, setGenderSelect] = useState(null);
     const [genderOptionalSelect, setGenderOptionalSelect] = useState(null);
     const [sexualitySelect, setSexualitySelect] = useState(null);
     const [aboutMe, setAboutMe] = useState('');
+    // step 2
+    const [gendersIdsPreference, setGendersIdsPreference] = useState([]);
+    const [habitsIdsPreferences, setHabitsIdsPreferences] = useState([]);
 
     const tokenCookie = Cookies.get('token_jc');
+    console.log(tokenCookie)
 
 
 
@@ -164,14 +175,94 @@ export default function Forms() {
         } 
         getAllSexualities();
     }, [tokenCookie]);
-    
-    
 
+
+    useEffect(()=> {
+        async function getAllHabits() {
+            if(genders.length > 0 && step == 2 && habits.length == 0) {
+                console.log('PEGA HABITOSSSS');
+                setLoading(true);
+            
+                try {
+                    setError(true);
+                    const response = await HABIT_GET_ALL(JSON.parse(tokenCookie));
+                    console.log(response);
+        
+                    if(response.success) {
+                        setHabits(response.data);
+                        setError(false);
+                    }
+                    else if(response.success == false) {
+                        toast.error(response.message);
+                    }
+                    else {
+                        toast.error('Erro inesperado.');
+                    }
+                }
+                catch(error) {
+                    if(error?.response?.data?.message == 'Unauthenticated.') {
+                        console.error('Requisição não autenticada.');
+                    }
+                    else {
+                        toast.error('Houve algum erro.');
+                    }
+        
+                    console.error('DETALHES ERRO:', error);
+                }
+        
+                setLoading(false);
+
+            }
+        } 
+        getAllHabits();
+    }, [genders, habits, step, tokenCookie]);
+      
+
+
+    
+    function handleChangeGenderPreference(selectGender) {
+        const newGenderPreferences = gendersIdsPreference.includes(selectGender.id) 
+            ? gendersIdsPreference.filter(item=> item !== selectGender.id) //Remove o item se já está marcado
+            : [...gendersIdsPreference, selectGender.id]; //Adiciona o valor se não está marcado
+
+
+        console.log('NEW genders:', newGenderPreferences);
+        setGendersIdsPreference(newGenderPreferences);
+    }
+
+    function handleChangeHabitPreference(selectHabit) {
+        // console.log(selectHabit);
+
+        if(habitsIdsPreferences.includes(selectHabit.id)) {
+            setHabitsIdsPreferences(habitsIdsPreferences.filter(item=> item != selectHabit.id));
+            setHabitsPreview(habitsPreview.filter(item=> item.id != selectHabit.id));
+        }
+        else {
+            if(habitsIdsPreferences.length >= 10) {
+                toast.info('Selecione no máximo 10 interesses!');
+                return;
+            }
+            
+            setHabitsIdsPreferences(prev=> [...prev, selectHabit.id])
+            setHabitsPreview(prev=> [...prev, selectHabit]);
+        }
+    
+        // const newHabitsPreferences = habitsIdsPreferences.includes(selectHabit.id) 
+        //     ? habitsIdsPreferences.filter(item=> item !== selectHabit.id) //Remove o item se já está marcado
+        //     : [...habitsIdsPreferences, selectHabit.id]; //Adiciona o valor se não está marcado
+
+        // console.log('NEW habits:', newHabitsPreferences);
+        // setHabitsIdsPreferences(newHabitsPreferences)
+    }
 
 
     function handleChangeGender(selectGender) {
         setGenderSelect(selectGender); 
+        setGenderOptionalSelect(null);
         setShowOptinalGender(true);
+    }
+    function handleClickGenderOptional(selectGenderOpt) {
+        setGenderOptionalSelect(selectGenderOpt); 
     }
 
     function handleClickSelectSexuality(selectItem) {
@@ -180,7 +271,7 @@ export default function Forms() {
     }
 
     
-    // SUBMIT API
+    // SUBMIT API (step 1)
     async function handleSubmitProfile(e) {
         e.preventDefault();
         setLoadingSubmit(true);
@@ -199,7 +290,9 @@ export default function Forms() {
             console.log(response);
 
             if(response.success) {
-                toast.success('FORM 1 OK!');
+                ////toast.success('FORM 1 OK!');
+                setStep(step + 1);
+                // getAllHabits();
             }
             else if(response.success == false) {
                 toast.error(response.message);
@@ -229,6 +322,49 @@ export default function Forms() {
 
         setLoadingSubmit(false);
     }
+
+    // SUBMIT API (step 2)
+    async function handleSubmitPreferences(e) {
+        e.preventDefault();
+        setLoadingSubmit(true);
+        setError(null);
+        console.log(gendersIdsPreference);
+        console.log(habitsIdsPreferences);       
+        
+        // VALIDAÇÕES
+        
+        
+        // SUBMIT
+        try {
+            const response = await FORMS_CREATE_PREFERENCES(JSON.parse(tokenCookie), gendersIdsPreference, habitsIdsPreferences);
+            console.log(response);
+
+            if(response.success) {
+                ////toast.success('FORM 1 OK!');
+                setStep(step + 1);
+                // getAllHabits();
+            }
+            else if(response.success == false) {
+                toast.error(response.message);
+            }
+            else {
+                toast.error('Erro inesperado.');
+            }
+        }
+        catch(error) {
+            if(error?.response?.data?.message == 'Unauthenticated.') {
+                console.error('Requisição não autenticada.');
+            }
+            else {
+                toast.error('Houve algum erro.');
+            }
+
+            console.error('DETALHES ERRO:', error);
+        }
+
+
+        setLoadingSubmit(false);
+    }
     
 
     
@@ -236,12 +372,20 @@ export default function Forms() {
     return (
         <div className="Page Forms">
 
+            {/* < back??? */}
             {/* //=// <Progress Bar /> */}
 
             <main className='PageContent FormsContent grid'>
                 <div className="title_page">
-                    {/* < back??? */}
+                    {step == 1 ? (
                     <h1>Agora, o que seu Perfil diz sobre você?</h1>
+                    ) : (
+                    step == 2 ? (
+                    <h1>Suas preferências são...</h1>
+                    ) : (
+                    <h1>Muito bem, agora escolha suas melhores Fotos:</h1>
+                    )
+                    )}
                 </div>
 
                 <div className="content_main">
@@ -255,7 +399,8 @@ export default function Forms() {
                     <div>!ERRO PAGE!</div>
 
                     ) : (
-
+                    
+                    step == 1 ? (
                     <form className="form" onSubmit={handleSubmitProfile} autoComplete="off">
                         <div className="label--input" 
                         // onBlur={()=> {setShowOptinalGender(false); console.warn('FORA');}}
@@ -287,8 +432,11 @@ export default function Forms() {
                                 <ul className={`list_gender_optional ${showOptinalGender ? '' : 'hide'}`}>
                                     {gendersOptionals
                                     .filter(genderOpt => genderOpt.gender_main == genderSelect.name)
-                                    .map((genderOpt, idx)=> (
-                                    <li className="item" key={idx}>
+                                    .map(genderOpt=> (
+                                    <li 
+                                    key={genderOpt.id} 
+                                    className={`item ${genderOpt.id == genderOptionalSelect?.id ? 'checked' : ''}`} 
+                                    onClick={()=> handleClickGenderOptional(genderOpt)}>
                                         <p><b>{genderOpt.name}</b></p>
                                         
                                         <small>{genderOpt.description}</small>
@@ -343,6 +491,72 @@ export default function Forms() {
                         </div>
                         )}
                     </form>
+                    ) : (
+
+                    step == 2 ? (
+                    <form className="form" onSubmit={handleSubmitPreferences} autoComplete="off">
+                        <div className="label--input">
+                            <label>O que você quer ver?</label>
+                            
+                            <div className="btns_radio_container">
+                                {genders.map((gender) => (
+                                <label className="btn_radio" key={gender.id} title={gender.id}>
+                                    <input
+                                    type="checkbox"
+                                    name="gender"
+                                    onChange={()=> handleChangeGenderPreference(gender)}
+                                    checked={gendersIdsPreference.includes(gender.id)}
+                                    />
+                                    {gender.name}
+                                </label>
+                                ))}                                
+                            </div>
+                        </div>
+
+                        <div className="label--input">
+                            <label>Qual seu tipo de bloquinho? (Interesses)</label>
+                            
+                            <div className="btns_radio_container habits">
+                                {habits
+                                .filter((item, idx)=> idx < qtdPreview)
+                                .map(item => (
+                                <label className="btn_radio" key={item.id} title={item.id}>
+                                    <input
+                                    type="checkbox"
+                                    name="habits"
+                                    onChange={()=> handleChangeHabitPreference(item)}
+                                    checked={habitsIdsPreferences.includes(item.id)}
+                                    />
+                                    {item.name}
+                                </label>
+                                ))}                                
+                            </div>
+
+                            {qtdPreview != habits.length && (
+                            <button className="show_more" onClick={()=> setQtdPreview(habits.length)}>
+                                Mostrar todos
+                            </button>
+                            )}
+                        </div>
+
+
+                        {gendersIdsPreference?.length > 0 && (
+                        <div className="btns_container animate__animated animate__fadeInUp">
+                            <button className="btn primary" disabled={loadingSubmit}>Confirmar</button>
+                        </div>
+                        )}
+                    </form>
+                    ) : (
+                    <form autoComplete="off">
+                        <div className="label--input">
+                            <label>
+                                <span>Esta será sua foto princiapl:</span>
+                            </label>
+                        </div>                    
+                    </form>
+                    )
+
+                    )                    
 
                     ))}
                     
