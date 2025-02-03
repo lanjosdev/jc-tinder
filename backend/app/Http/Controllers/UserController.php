@@ -32,9 +32,30 @@ class UserController extends Controller
                 ->pluck('fk_gender_preferences_id')
                 ->toArray();
 
-            $getAllUsers = User::with(['gender' => function ($query) {
-                $query->whereNull('deleted_at');
-            }])
+            // $getAllUsers = User::with(['gender' => function ($query) {
+            //     $query->whereNull('deleted_at');
+            // }])
+            //     ->whereHas('gender', function ($query) {
+            //         $query->whereNull('deleted_at');
+            //     })
+            //     ->where(function ($query) use ($userRequest) {
+            //         $query->whereHas('matches', function ($q) use ($userRequest) {
+            //             $q->where('fk_user_matches_id', '!=', $userRequest->id);
+            //         });
+
+            //     })
+            //     ->whereIn('fk_gender_user_id', $preference)
+            //     ->where('level', 0)
+            //     ->where('id', '!=', $userRequest->id)
+            //     // ->inRandomOrder()
+            //     ->get();
+
+            $getAllUsers = User::whereNotIn('id', function ($query) use ($userRequest) {
+                $query->select('fk_user_matches_id')
+                    ->from('matches')
+                    ->where('fk_user_matches_id', $userRequest->id) // onde o usuário fez gostei
+                    ->orWhere('fk_target_user_matches_id', $userRequest->id); // ou onde o usuário é o alvo
+            })
                 ->whereHas('gender', function ($query) {
                     $query->whereNull('deleted_at');
                 })
@@ -42,6 +63,7 @@ class UserController extends Controller
                 ->where('level', 0)
                 ->where('id', '!=', $userRequest->id)
                 ->inRandomOrder()
+                // ->orderBy('id', 'asc')
                 ->get();
 
             // Filtra os usuários dentro do intervalo de idade

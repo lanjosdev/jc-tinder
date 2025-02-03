@@ -389,4 +389,66 @@ class MeController extends Controller
             ]);
         }
     }
+
+    public function updatePreferences(Request $request)
+    {
+        DB::beginTransaction();
+        try {
+            $user = $request->user();
+
+            $validatedData = $request->validate(
+                $this->user->rulesUpdateInfoPreference(),
+                $this->user->feedbackUpdateInfoPreference()
+            );
+
+            if ($validatedData) {
+
+                $minimum_age = $request->input('minimum_age');
+                $maximum_age = $request->input('maximum_age');
+                $fk_gender_preferences_id = $request->input('fk_gender_preferences_id');
+                $habits = $request->input('habits');
+
+                if ($minimum_age > $maximum_age) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Idade mínima não pode ser maior que a idade máxima.'
+                    ]);
+                }
+                $user->update(array_filter([
+                    'minimum_age' => $minimum_age !== $user->minimum_age ? $minimum_age : null,
+                    'maximum_age' => $maximum_age !== $user->maximum_age ? $maximum_age : null,
+                ]));
+
+                $user->preferences()->sync($fk_gender_preferences_id);
+                $user->habits()->sync($habits);
+
+                DB::commit();
+
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Preferencia(s)/hábito(s)/Faixa etaria atribuído(s) com sucesso.',
+                    'data' => $user,
+                ]);
+            }
+        } catch (ValidationException $ve) {
+            DB::rollBack();
+            return response()->json([
+                'success' => false,
+                'message' => 'Erro de validação.',
+                'errors' => $ve->errors(),
+            ]);
+        } catch (QueryException $qe) {
+            DB::rollBack();
+            return response()->json([
+                'success' => false,
+                'message' => "Error DB: " . $qe->getMessage(),
+            ]);
+        } catch (Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'success' => false,
+                'message' => "Error: " . $e->getMessage(),
+            ]);
+        }
+    }
 }

@@ -96,14 +96,14 @@ class User extends Authenticatable
             'birth_data.min' => 'Campo data de nascimento deve conter no mínimo 10 caracteres.'
         ];
     }
-    
+
     public function rulesUpdateInfoUser()
     {
         return [
             'name' => 'required|min:1|max:250|',
             'phone' => 'required|min:11',
             'birth_data' => 'required|min:10',
-            
+
             'fk_gender_user_id' => 'required|exists:genders,id',
             'fk_sexuality_user_id' => 'required|exists:sexualities,id',
             'fk_sub_gender_user_id' => 'nullable|exists:sub_genders,id',
@@ -131,8 +131,34 @@ class User extends Authenticatable
 
             'fk_sexuality_user_id.required' => 'O campo sexualidade é obrigatório.',
             'fk_sexuality_user_id.exists' => 'Nenhum resultado encontrado, por favor verifique.',
-            
+
             'about_me.max' => 'O campo sobre mim deve conter até 500 caracteres.',
+        ];
+    }
+
+    public function rulesUpdateInfoPreference()
+    {
+        return [
+            'fk_gender_preferences_id' => 'required|array|exists:genders,id',
+            'habits' => 'array|exists:habits,id',
+            'minimum_age.min' => 'min:18',
+            'maximum_age.max' => 'max:100',
+        ];
+    }
+
+    public function feedbackUpdateInfoPreference()
+    {
+        return [
+            'fk_gender_preferences_id.required' => 'Escolha no mínimo um.',
+            'fk_gender_preferences_id.array' => 'Formato inválido (necessário array).',
+            'fk_gender_preferences_id.exists' => 'Nenhum resultado encontrado, por favor verifique.',
+
+            'habits.' => 'Escolha no mínimo um.',
+            'habits.array' => 'Formato inválido (necessário array).',
+            'habits.exists' => 'Nenhum resultado encontrado, por favor verifique.',
+
+            'minimum_age.max' => 'Válor máximo para esse campo 18.',
+            'maximum_age.min' => 'Válor máximo para esse campo 100.' 
         ];
     }
 
@@ -184,7 +210,6 @@ class User extends Authenticatable
     {
         return [
             'fk_gender_preferences_id' => 'required|array|exists:genders,id',
-
             'habits' => 'array|exists:habits,id',
         ];
     }
@@ -243,6 +268,16 @@ class User extends Authenticatable
     public function habits()
     {
         return $this->belongsToMany(Habit::class, 'user_habits', 'fk_user_user_habits_id', 'fk_habits_user_habits_id');
+    }
+
+    public function matches()
+    {
+        return $this->hasMany(Matche::class, 'fk_user_matches_id');
+    }
+
+    public function targetMatches()
+    {
+        return $this->hasMany(Matche::class, 'fk_target_user_matches_id');
     }
 
     public function photos()
