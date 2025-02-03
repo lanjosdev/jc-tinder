@@ -23,13 +23,13 @@ return new class extends Migration
 
         /////////////////MEN
         DB::table('sub_genders')->insert([
-            'name' => 'Homem-Cisgênero',
+            'name' => 'Homem Cisgênero',
             'description' => 'Pessoa designada homem ao nascer e que se identifica como homem.',
             'fk_genders_sub_genders_id' => 1,
         ]);
 
         DB::table('sub_genders')->insert([
-            'name' => 'Homem-Transgênero',
+            'name' => 'Homem Transgênero',
             'description' => 'Pessoa designada mulher ao nascer, mas que se identifica como homem.',
             'fk_genders_sub_genders_id' => 1,
         ]);
@@ -38,13 +38,13 @@ return new class extends Migration
         /////////////////WOMAN
 
         DB::table('sub_genders')->insert([
-            'name' => 'Mulher-Cisgênero',
+            'name' => 'Mulher Cisgênero',
             'description' => 'Pessoa designada mulher ao nascer e que se identifica como mulher.',
             'fk_genders_sub_genders_id' => 2,
         ]);
 
         DB::table('sub_genders')->insert([
-            'name' => 'Mulher-Transgênero',
+            'name' => 'Mulher Transgênero',
             'description' => 'Pessoa designada homem ao nascer, mas que se identifica como mulher.',
             'fk_genders_sub_genders_id' => 2,
         ]);

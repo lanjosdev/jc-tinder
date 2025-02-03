@@ -11,6 +11,7 @@ use Exception;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
 
 class MeController extends Controller
@@ -139,7 +140,7 @@ class MeController extends Controller
                 if (!$result) {
                     return response()->json([
                         'success' => false,
-                        'message' => 'Não é possível selcionar essa nomênclatura.'
+                        'message' => 'Escolha um subgênero que corresponda ao gênero selecionado para continuar.'
                     ]);
                 }
             }
@@ -233,8 +234,159 @@ class MeController extends Controller
         }
     }
 
+    public function updatePassword(Request $request)
+    {
+        DB::beginTransaction();
+        try {
+            $user = $request->user();
+
+            $validatedData = $request->validate(
+                $this->user->rulesUpdatePassword(),
+                $this->user->feedbackUpdatePassword()
+            );
+
+            $oldPassword = $user->password;
+
+
+            if ($validatedData) {
+                if (Hash::check($request->password, $oldPassword)) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Senha já utilizada anteriormente. Por favor tente outra senha.',
+                    ]);
+                }
+
+                $newPassword = User::where('id', $user->id)
+                    ->update(['password' => Hash::make($request->password)]);
+
+                if ($newPassword) {
+
+                    DB::commit();
+                    return response()->json([
+                        'success' => true,
+                        'message' => 'Senha alterada com sucesso.',
+                    ]);
+                }
+            }
+        } catch (ValidationException $ve) {
+            DB::rollBack();
+            return response()->json([
+                'success' => false,
+                'message' => 'Erro de validação.',
+                'errors' => $ve->errors(),
+            ]);
+        } catch (QueryException $qe) {
+            DB::rollBack();
+            return response()->json([
+                'success' => false,
+                'message' => "Error DB: " . $qe->getMessage(),
+            ]);
+        } catch (Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'success' => false,
+                'message' => "Error: " . $e->getMessage(),
+            ]);
+        }
+    }
+
     public function updateUser(Request $request)
     {
-        
+        DB::beginTransaction();
+        try {
+            $user = $request->user();
+
+            $validatedData = $request->validate(
+                $this->user->rulesUpdateInfoUser(),
+                $this->user->feedbackUpdateInfoUser()
+            );
+
+            if ($validatedData) {
+
+                $name = $request->name;
+                $phone = $request->phone;
+                $birth_data = $request->birth_data;
+                $fk_sexuality_user_id = $request->fk_sexuality_user_id;
+                $fk_gender_user_id = $request->fk_gender_user_id;
+                $fk_sub_gender_user_id = $request->fk_sub_gender_user_id;
+                $about_me = $request->about_me;
+
+                $age = $this->utils->verifyAdult($birth_data);
+
+                if ($age < 18) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Você precisa ter mais de 18 anos para participar do app.',
+                    ]);
+                }
+
+                if ($phone != $user->phone) {
+                    $verifyExistsPhone = User::where('phone', $phone)->first();
+
+                    if ($verifyExistsPhone) {
+                        return response()->json([
+                            'success' => false,
+                            'message' => 'Já existe um registro com esse número, por favor verifique.',
+                        ]);
+                    }
+                }
+
+                if ($fk_sub_gender_user_id != null) {
+
+                    $verifySubGender = SubGender::where('id', $fk_sub_gender_user_id)->first();
+
+                    if ($verifySubGender) {
+                        $result = $verifySubGender->fk_genders_sub_genders_id == $fk_gender_user_id;
+                    }
+
+                    if (!$result) {
+                        return response()->json([
+                            'success' => false,
+                            'message' => 'Escolha um subgênero que corresponda ao gênero selecionado para continuar.'
+                        ]);
+                    }
+                }
+
+                $updateUser = $user->update(array_filter([
+                    'name' => $name !== $user->name ? $name : null,
+                    'phone' => $phone !== $user->phone ? $phone : null,
+                    'birth_data' => $birth_data !== $user->birth_data ? $birth_data : null,
+                    'fk_sexuality_user_id' => $fk_sexuality_user_id !== $user->fk_sexuality_user_id ? $fk_sexuality_user_id : null,
+                    'fk_gender_user_id' => $fk_gender_user_id !== $user->fk_gender_user_id ? $fk_gender_user_id : null,
+                    'fk_sub_gender_user_id' => $fk_sub_gender_user_id !== $user->fk_sub_gender_user_id ? $fk_sub_gender_user_id : null,
+                    'about_me' => $about_me !== $user->about_me ? $about_me : null,
+                ]));
+
+
+                if ($updateUser) {
+                    DB::commit();
+
+                    return response()->json([
+                        'success' => true,
+                        'message' => 'Informações atualizadas com sucesso.',
+                        'data' => $user->fresh(),
+                    ]);
+                }
+            }
+        } catch (ValidationException $ve) {
+            DB::rollBack();
+            return response()->json([
+                'success' => false,
+                'message' => 'Erro de validação.',
+                'errors' => $ve->errors(),
+            ]);
+        } catch (QueryException $qe) {
+            DB::rollBack();
+            return response()->json([
+                'success' => false,
+                'message' => "Error DB: " . $qe->getMessage(),
+            ]);
+        } catch (Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'success' => false,
+                'message' => "Error: " . $e->getMessage(),
+            ]);
+        }
     }
 }

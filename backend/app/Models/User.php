@@ -96,6 +96,45 @@ class User extends Authenticatable
             'birth_data.min' => 'Campo data de nascimento deve conter no mínimo 10 caracteres.'
         ];
     }
+    
+    public function rulesUpdateInfoUser()
+    {
+        return [
+            'name' => 'required|min:1|max:250|',
+            'phone' => 'required|min:11',
+            'birth_data' => 'required|min:10',
+            
+            'fk_gender_user_id' => 'required|exists:genders,id',
+            'fk_sexuality_user_id' => 'required|exists:sexualities,id',
+            'fk_sub_gender_user_id' => 'nullable|exists:sub_genders,id',
+            'about_me' => 'nullable|max:500',
+        ];
+    }
+
+    public function feedbackUpdateInfoUser()
+    {
+        return [
+            'name.required' => 'Campo nome é obrigatório.',
+            'name.min' => 'Campo nome deve conter no mínimo 1 digito.',
+            'name.max' => 'Campo nome deve conter no máximo 250 digitos.',
+
+            'phone.required' => 'Campo número celular é obrigatório.',
+            'phone.min' => 'Campo número celular deve conter no mínimo 11 digitos.',
+
+            'birth_data.required' => 'Campo data de nascimento é obrigátorio.',
+            'birth_data.min' => 'Campo data de nascimento deve conter no mínimo 10 caracteres.',
+
+            'fk_gender_user_id.required' => 'O campo gênero é obrigatório.',
+            'fk_gender_user_id.exists' => 'Nenhum resultado encontrado, por favor verifique.',
+
+            'fk_sub_gender_user_id.exists' => 'Nenhum resultado encontrado, por favor verifique.',
+
+            'fk_sexuality_user_id.required' => 'O campo sexualidade é obrigatório.',
+            'fk_sexuality_user_id.exists' => 'Nenhum resultado encontrado, por favor verifique.',
+            
+            'about_me.max' => 'O campo sobre mim deve conter até 500 caracteres.',
+        ];
+    }
 
     public function rulesLogin()
     {
@@ -122,7 +161,7 @@ class User extends Authenticatable
             'fk_gender_user_id' => 'required|exists:genders,id',
             'fk_sexuality_user_id' => 'required|exists:sexualities,id',
             'fk_sub_gender_user_id' => 'nullable|exists:sub_genders,id',
-            'about_me' => 'max:500',
+            'about_me' => 'nullable|max:500',
         ];
     }
 
@@ -161,6 +200,23 @@ class User extends Authenticatable
             'habits.' => 'Escolha no mínimo um.',
             'habits.array' => 'Formato inválido (necessário array).',
             'habits.exists' => 'Nenhum resultado encontrado, por favor verifique.',
+        ];
+    }
+
+    public function rulesUpdatePassword()
+    {
+        return [
+            'password' => 'required|min:8|confirmed|max:40',
+        ];
+    }
+
+    public function feedbackUpdatePassword()
+    {
+        return [
+            'password.required' => 'Campo senha é obrigatório.',
+            'password.confirmed' => 'Senhas divergentes!',
+            'password.min' => 'A senha deve ter no minímo 8 caracteres',
+            'password.max' => 'A senha deve ter no máximo 40 caracteres',
         ];
     }
 

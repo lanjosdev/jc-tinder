@@ -27,8 +27,18 @@ Route::middleware(['auth:sanctum'])->group(function () {
     
     //logout
     Route::post('/logout', [AuthLogoutController::class, 'logout']);
+    
+    //remove-account
     Route::delete('/remove-account', [AuthRemoveAccountController::class, 'removeAccount']);
+    
+    //my-profile
     Route::get('/my-profile', [AuthMeController::class, 'me']);
+
+    //update-password
+    Route::post('/update-password', [AuthMeController::class, 'updatePassword']);
+
+    //update-info-user
+    Route::post('/update-info-user', [AuthMeController::class, 'updateUser']);
 
     //get-all-genders
     Route::get('/get-all-genders', [GenderController::class ,'getAll']);
@@ -41,16 +51,20 @@ Route::middleware(['auth:sanctum'])->group(function () {
     
     //get-all-habits
     Route::get('/get-all-habits', [HabitController::class ,'getAll']);
-
+    
     //attribution genders and sexualities
     Route::post('/attribution-gender-sexuality', [AuthMeController::class, 'assingnedGenderAndSexuality']);
-
+    
     //preferences
     Route::post('/preferences-habits', [AuthMeController::class, 'preferences']);
     
     //photos
     Route::post('/photos', [PhotoController::class, 'store']);
+
+    //deleted photo
     Route::delete('/photo-delete/{id}', [PhotoController::class, 'delete']);
+    
+    //update photo
     Route::post('/photo-update/{id}', [PhotoController::class, 'update']);
 
     //get-all-users
