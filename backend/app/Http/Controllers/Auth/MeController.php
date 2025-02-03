@@ -232,4 +232,9 @@ class MeController extends Controller
             ]);
         }
     }
+
+    public function updateUser(Request $request)
+    {
+        
+    }
 }

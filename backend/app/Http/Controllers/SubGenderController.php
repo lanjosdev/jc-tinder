@@ -23,6 +23,7 @@ class SubGenderController extends Controller
 
             $subGender = $get_all->map(function ($subGender) {
                 return [
+                    'id' => $subGender->id,
                     'name' => $subGender->name,
                     'description' => $subGender->description,
                     'gender_main' => $subGender->fk_genders_sub_genders_id ? $subGender->gender->name : null,

@@ -34,9 +34,6 @@ class PhotoController extends Controller
                 $this->photo->feedbackPhoto()
             );
 
-            $savedImages = [];
-            $thumbnailPaths = [];
-
             if ($validatedData) {
                 $photos = $request->file('name_photo');
 
@@ -56,19 +53,20 @@ class PhotoController extends Controller
                 $savedImages = $result['savedImages'];
                 $thumbnailPaths = $result['thumbnailPaths'];
 
-                // Salvar no banco de dados
-                $photoUser = $this->photo->create([
-                    'name_photo' => $savedImages = $result['savedImages'][0],
-                    'thumb_photo' => $thumbnailPaths = $result['thumbnailPaths'][0],
-                    'fk_user_photos_id' => $user->id,
-                ]);
+                foreach ($savedImages as $index => $imagePath) {
+                    $photoUser = $this->photo->create([
+                        'name_photo' => $imagePath,
+                        'thumb_photo' => $thumbnailPaths[$index] ?? null,
+                        'fk_user_photos_id' => $user->id,
+                    ]);
+                }
             }
-
             if ($photoUser) {
                 DB::commit();
+
                 return response()->json([
                     'success' => true,
-                    'message' => 'Fotos(s) salva(s) com sucesso.',
+                    'message' => 'Foto(s) salva(s) com sucesso.',
                 ]);
             }
         } catch (ValidationException $ve) {
@@ -128,15 +126,17 @@ class PhotoController extends Controller
             }
 
             $validatedData = $request->validate(
-                $this->photo->rulesPhotoUpdate(),
-                $this->photo->feedbackPhotoUpdate()
+                $this->photo->rulesPhoto(),
+                $this->photo->feedbackPhoto()
             );
 
             $newPhoto = $request->file('name_photo');
-
+            
             if (!is_array($newPhoto)) {
                 $newPhoto = [$newPhoto];
             }
+
+            // dd(count($newPhoto));
 
             if (count($newPhoto) > 1) {
                 return response()->json([
@@ -149,7 +149,7 @@ class PhotoController extends Controller
             $savedImages = $result['savedImages'][0];
             $thumbnailPaths = $result['thumbnailPaths'][0];
 
-            //deleta img antiga no DB
+            //deleta img antiga com soft-delete
             $photo->delete();
 
             if ($validatedData) {

@@ -22,7 +22,7 @@ class UsersSeeder extends Seeder
             $gender = $faker->randomElement(['male', 'female']);
             $name = $faker->name($gender);
             $birthDate = $faker->dateTimeBetween('-100 years', '-18 years')->format('Y-m-d');
-            $phone = '9' . $faker->numerify('#########'); // Garantir 11 dígitos com um prefixo inicial
+            $phone = '11' . $faker->numerify('#########'); // Garantir 11 dígitos com um prefixo inicial
 
             $users[] = [
                 'name' => $name,
