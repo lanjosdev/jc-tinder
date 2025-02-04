@@ -24,7 +24,6 @@ class UserController extends Controller
 
     public function getAll(Request $request)
     {
-        DB::beginTransaction();
         try {
             $userRequest = $request->user();
 
@@ -137,20 +136,17 @@ class UserController extends Controller
                 ]);
             }
         } catch (ValidationException $ve) {
-            DB::rollBack();
             return response()->json([
                 'success' => false,
                 'message' => 'Erro de validação.',
                 'errors' => $ve->errors(),
             ]);
         } catch (QueryException $qe) {
-            DB::rollBack();
             return response()->json([
                 'success' => false,
                 'message' => "Error DB: " . $qe->getMessage(),
             ]);
         } catch (Exception $e) {
-            DB::rollBack();
             return response()->json([
                 'success' => false,
                 'message' => "Error: " . $e->getMessage(),

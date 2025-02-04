@@ -21,7 +21,6 @@ class MatcheController extends Controller
 
     public function getAllMatches(Request $request)
     {
-        DB::beginTransaction();
         try {
             $user = $request->user();
 
@@ -62,20 +61,17 @@ class MatcheController extends Controller
                'data' => $users, 
             ]);
         } catch (ValidationException $ve) {
-            DB::rollBack();
             return response()->json([
                 'success' => false,
                 'message' => 'Erro de validação.',
                 'errors' => $ve->errors(),
             ]);
         } catch (QueryException $qe) {
-            DB::rollBack();
             return response()->json([
                 'success' => false,
                 'message' => "Error DB: " . $qe->getMessage(),
             ]);
         } catch (Exception $e) {
-            DB::rollBack();
             return response()->json([
                 'success' => false,
                 'message' => "Error: " . $e->getMessage(),
