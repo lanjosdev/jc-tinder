@@ -24,19 +24,21 @@ class MatcheController extends Controller
         try {
             $user = $request->user();
 
-            $matches = Matche::where('status', 1)
-                ->where(function ($query) use ($user) {
-                    $query->where('fk_user_matches_id', $user->id)
-                        ->orWhere('fk_target_user_matches_id', $user->id);
-                })
-                ->get();
+            // $matches = Matche::where('status', 1)
+            //     ->where(function ($query) use ($user) {
+            //         $query->where('fk_user_matches_id', $user->id)
+            //             ->orWhere('fk_target_user_matches_id', $user->id);
+            //     })
+            //     ->get();
 
+            //pega os users que de like
             $userLikes = Matche::where('fk_user_matches_id', $user->id)
                 ->where('status', 1)
                 ->get();
 
             $matchedUserIds = [];
 
+            //guarda na variavel os ids dos users "like"
             foreach ($userLikes as $like) {
                 $matchingLike = Matche::where('fk_user_matches_id', $like->fk_target_user_matches_id)
                     ->where('fk_target_user_matches_id', $user->id)
@@ -48,8 +50,10 @@ class MatcheController extends Controller
                 }
             }
 
+            //guarda ids sem repetição
             $matchedUserIds = array_unique($matchedUserIds);
            
+            //pega id, name e phone para retornar
             if (!empty($matchedUserIds)) {
                 $users = User::whereIn('id', $matchedUserIds)
                     ->get(['id', 'name', 'phone']);
@@ -95,6 +99,7 @@ class MatcheController extends Controller
                 $fk_target_user_matches_id = $request->fk_target_user_matches_id;
                 $status = $request->status;
 
+                //valida para o user não dar matche consigo mesmo
                 if ($fk_target_user_matches_id == $user->id) {
                     return response()->json([
                         'success' => false,

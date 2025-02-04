@@ -21,6 +21,7 @@ class HabitController extends Controller
         try {
             $get_all = Habit::all();
 
+            //formata a resposta
             $habits = $get_all->map(function ($habits) {
                 return [
                     'id' => $habits->id,

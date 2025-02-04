@@ -27,28 +27,12 @@ class UserController extends Controller
         try {
             $userRequest = $request->user();
 
+            //pega a preferencia do user da requisição
             $preference = Preference::where('fk_user_preferences_id', $userRequest->id)
                 ->pluck('fk_gender_preferences_id')
                 ->toArray();
 
-            // $getAllUsers = User::with(['gender' => function ($query) {
-            //     $query->whereNull('deleted_at');
-            // }])
-            //     ->whereHas('gender', function ($query) {
-            //         $query->whereNull('deleted_at');
-            //     })
-            //     ->where(function ($query) use ($userRequest) {
-            //         $query->whereHas('matches', function ($q) use ($userRequest) {
-            //             $q->where('fk_user_matches_id', '!=', $userRequest->id);
-            //         });
-
-            //     })
-            //     ->whereIn('fk_gender_user_id', $preference)
-            //     ->where('level', 0)
-            //     ->where('id', '!=', $userRequest->id)
-            //     // ->inRandomOrder()
-            //     ->get();
-
+            //query para retornar users que ainda não dei like 
             $getAllUsers = User::whereNotIn('id', function ($query) use ($userRequest) {
                 $query->select('fk_user_matches_id')
                     ->from('matches')
@@ -71,6 +55,7 @@ class UserController extends Controller
                 return $userAge >= $userRequest->minimum_age && $userAge <= $userRequest->maximum_age;
             })->values();
 
+            //formata o retorno dos users com mais informações
             $getAll = $getAllUsers->map(function ($users) {
 
                 $habitsUser = DB::table('user_habits')
@@ -81,6 +66,7 @@ class UserController extends Controller
                 $habits = DB::table('habits')
                     ->whereIn('id', $habitsUser)
                     ->pluck('name');
+                    
                 $preferencesUser = DB::table('preferences')
                     ->where('fk_user_preferences_id', $users->id)
                     ->pluck('fk_gender_preferences_id')

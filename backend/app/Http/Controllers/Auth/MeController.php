@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Models\Photo;
 use App\Models\SubGender;
 use App\Models\User;
 use App\Models\Utils;
@@ -129,6 +128,7 @@ class MeController extends Controller
             $fk_sub_gender_user_id = $request->fk_sub_gender_user_id;
             $about_me = $request->about_me;
 
+            //validação para atribuição correta de sub-genero com genero pai
             if ($fk_sub_gender_user_id != null) {
 
                 $verifySubGender = SubGender::where('id', $fk_sub_gender_user_id)->first();
@@ -163,6 +163,7 @@ class MeController extends Controller
                     'data' => $user,
                 ]);
             }
+            
         } catch (ValidationException $ve) {
             DB::rollBack();
             return response()->json([
@@ -201,6 +202,7 @@ class MeController extends Controller
             $fk_gender_preferences_id = $request->input('fk_gender_preferences_id');
             $habits = $request->input('habits');
 
+            //atribui preferencia e habitos para o user da requisição
             if ($validatedData) {
                 $user->preferences()->sync($fk_gender_preferences_id);
                 $user->habits()->sync($habits);
@@ -256,6 +258,7 @@ class MeController extends Controller
                     ]);
                 }
 
+                //atualiza a senha do user
                 $newPassword = User::where('id', $user->id)
                     ->update(['password' => Hash::make($request->password)]);
 
@@ -331,6 +334,7 @@ class MeController extends Controller
                     }
                 }
 
+                //condição para validar corretamente sub-genero com genero pai
                 if ($fk_sub_gender_user_id != null) {
 
                     $verifySubGender = SubGender::where('id', $fk_sub_gender_user_id)->first();
@@ -347,6 +351,7 @@ class MeController extends Controller
                     }
                 }
 
+                //Atualiza as informações que foram alteradas
                 $updateUser = $user->update(array_filter([
                     'name' => $name !== $user->name ? $name : null,
                     'phone' => $phone !== $user->phone ? $phone : null,
@@ -356,7 +361,6 @@ class MeController extends Controller
                     'fk_sub_gender_user_id' => $fk_sub_gender_user_id !== $user->fk_sub_gender_user_id ? $fk_sub_gender_user_id : null,
                     'about_me' => $about_me !== $user->about_me ? $about_me : null,
                 ]));
-
 
                 if ($updateUser) {
                     DB::commit();
@@ -414,11 +418,13 @@ class MeController extends Controller
                     ]);
                 }
 
+                //atualiza idade minima ou maxima que foi alterada
                 $user->update(array_filter([
                     'minimum_age' => ($minimum_age !== $user->minimum_age) ? $minimum_age : null,
                     'maximum_age' => ($maximum_age !== $user->maximum_age) ? $maximum_age : null,
                 ]));
 
+                //atualiza preferencia e habito alterado
                 $user->preferences()->sync($fk_gender_preferences_id);
                 $user->habits()->sync($habits);
 

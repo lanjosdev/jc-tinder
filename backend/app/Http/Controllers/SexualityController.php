@@ -21,6 +21,7 @@ class SexualityController extends Controller
         try {
             $getAllSexualities = Sexuality::all();
 
+            //formata a resposta
             $sexualities = $getAllSexualities->map(function ($sexuality) {
                 return [
                     'id' => $sexuality->id,

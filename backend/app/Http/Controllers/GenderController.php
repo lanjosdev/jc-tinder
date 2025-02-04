@@ -23,6 +23,7 @@ class GenderController extends Controller
         try {
             $getAllGenders = Gender::all();
 
+            //formata a resposta
             $genders = $getAllGenders->map(function ($gender) {
                 return [
                     'id' => $gender->id,

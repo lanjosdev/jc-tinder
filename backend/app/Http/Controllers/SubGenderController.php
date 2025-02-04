@@ -21,6 +21,7 @@ class SubGenderController extends Controller
         try {
             $get_all = SubGender::all();
 
+            //formata a resposta
             $subGender = $get_all->map(function ($subGender) {
                 return [
                     'id' => $subGender->id,

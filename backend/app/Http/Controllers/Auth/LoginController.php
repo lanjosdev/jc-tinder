@@ -46,7 +46,7 @@ class LoginController extends Controller
                 }
 
                 $token = $user;
-                $token->tokens()->delete();
+                $token->tokens()->delete(); //deleta os outros tokens para uma unica conexão
                 $token = null;
 
                 if ($user->level === 'admin') {

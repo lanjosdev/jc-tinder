@@ -41,6 +41,7 @@ class RegisterController extends Controller
 
             $verifyExistsPhone = User::where('phone', $phone)->get();
 
+            //valida para telefone ser único
             if (!$verifyExistsPhone->isEmpty()) {
                 return response()->json([
                     'success' => false,
@@ -72,6 +73,7 @@ class RegisterController extends Controller
 
                 $directoryPath = 'images';
 
+                //verifica se existe a pasta images na public senão cria
                 if (!Storage::disk('public')->exists($directoryPath)) {
                     Storage::disk('public')->makeDirectory($directoryPath);
                 }
