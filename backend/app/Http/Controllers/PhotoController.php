@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Photo;
 use App\Models\Utils;
 use Exception;
+use GuzzleHttp\Client;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -61,6 +62,56 @@ class PhotoController extends Controller
                     ]);
                 }
             }
+
+            $client = new Client();
+
+            $response = $client->request('POST', 'https://moderacao.bizsys.com.br/', [
+                'multipart' => [
+                    [
+                        'name' => 'text',
+                        'contents' => '', // Pode ser uma string vazia
+                    ],
+                    [
+                        'name' => 'identification',
+                        'contents' => '', // CPF
+                    ],
+                    [
+                        'name' => 'phone',
+                        'contents' => $user->phone,
+                    ],
+                    [
+                        'name' => 'fk_id_client',
+                        'contents' => 1,
+                    ],
+                    [
+                        'name' => 'fk_id_campain',
+                        'contents' => 14,
+                    ],
+                    [
+                        'name' => 'fk_id_media_type',
+                        'contents' => 1,
+                    ],
+                    [
+                        'name' => 'participation',
+                        'contents' => now()->format('d/m/Y H:i:s'),
+                    ],
+                    [
+                        'name' => 'send_override',
+                        'contents' => 0,
+                    ],
+                    [
+                        'name' => 'file',
+                        'contents' => fopen($savedImages[0], 'r'),
+                    ],
+                ],
+            ]);
+
+            $result = json_decode($response->getBody(), true);
+
+            dd($result);
+
+            dd();
+
             if ($photoUser) {
                 DB::commit();
 
@@ -131,7 +182,7 @@ class PhotoController extends Controller
             );
 
             $newPhoto = $request->file('name_photo');
-            
+
             if (!is_array($newPhoto)) {
                 $newPhoto = [$newPhoto];
             }
