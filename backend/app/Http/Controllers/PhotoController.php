@@ -66,67 +66,67 @@ class PhotoController extends Controller
                 }
             }
 
-            $client = new Client();
+            // $client = new Client();
 
-            $apiKey = env('API_TOKEN');
+            // $apiKey = env('API_TOKEN');
 
-            $responseResult = [];
+            // $responseResult = [];
 
-            //for para enviar uma foto de cada vez para moderação caso tenha mais de uma
-            for ($i = 0; $i < count($savedImages); $i++) {
-                $response = $client->request('POST', 'https://moderacao.bizsys.com.br/api/media_insert', [
-                    'headers' => [
-                        'Authorization' => "Bearer $apiKey",
-                        'Accept' => 'application/json',
-                    ],
-                    'multipart' => [
-                        [
-                            'name' => 'text',
-                            'contents' => 'text', // Pode ser uma string vazia
-                        ],
-                        [
-                            'name' => 'identification',
-                            'contents' => '00000000000', // CPF
-                        ],
-                        [
-                            'name' => 'phone',
-                            'contents' => $user->phone,
-                        ],
-                        [
-                            'name' => 'fk_id_client',
-                            'contents' => 1,
-                        ],
-                        [
-                            'name' => 'fk_id_campain',
-                            'contents' => 14,
-                        ],
-                        [
-                            'name' => 'fk_id_media_type',
-                            'contents' => 1, // Aqui é 1 para foto
-                        ],
-                        [
-                            'name' => 'participation',
-                            'contents' => now('America/Sao_Paulo'), // Data formatada corretamente
-                        ],
-                        [
-                            'name' => 'send_override',
-                            'contents' => 0,
-                        ],
-                        [
-                            'name' => 'file',
-                            'contents' => fopen($savedImages[$i], 'r'),
-                            'filename' => basename($savedImages[$i]), // Nome do arquivo opcional
-                        ],
-                    ],
-                ]);
-                $result = json_decode($response->getBody(), true);
+            // //for para enviar uma foto de cada vez para moderação caso tenha mais de uma
+            // for ($i = 0; $i < count($savedImages); $i++) {
+            //     $response = $client->request('POST', 'https://moderacao.bizsys.com.br/api/media_insert', [
+            //         'headers' => [
+            //             'Authorization' => "Bearer $apiKey",
+            //             'Accept' => 'application/json',
+            //         ],
+            //         'multipart' => [
+            //             [
+            //                 'name' => 'text',
+            //                 'contents' => 'text', // Pode ser uma string vazia
+            //             ],
+            //             [
+            //                 'name' => 'identification',
+            //                 'contents' => '00000000000', // CPF
+            //             ],
+            //             [
+            //                 'name' => 'phone',
+            //                 'contents' => $user->phone,
+            //             ],
+            //             [
+            //                 'name' => 'fk_id_client',
+            //                 'contents' => 1,
+            //             ],
+            //             [
+            //                 'name' => 'fk_id_campain',
+            //                 'contents' => 14,
+            //             ],
+            //             [
+            //                 'name' => 'fk_id_media_type',
+            //                 'contents' => 1, // Aqui é 1 para foto
+            //             ],
+            //             [
+            //                 'name' => 'participation',
+            //                 'contents' => now('America/Sao_Paulo'), // Data formatada corretamente
+            //             ],
+            //             [
+            //                 'name' => 'send_override',
+            //                 'contents' => 0,
+            //             ],
+            //             [
+            //                 'name' => 'file',
+            //                 'contents' => fopen($savedImages[$i], 'r'),
+            //                 'filename' => basename($savedImages[$i]), // Nome do arquivo opcional
+            //             ],
+            //         ],
+            //     ]);
+            //     $result = json_decode($response->getBody(), true);
 
-                $responseResult[] = $result;
-            }
+            //     $responseResult[] = $result;
+            // }
 
-            dd($responseResult);
+            // dd($responseResult);
 
-            dd();
+            // dd();
 
             if ($photoUser) {
                 DB::commit();

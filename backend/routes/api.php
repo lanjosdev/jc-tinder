@@ -12,8 +12,6 @@ use App\Http\Controllers\PhotoController;
 use App\Http\Controllers\SexualityController;
 use App\Http\Controllers\SubGenderController;
 use App\Http\Controllers\UserController;
-use App\Models\Matche;
-use App\Models\SubGender;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
