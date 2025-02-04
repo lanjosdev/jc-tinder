@@ -41,7 +41,7 @@ class RegisterController extends Controller
 
             $verifyExistsPhone = User::where('phone', $phone)->get();
 
-            //valida para telefone ser único
+            //valida para celular ser único
             if (!$verifyExistsPhone->isEmpty()) {
                 return response()->json([
                     'success' => false,

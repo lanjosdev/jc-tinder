@@ -17,17 +17,14 @@ class Matche extends Model
     public function rulesMatche()
     {
         return [
-            // 'fk_user_matches_id' => 'required|exists:users,id',
             'fk_target_user_matches_id' => 'required|exists:users,id',
             'status' => 'required|boolean:0,1'
         ];
     }
+    
     public function feedbackMatche()
     {
         return [
-            // 'fk_user_matches_id.required' => 'Usuário obrigatorio.',
-            // 'fk_user_matches_id.exists' => 'Nenhum resultado encontrado, por favor verifique.',
-
             'fk_target_user_matches_id.required' => 'Usuário alvo é obrigatório.',
             'fk_target_user_matches_id.exists' => 'Nenhum resultado encontrado, por favor verifique.',
 

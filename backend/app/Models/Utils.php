@@ -7,6 +7,7 @@ use Exception;
 
 class Utils
 {
+    //formata data e hora para retornar ao front
     function formattedDate($model, $params)
     {
         $formatedDateWithdrawalDate = explode(" ", $model->$params);
@@ -16,13 +17,14 @@ class Utils
         return $formatedDateWithdrawalDate[2] . '/' . $formatedDateWithdrawalDate[1] . '/' . $formatedDateWithdrawalDate[0] . ' ' . $formatedHoursWithdrawalDate;
     }
 
+    //verifica se é maior de idade
     function verifyAdult($birth_data)
     {
         $idade = Carbon::parse($birth_data)->age;
         return $idade;
     }
 
-    // Função para criar a miniatura dependendo do tipo de imagem
+    // cria miniatura da imagem original
     public function createThumbnail($imagePath, $thumbPath, $width, $height)
     {
         // Verifica o tipo de imagem
@@ -81,46 +83,47 @@ class Utils
         imagedestroy($thumb);
     }
 
-    function handleImageUploads(array $photos, $user, $thumbnailWidth = 150, $thumbnailHeight = 150) {
+    // em conjunto com a função de criar img miniatura, cria e salva ela e a maior na pasta public com path completo e identificador único
+    function handleImageUploads(array $photos, $user, $thumbnailWidth = 150, $thumbnailHeight = 150)
+    {
         $savedImages = [];
         $thumbnailPaths = [];
-    
+
         foreach ($photos as $photo) {
             if ($photo->isValid()) {
                 // Gerar nome de arquivo único
                 $filename = $user->id . '-' . now()->format('Y-m-d_H-i-s') . '-' . uniqid() . '.' . $photo->getClientOriginalExtension();
-    
+
                 // Caminho de destino para imagem original
                 $destinationPath = public_path('images/');
                 if (!file_exists($destinationPath)) {
                     mkdir($destinationPath, 0775, true);
                 }
-    
+
                 // Mover imagem para destino
                 $photo->move($destinationPath, $filename);
-    
+
                 $fullPath = 'images/' . $filename;
                 $savedImages[] = $fullPath;
-    
+
                 // Verificar e criar pasta para thumbnails
                 $destinationPathThumbnail = public_path('images/thumbnails/');
                 if (!file_exists($destinationPathThumbnail)) {
                     mkdir($destinationPathThumbnail, 0775, true);
                 }
-    
+
                 // Gerar miniatura
                 $thumbnailPath = 'images/thumbnails/thumb_' . $filename;
                 $utils = new Utils(); // Certifique-se de que a classe Utils esteja disponível
                 $utils->createThumbnail(public_path($fullPath), public_path($thumbnailPath), $thumbnailWidth, $thumbnailHeight);
-    
+
                 $thumbnailPaths[] = $thumbnailPath;
             }
         }
-    
+
         return [
             'savedImages' => $savedImages,
             'thumbnailPaths' => $thumbnailPaths
         ];
     }
-    
 }

@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\Photo;
 use App\Models\Utils;
 use Exception;
-use GuzzleHttp\Client;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
