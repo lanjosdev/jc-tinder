@@ -6,7 +6,7 @@
 
 .PageContent.FormsContent {
     /* background-color: yellow; */
-    padding-bottom: 6rem;
+    padding-bottom: 7.5rem;
 
     .content_main {
 
@@ -143,8 +143,58 @@
                 text-transform: uppercase;
             }
 
+            .photo {
+                /* border: 2px solid red; */
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                /* text-align: center; */
+
+                p {
+
+                    > span {
+                        font-weight: 700;
+                    }
+                }
+
+                .input_photo {
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+
+                    position: relative;
+                    max-width: 18rem;
+
+                    border: 2px solid black;
+                    border-radius: 15px;
+                    cursor: pointer;
+
+                    img {
+                        border-radius: 13px;
+                        max-width: 100%;
+                    }
+                    .preview {
+                        position: absolute;
+                        width: 100%;
+                        height: 100%;
+                        object-fit: cover;
+                    }
+                    i {
+                        position: absolute;
+                    }
+                }
+                
+                .inputs_container {
+                    /* background-color: aquamarine; */
+                    display: flex;
+                    gap: 1.3rem;
+                }
+            }
+
+
             .btns_container {
                 background-color: aquamarine;
+                padding: 1rem 0;
                 position: absolute;
                 bottom: 0;
                 left: 0;

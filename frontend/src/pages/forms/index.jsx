@@ -1,12 +1,12 @@
 // Funcionalidades / Libs:
 import Cookies from "js-cookie";
 import { useState, useEffect } from "react";
-// import { Link } from "react-router";
+import { useNavigate } from "react-router";
 
 // API:
 import { GENDER_GET_ALL, GENDER_OPTIONAL_GET_ALL } from "../../API/genderApi";
 import { SEXUALITY_GET_ALL } from "../../API/sexualityApi";
-import { FORMS_CREATE_PROFILE, FORMS_CREATE_PREFERENCES } from "../../API/formsApi";
+import { FORMS_CREATE_PROFILE, FORMS_CREATE_PREFERENCES, FORMS_CREATE_PHOTOS } from "../../API/formsApi";
 import { HABIT_GET_ALL } from "../../API/habitsApi";
 
 // Contexts:
@@ -14,12 +14,13 @@ import { HABIT_GET_ALL } from "../../API/habitsApi";
 
 // Components:
 import { toast } from "react-toastify";
+import { ModalPhoto } from "../../components/Modals/ModalPhoto/ModalPhoto";
 
 // Utils
 // import { primeiraPalavra } from "../../utils/formatStrings";
 
 // Assets:
-// import imgLogo from '../../assets/LOGO-BIZSYS_preto.png';
+import imgEmpty from '../../assets/photo-empty.jpg';
 
 // Estilo:
 import './style.css';
@@ -30,6 +31,9 @@ export default function Forms() {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const [loadingSubmit, setLoadingSubmit] = useState(false);
+    //Modal
+    const [showModal, setShowModal] = useState(false);
+    const [inputSelect, setInputSelect] = useState(null);
 
     // Dados pré-carregados:
     const [genders, setGenders] = useState([]);
@@ -39,7 +43,7 @@ export default function Forms() {
 
     // Logica da UI:
     //const totalSteps = 3;
-    const [step, setStep] = useState(1);
+    const [step, setStep] = useState(3);
     // const [animateMode, setAnimateMode] = useState('');
     const [showOptinalGender, setShowOptinalGender] = useState(false);
     const [showSexualities, setShowSexualities] = useState(false);
@@ -57,9 +61,14 @@ export default function Forms() {
     // step 2
     const [gendersIdsPreference, setGendersIdsPreference] = useState([]);
     const [habitsIdsPreferences, setHabitsIdsPreferences] = useState([]);
+    // step 3
+    const [filesPhotos, setFilesPhotos] = useState([]);
+    const [urlsPhotos, setUrlsPhotos] = useState([]);
 
+
+    const navigate = useNavigate();
     const tokenCookie = Cookies.get('token_jc');
-    console.log(tokenCookie)
+    // console.log(tokenCookie)
 
 
 
@@ -219,7 +228,17 @@ export default function Forms() {
       
 
 
-    
+    // Step 3
+    function handleOpenModal(inputSelect) {
+        // console.log(filesPhotos);
+        if(inputSelect.index == 0 || filesPhotos.length > inputSelect.index-1) {
+            setInputSelect(inputSelect);
+            setShowModal(true);
+            return;
+        }
+    }
+
+    // Step 2
     function handleChangeGenderPreference(selectGender) {
         const newGenderPreferences = gendersIdsPreference.includes(selectGender.id) 
             ? gendersIdsPreference.filter(item=> item !== selectGender.id) //Remove o item se já está marcado
@@ -255,7 +274,7 @@ export default function Forms() {
         // setHabitsIdsPreferences(newHabitsPreferences)
     }
 
-
+    // Step 1
     function handleChangeGender(selectGender) {
         setGenderSelect(selectGender); 
         setGenderOptionalSelect(null);
@@ -290,7 +309,7 @@ export default function Forms() {
             console.log(response);
 
             if(response.success) {
-                ////toast.success('FORM 1 OK!');
+                //toast.success('FORM 1 OK!');
                 setStep(step + 1);
                 // getAllHabits();
             }
@@ -340,9 +359,56 @@ export default function Forms() {
             console.log(response);
 
             if(response.success) {
-                ////toast.success('FORM 1 OK!');
+                //toast.success('FORM 1 OK!');
                 setStep(step + 1);
                 // getAllHabits();
+            }
+            else if(response.success == false) {
+                toast.error(response.message);
+            }
+            else {
+                toast.error('Erro inesperado.');
+            }
+        }
+        catch(error) {
+            if(error?.response?.data?.message == 'Unauthenticated.') {
+                console.error('Requisição não autenticada.');
+            }
+            else {
+                toast.error('Houve algum erro.');
+            }
+
+            console.error('DETALHES ERRO:', error);
+        }
+
+
+        setLoadingSubmit(false);
+    }
+
+    // SUBMIT API (step 3)
+    async function handleSubmitUploadPhotos(e) {
+        e.preventDefault();
+        setLoadingSubmit(true);
+        setError(null);
+        ////console.log(filesPhotos);       
+        
+        // VALIDAÇÕES
+        if(filesPhotos.length <= 0) {
+            toast.warn('Envie ao menos uma foto para prosseguir.');
+            setLoadingSubmit(false);
+            return;
+        }
+        
+        
+        // SUBMIT
+        try {
+            const response = await FORMS_CREATE_PHOTOS(JSON.parse(tokenCookie), filesPhotos);
+            console.log(response);
+
+            if(response.success) {
+                toast.success('FORM COMPLETO');
+
+                setTimeout(()=> navigate('/home'), 700);
             }
             else if(response.success == false) {
                 toast.error(response.message);
@@ -547,12 +613,88 @@ export default function Forms() {
                         )}
                     </form>
                     ) : (
-                    <form autoComplete="off">
-                        <div className="label--input">
-                            <label>
-                                <span>Esta será sua foto princiapl:</span>
-                            </label>
-                        </div>                    
+                    <form className="form" onSubmit={handleSubmitUploadPhotos} autoComplete="off">
+
+                        <div className="photo">
+                            <p>Esta será sua foto principal:</p>
+
+                            <div 
+                            className="input_photo" 
+                            onClick={()=> handleOpenModal({index: 0})}
+                            >
+                                <img src={imgEmpty} className={urlsPhotos[0] ? 'hidden' : ''} alt="" />
+
+                                {urlsPhotos[0] && (
+                                <img src={urlsPhotos[0]} className="preview animate__animated animate__fadeIn" alt="" />
+                                )}
+
+                                <i className="bi bi-plus-circle-fill"></i>
+                            </div>
+                        </div>
+
+
+
+                        <div className="photo optionals">
+                            <p>Adicione até mais <span>3 fotos</span> para sua galeria:</p>
+
+                            <div className="inputs_container">
+                                <div 
+                                className="input_photo" 
+                                onClick={()=> handleOpenModal({index: 1})}
+                                disabled={filesPhotos.length < 1}
+                                >
+                                    <img src={imgEmpty} className={urlsPhotos[1] ? 'hidden' : ''} alt="" />
+
+                                    {urlsPhotos[1] && (
+                                    <img 
+                                    src={urlsPhotos[1]} 
+                                    className="preview animate__animated animate__fadeIn" alt="" />
+                                    )}
+
+                                    <i className="bi bi-plus-circle-fill"></i>
+                                </div>
+
+                                <div 
+                                className="input_photo" 
+                                onClick={()=> handleOpenModal({index: 2})}
+                                disabled={filesPhotos.length < 2}
+                                >
+                                    <img src={imgEmpty} className={urlsPhotos[2] ? 'hidden' : ''} alt="" />
+
+                                    {urlsPhotos[2] && (
+                                    <img 
+                                    src={urlsPhotos[2]} 
+                                    className="preview animate__animated animate__fadeIn" alt="" />
+                                    )}
+
+                                    <i className="bi bi-plus-circle-fill"></i>
+                                </div>
+
+                                <div 
+                                className="input_photo" 
+                                onClick={()=> handleOpenModal({index: 3})}
+                                disabled={filesPhotos.length < 3}
+                                >
+                                    <img src={imgEmpty} className={urlsPhotos[3] ? 'hidden' : ''} alt="" />
+
+                                    {urlsPhotos[3] && (
+                                    <img 
+                                    src={urlsPhotos[3]} 
+                                    className="preview animate__animated animate__fadeIn" alt="" />
+                                    )}
+
+                                    <i className="bi bi-plus-circle-fill"></i>
+                                </div>
+                            </div>
+                        </div>
+
+
+
+                        {filesPhotos.length > 0 && (
+                        <div className="btns_container animate__animated animate__fadeInUp">
+                            <button className="btn primary" disabled={loadingSubmit}>Finalizar</button>
+                        </div>
+                        )}             
                     </form>
                     )
 
@@ -562,6 +704,19 @@ export default function Forms() {
                     
                 </div>
             </main>
+
+
+
+            {showModal && (
+                <ModalPhoto 
+                close={()=> setShowModal(false)}
+                filesPhotos={filesPhotos}
+                setFilesPhotos={setFilesPhotos}
+                urlsPhotos={urlsPhotos}
+                setUrlsPhotos={setUrlsPhotos}
+                inputSelect={inputSelect}
+                />
+            )}
 
         </div>
     );

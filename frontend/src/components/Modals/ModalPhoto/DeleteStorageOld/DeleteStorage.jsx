@@ -2,7 +2,7 @@
 import PropTypes from "prop-types";
 import Cookies from "js-cookie";
 import { useState, useEffect, useRef, useContext } from 'react';
-import { EXIT_DELETE } from "../../../../API/exitApi";
+import { STORAGE_DELETE } from "../../../../API/storageApi";
 
 // Context:
 import UserContext from "../../../../contexts/userContext";
@@ -17,26 +17,26 @@ import { toast } from "react-toastify";
 // import LogoHeader from '../../assets/logo-header.png';
 
 // Estilo:
-// import './deleteexit.css';
+// import './deletestorage.css';
 
 
-DeleteExit.propTypes = {
+DeleteStorage.propTypes = {
     close: PropTypes.func,
     setReflashState: PropTypes.func,
-    exitSelect: PropTypes.object
+    storageSelect: PropTypes.object
 }
-export function DeleteExit({ close, setReflashState, exitSelect }) {
+export function DeleteStorage({ close, setReflashState, storageSelect }) {
     const [loading, setLoading] = useState(false);
     const elementFocusRef = useRef(null);
 
     const {profileDetails} = useContext(UserContext); 
 
-    const tokenCookie = Cookies.get('tokenEstoque');
+    const tokenCookie = Cookies.get('tokenEstoque') || null;
 
 
     useEffect(()=> {
         function initializeComponent() {
-            console.log('Effect Window DeleteExit');
+            console.log('Effect Window DeleteStorage');
 
             // Coloca foco no elemento em questão
             if(elementFocusRef.current) {
@@ -44,6 +44,7 @@ export function DeleteExit({ close, setReflashState, exitSelect }) {
                     elementFocusRef.current.focus(); 
                 }, 100);
             }
+
         }
         initializeComponent();
     }, []);
@@ -51,18 +52,18 @@ export function DeleteExit({ close, setReflashState, exitSelect }) {
 
 
     // DELETE:
-    async function handleSubmitDeleteExit() 
+    async function handleSubmitDeleteStorage() 
     {
         setLoading(true);
 
         try {
-            const response = await EXIT_DELETE(JSON.parse(tokenCookie), exitSelect.id);
+            const response = await STORAGE_DELETE(JSON.parse(tokenCookie), storageSelect.id);
             console.log(response);  
 
             if(response.success) {
                 close();
                 setReflashState(prev => !prev);
-                toast.success('Sáida deletada!');
+                toast.success('Depósito deletado!');
             }
             else if(response.success == false) {
                 toast.error(response.message);
@@ -75,7 +76,7 @@ export function DeleteExit({ close, setReflashState, exitSelect }) {
             console.error('Deu erro: ', error);
 
             if(error?.response?.data?.message == 'Unauthenticated.') {
-                toast.error('Requisição não autenticada.');
+                console.error('Requisição não autenticada.');
             }
             else {
                 toast.error('Houve algum erro.');
@@ -88,27 +89,29 @@ export function DeleteExit({ close, setReflashState, exitSelect }) {
     
 
     return (
-        <div className='Window DeleteExit grid'>
+        <div className='Window DeleteStorage grid'>
             <h3 className="title-danger">
                 <i className="bi bi-question-octagon"></i> 
-                <span>Deletar {exitSelect.discarded ? 'descarte' : 'saída'}</span>
+                <span>Deletar depósito</span>
             </h3>       
 
             <div className="content-window">
+                          
                 {profileDetails.level == 'admin' ?  (
                 <p>
-                    Deseja deletar {exitSelect.discarded ? 'o descarte' : 'a saída'} de <b>{exitSelect.quantity}</b> ite{exitSelect.quantity > 1 ? 'ns' : 'm'} de <b>{exitSelect.product_name}</b>?
-                </p> 
+                    Deseja deletar o depósito <b>{storageSelect.name}</b>?
+                </p>
                 ) : (
                 <p className="text-not-access">
                     <i className="bi bi-exclamation-triangle"></i> 
                     Você não pode seguir com esta ação, contate o administrador do ambiente.
                 </p>   
-                )}      
+                )}            
+
 
                 <div className="btns">
                     {profileDetails.level == 'admin' && (
-                    <button className="btn danger" onClick={handleSubmitDeleteExit} disabled={loading}>
+                    <button className="btn danger" onClick={handleSubmitDeleteStorage} disabled={loading}>
                         {loading ? 'Deletando...' : 'Deletar'}
                     </button>
                     )}
@@ -117,6 +120,7 @@ export function DeleteExit({ close, setReflashState, exitSelect }) {
                         {profileDetails.level == 'admin' ? 'Cancelar' : 'Fechar'}
                     </button>
                 </div>
+
             </div>     
         </div>
     )        

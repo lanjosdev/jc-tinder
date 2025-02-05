@@ -42,3 +42,57 @@ export async function FORMS_CREATE_PREFERENCES(token, idsGenders, idsHabits) {
    // console.log(response.data);
    return response.data;
 }
+
+// Upload de fotos (POST):
+export async function FORMS_CREATE_PHOTOS(token, filesPhotos) {
+   console.log('CALL FUNCTION API');
+   console.log(filesPhotos);
+
+
+   const formData = new FormData();
+   formData.append('name_photo', filesPhotos);
+
+   const response = await axios.post(`${API_URL}/photos`, formData,
+   { 
+      headers: { 
+         "Accept": "application/json", 
+         "Content-Type": "multipart/form-data",
+         "Authorization": "Bearer " + token ,
+         'Access-Control-Allow-Origin': '*'
+      }
+   });
+
+   // const response = await axios({
+   //    method: "post",
+   //    url: `${API_URL}/photos`,
+   //    crossDomain: true,        
+   //    data: {
+   //       "name_photo": filesPhotos 
+   //    },
+   //    headers: {
+   //       "Accept": "application/json",
+   //       "Content-Type": "multipart/form-data",
+   //       "Authorization": "Bearer " + token,
+   //       'Access-Control-Allow-Origin': '*'
+   //    }
+   // });
+
+
+   // const response = await axios({
+   //    method: "post",
+   //    url: `${API_URL}/photos`,
+   //    crossDomain: true,        
+   //    data: {
+   //       "name_photo[]": filesPhotos 
+   //    },
+   //    headers: {
+   //       "Accept": "application/json",
+   //       "Content-Type": "multipart/form-data",
+   //       "Authorization": "Bearer " + token,
+   //       'Access-Control-Allow-Origin': '*'
+   //    }
+   // });
+   
+   // console.log(response.data);
+   return response.data;
+}

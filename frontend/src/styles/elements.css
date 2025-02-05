@@ -23,18 +23,6 @@ body:has(.Checkout) {
     /* background-color: aqua; */
 }
 
-.title-danger {
-    display: flex;
-    align-items: center;
-    gap: .5rem;
-    color:  var(--color-danger);
-}
-.title-neutral {
-    display: flex;
-    align-items: center;
-    gap: .5rem;
-}
-
 .name-profile {
     text-transform: capitalize;
 }
@@ -106,52 +94,14 @@ body:has(.Checkout) {
     }
     img {
         max-width: 80px;
-        animation: rotationPulse 1.5s linear infinite;
+        animation: rotation 1.5s linear infinite;
     }
 }
 /* ESTADOS-FIM */
 
 
 /* ELEMENTOS */
-.result-empty {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    gap: .5rem;
-    
-    height: 12rem;
-
-    p {
-        font-weight: 600;
-    }
-}
-
-.link-back {
-    background-color: transparent;
-    padding: .1rem .5rem .1rem .1rem;
-    border-radius: 5px;
-
-    display: flex;
-    align-items: center;
-    width: 100%;
-    max-width: fit-content;
-
-    transition: all .3s ease-in-out;
-
-    &:hover {
-        background-color: var(--color-bg-2);
-    }
-}
-
-.separator {
-    background-color: var(--color-text);
-    height: 1px;
-    opacity: .7;
-}
-
-.btn {
-    /* background-color: var(--color-bg); */
+/* .btn {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -179,10 +129,6 @@ body:has(.Checkout) {
         &:hover {
             filter: drop-shadow(0 0 8px var(--color-primary)) brightness(1.1);
         }
-        /* &:active {
-            filter: drop-shadow(0 0 8px var(--color-primary)) brightness(.9);
-            transform: scale(0.9);
-        } */
     }
     &.secundary {
         background-color: var(--color-secundary);
@@ -211,25 +157,67 @@ body:has(.Checkout) {
             filter: brightness(0.9);
         }
     }
-    &.filter {
-        background-color: transparent;
-        padding: .5rem 1rem;
-        font-size: 1.8rem;
-
-        transition: all .3s ease;
-        &:hover {
-            background-color: var(--color-w);
-        }
-    }
-}
-.btns_container {
-    margin-top: 1.5rem;
-
+} */
+.btn {
     display: flex;
     justify-content: center;
-    gap: 1rem;
-}
+    align-items: center;
 
+    width: 100%;
+    max-width: fit-content;
+    height: auto;
+
+    border: 2px solid black;
+    border-radius: 13px;
+    padding: 1rem 2rem;
+
+    /* font-size: 1.5rem; */
+    font-weight: 600;
+    text-align: center;
+    /* letter-spacing: -0.5px; */
+
+    transition: all .3s ease;
+
+    &.primary {
+        background-color: var(--color-primary);
+        
+        color: var(--color-w);
+        box-shadow: 2px 2px 0 black;
+        height: 5rem;
+        min-height: 5rem;
+        padding: 1rem;
+
+        &:active {
+            box-shadow: none;
+            transform: translateY(3px);
+        }
+    }
+    &.secundary {
+        background-color: var(--color-bg);
+        
+        color: var(--color-w);
+    }
+    &.transparent {
+        padding: 0;
+        min-width: fit-content;
+
+        background-color: transparent;
+        font-size: 3.2rem;
+        line-height: 0;
+        letter-spacing: -0.5px;
+        color: #fff;
+    }
+    &.cancel {
+        border: 2px solid var(--color-text);
+        padding: 1rem 1.2rem;
+
+        color: var(--color-text);
+    }
+    &.aviso {
+        background-color: var(--color-text);
+        color: #fff;
+    }
+}
 .btn_radio {
     input[type="radio"],
     input[type="checkbox"]
@@ -256,16 +244,14 @@ body:has(.Checkout) {
     }
 }
 
-.tag {
-    background-color: var(--color-bg-2);
-    padding: .2rem .5rem;
-    border-radius: 7px;
-    font-weight: 500;
+.btns_container {
+    margin-top: 1.5rem;
 
     display: flex;
-    align-items: center;
-    gap: .2rem;
+    justify-content: center;
+    gap: 1rem;
 }
+
 
 .label--input, 
 .label--select {
@@ -290,6 +276,44 @@ body:has(.Checkout) {
         
         width: 100%;
         max-width: 490px;
+    }
+}
+
+
+.link-back {
+    background-color: transparent;
+    padding: .1rem .5rem .1rem .1rem;
+    border-radius: 5px;
+
+    display: flex;
+    align-items: center;
+    width: 100%;
+    max-width: fit-content;
+
+    transition: all .3s ease-in-out;
+
+    &:hover {
+        background-color: var(--color-bg-2);
+    }
+}
+
+.separator {
+    background-color: var(--color-text);
+    height: 1px;
+    opacity: .7;
+}
+
+.result-empty {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: .5rem;
+    
+    height: 12rem;
+
+    p {
+        font-weight: 600;
     }
 }
 /* ELEMENTOS-FIM */
@@ -343,17 +367,5 @@ body:has(.Checkout) {
     100% {
         transform: rotate(360deg);
     }
-}
-
-@keyframes rotationPulse {
-    0% {
-        transform: rotate(0deg) scale(1);
-    }
-    50% {
-        transform: rotate(180deg) scale(1.2);
-    }
-    100% {
-        transform: rotate(360deg) scale(1);
-    }        
 }
 /* ANIMATIONS-FIM */

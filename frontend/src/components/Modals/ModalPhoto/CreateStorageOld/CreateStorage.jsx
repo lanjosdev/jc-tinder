@@ -1,12 +1,14 @@
 // Funcionalidades / Libs:
 import PropTypes from "prop-types";
-import { useState, useEffect, useRef } from 'react';
-import { CATEGORY_CREATE } from "../../../../API/categoryApi";
 import Cookies from "js-cookie";
+import { useState, useEffect, useRef } from 'react';
+import { STORAGE_CREATE } from "../../../../API/storageApi";
+
+// Context:
+// import UserContext from "../../../../contexts/userContext";
 
 // Components:
 import { toast } from "react-toastify";
-// import { UserCreate } from './UserCreate/UserCreate';
 
 // Utils:
 //import { formatarHora } from '../../../utils/formatarNumbers';
@@ -15,53 +17,53 @@ import { toast } from "react-toastify";
 // import LogoHeader from '../../assets/logo-header.png';
 
 // Estilo:
-import './createsector.css';
+// import './createstorage.css';
 
 
-CreateSector.propTypes = {
+CreateStorage.propTypes = {
     close: PropTypes.func,
     setReflashState: PropTypes.func
 }
-export function CreateSector({ close, setReflashState }) {
+export function CreateStorage({ close, setReflashState }) {
     const [loading, setLoading] = useState(false);
 
     const nameRef = useRef('');
-    const descRef = useRef('');
+    const obsRef = useRef('');
+
 
     const tokenCookie = Cookies.get('tokenEstoque');
 
 
     useEffect(()=> {
-        // function initialComponent() {
-            console.log('Effect Window CreateSector');
-
-        // }
-        // initialComponent();
+        async function initializeComponent() {
+            console.log('Effect Window CreateStorage');            
+        }
+        initializeComponent();
     }, []);
 
 
 
     // CREATE:
-    async function handleSubmitCreteSector(e) 
+    async function handleSubmitCreteStorage(e) 
     {
         e.preventDefault();
         setLoading(true);
 
         const name = nameRef.current?.value;
-        const description = descRef.current?.value;
+        const obs = obsRef.current?.value;
 
-        if(name !== '' && description !== '') {
+        if(name !== '' && obs !== '') {
             try {
-                const response = await CATEGORY_CREATE(JSON.parse(tokenCookie), name, description);
+                const response = await STORAGE_CREATE(JSON.parse(tokenCookie), name, obs);
                 console.log(response);  
     
                 if(response.success) {
                     close();
                     setReflashState(prev => !prev);
-                    toast.success('Setor criado!');
+                    toast.success('Depósito cadastrado!');
                 }
                 else if(response.success == false) {
-                    toast.error(response.message);
+                    console.warn(response.message);
                 }
                 else {
                     toast.error('Erro inesperado.');
@@ -71,7 +73,7 @@ export function CreateSector({ close, setReflashState }) {
                 console.error('Deu erro: ', error);
 
                 if(error?.response?.data?.message == 'Unauthenticated.') {
-                    toast.error('Requisição não autenticada.');
+                    console.error('Requisição não autenticada.');
                 }
                 else {
                     toast.error('Houve algum erro.');
@@ -88,31 +90,31 @@ export function CreateSector({ close, setReflashState }) {
     
 
     return (
-        <div className='Window CreateSector grid'>
-            <h3>Cadastrar novo setor</h3>
+        <div className='Window CreateStorage grid'>
+            <h3>Cadastrar novo local de depósito</h3>   
 
-            <form className="content-window" onSubmit={handleSubmitCreteSector} autoComplete="off">
+            <form className="content-window" onSubmit={handleSubmitCreteStorage} autoComplete="off">
                 <div className="label--input">
                     <label htmlFor="nome">Nome</label>
                     <input ref={nameRef} className="input" id='nome' type="text" required />
                 </div>
 
                 <div className="label--input">
-                    <label htmlFor="desc">Descrição</label>
-                    <textarea ref={descRef} className="input" id="desc" required ></textarea>
+                    <label htmlFor="obs">Observação</label>
+                    <textarea ref={obsRef} className="input" id="obs" required ></textarea>
                 </div>
 
 
                 <div className="btns">
                     <button className="btn primary" disabled={loading}>
-                        {loading ? 'Criando...' : 'Criar setor'}
+                        {loading ? 'Cadastrando...' : 'Cadastrar depósito'}
                     </button>
 
                     <button className="btn cancel" type="button" onClick={close} disabled={loading}>
                         Cancelar
                     </button>
                 </div>
-            </form>                
+            </form>           
         </div>
     )        
 }

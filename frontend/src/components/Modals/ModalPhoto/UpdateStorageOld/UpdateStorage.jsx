@@ -1,8 +1,8 @@
 // Funcionalidades / Libs:
 import PropTypes from "prop-types";
-import { useState, useEffect, useRef } from 'react';
-import { CATEGORY_UPDATE } from "../../../../API/categoryApi";
 import Cookies from "js-cookie";
+import { useState, useEffect, useRef } from 'react';
+import { STORAGE_UPDATE } from "../../../../API/storageApi";
 
 // Components:
 import { toast } from "react-toastify";
@@ -14,60 +14,62 @@ import { toast } from "react-toastify";
 // import LogoHeader from '../../assets/logo-header.png';
 
 // Estilo:
-import './updatesector.css';
+// import './updatestorage.css';
 
 
-UpdateSector.propTypes = {
+UpdateStorage.propTypes = {
     close: PropTypes.func,
     setReflashState: PropTypes.func,
-    sectorSelect: PropTypes.object
+    storageSelect: PropTypes.object
 }
-export function UpdateSector({ close, setReflashState, sectorSelect }) {
+export function UpdateStorage({ close, setReflashState, storageSelect }) {
     const [loading, setLoading] = useState(false);
     const elementFocusRef = useRef(null);
 
     const nameRef = useRef('');
-    const descRef = useRef('');
-    const [updateSector, setUpdateSector] = useState(false);
+    const obsRef = useRef('');
+    const [updateStorage, setUpdateStorage] = useState(false);
 
     const tokenCookie = Cookies.get('tokenEstoque');
 
 
     useEffect(()=> {
         function initializeComponent() {
-            console.log('Effect Window UpdateSector');
+            console.log('Effect Window UpdateStorage');
 
-            if(elementFocusRef.current) {
+            if(elementFocusRef?.current) {
                 setTimeout(() => { 
                     elementFocusRef.current.focus(); 
                 }, 100);
             }
 
-            if(nameRef.current && descRef.current) {
-                nameRef.current.value = sectorSelect.name;
-                descRef.current.value = sectorSelect.description;
+            if(nameRef.current && obsRef.current) {
+                nameRef.current.value = storageSelect.name;
+                obsRef.current.value = storageSelect.observation;
             }
         }
         initializeComponent();
-    }, [sectorSelect]);
+    }, [storageSelect]);
 
 
 
     // UPDATE:
-    async function handleSubmitUpdateSector(e) 
+    async function handleSubmitUpdateStorage(e) 
     {
         e.preventDefault();
         setLoading(true);
 
-        const name = nameRef.current?.value;
-        const description = descRef.current?.value;
-        console.log(sectorSelect?.id);
-        console.log(name);
-        console.log(description);
+        const name = nameRef?.current?.value;
+        const obs = obsRef?.current?.value;
 
-        if(name !== '' && description !== '' && sectorSelect?.id) {
+        console.log(storageSelect?.id);
+        console.log(name);
+        console.log(obs);
+
+        if(name !== '' && obs !== '' && storageSelect?.id) {
             try {
-                const response = await CATEGORY_UPDATE(JSON.parse(tokenCookie), sectorSelect?.id, name, description);
+                // const response = await CATEGORY_UPDATE(JSON.parse(tokenCookie), storageSelect?.id, name, obs);
+                const response = await STORAGE_UPDATE(JSON.parse(tokenCookie), storageSelect?.id, name, obs);
                 console.log(response);  
     
                 if(response.success) {
@@ -76,7 +78,7 @@ export function UpdateSector({ close, setReflashState, sectorSelect }) {
                     toast.success('Alteração salva!');
                 }
                 else if(response.success == false) {
-                    toast.error(response.message);
+                    console.error(response.message);
                 }
                 else {
                     toast.error('Erro inesperado.');
@@ -86,7 +88,7 @@ export function UpdateSector({ close, setReflashState, sectorSelect }) {
                 console.error('Deu erro: ', error);
     
                 if(error?.response?.data?.message == 'Unauthenticated.') {
-                    toast.error('Requisição não autenticada.');
+                    console.error('Requisição não autenticada.');
                 }
                 else {
                     toast.error('Houve algum erro.');
@@ -103,25 +105,25 @@ export function UpdateSector({ close, setReflashState, sectorSelect }) {
     
 
     return (
-        <div className='Window UpdateSector grid'>
-            <h3>Editar setor</h3>
+        <div className='Window UpdateStorage grid'>
+            <h3>Editar local de depósito</h3>
 
-            <form className="content-window" onSubmit={handleSubmitUpdateSector} autoComplete="off">
-                <p>Abaixo você pode editar as informações do setor de <b>{sectorSelect.name}</b>.</p> 
+            <form className="content-window" onSubmit={handleSubmitUpdateStorage} autoComplete="off">
+                <p>Abaixo você pode editar as informações do depósito <b className="item-edit">{`"${storageSelect.name}"`}</b>.</p> 
 
                 <div className="label--input">
                     <label htmlFor="nome">Nome</label>
-                    <input ref={nameRef} className="input" id='nome' type="text" required onFocus={()=> setUpdateSector(true)} />
+                    <input ref={nameRef} className="input" id='nome' type="text" required onFocus={()=> setUpdateStorage(true)} />
                 </div>
 
                 <div className="label--input">
-                    <label htmlFor="desc">Descrição</label>
-                    <textarea ref={descRef} className="input" id="desc" required onFocus={()=> setUpdateSector(true)} ></textarea>
+                    <label htmlFor="obs">Observação</label>
+                    <textarea ref={obsRef} className="input" id="obs" required onFocus={()=> setUpdateStorage(true)} ></textarea>
                 </div>
 
 
                 <div className="btns">
-                    <button className="btn primary" disabled={loading || !updateSector}>
+                    <button className="btn primary" disabled={loading || !updateStorage}>
                         {loading ? 'Salvando...' : 'Salvar alteração'}
                     </button>
 
