@@ -35,6 +35,16 @@ class PhotoController extends Controller
             );
 
             if ($validatedData) {
+
+                $quantityPhotoUser = Photo::where('fk_user_photos_id', $user->id)->get(); 
+                
+                if (count($quantityPhotoUser) > 4) {
+                    return response()->json([
+                       'success' => false,
+                       'message' => 'Não é possível adicionar mais fotos.' 
+                    ]);
+                }
+                
                 $photos = $request->file('name_photo');
 
                 // Garante que sempre será tratado como array
