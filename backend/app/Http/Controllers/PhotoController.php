@@ -60,6 +60,24 @@ class PhotoController extends Controller
                     ]);
                 }
 
+                if (count($quantityPhotoUser) == 1 && count($photos) > 3) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Você já tem 1 foto registrada permitido a inserção de até mais 3 fotos.',
+                    ]);
+                }elseif(count($quantityPhotoUser) == 2 && count($photos) > 2) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Você já tem 2 fotos registradas permitido a inserção de até mais 2 fotos.',
+                    ]);
+                }
+                }elseif(count($quantityPhotoUser) == 3 && count($photos) > 1) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Você já tem 3 fotos registradas permitido a inserção de até mais 1 foto.',
+                    ]);
+                }
+
                 //Aqui chama a função para upload/cria thumb e armazena na pasta public
                 $result = $this->utils->handleImageUploads($photos, $user);
                 $savedImages = $result['savedImages'];
