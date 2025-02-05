@@ -70,7 +70,6 @@ class PhotoController extends Controller
                         'success' => false,
                         'message' => 'Você já tem 2 fotos registradas permitido a inserção de até mais 2 fotos.',
                     ]);
-                }
                 }elseif(count($quantityPhotoUser) == 3 && count($photos) > 1) {
                     return response()->json([
                         'success' => false,
