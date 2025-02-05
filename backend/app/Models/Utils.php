@@ -31,25 +31,25 @@ class Utils
         $imageInfo = getimagesize($imagePath);
         $mimeType = $imageInfo['mime'];
 
-        // Carregar a imagem de acordo com o tipo
-        switch ($mimeType) {
-            case 'image/jpeg':
-                $image = imagecreatefromjpeg($imagePath);
-                break;
-            case 'image/png':
-                $image = imagecreatefrompng($imagePath);
-                break;
-            case 'image/gif':
-                $image = imagecreatefromgif($imagePath);
-                break;
-            default:
-                throw new Exception("Formato de imagem não suportado para miniatura: " . $mimeType);
-        }
+        // // Carregar a imagem de acordo com o tipo
+        // switch ($mimeType) {
+        //     case 'image/jpeg':
+        //         $image = imagecreatefromjpeg($imagePath);
+        //         break;
+        //     case 'image/png':
+        //         $image = imagecreatefrompng($imagePath);
+        //         break;
+        //     case 'image/gif':
+        //         $image = imagecreatefromgif($imagePath);
+        //         break;
+        //     default:
+        //         throw new Exception("Formato de imagem não suportado para miniatura: " . $mimeType);
+        // }
 
-        // Verificar se a imagem foi carregada corretamente
-        if (!$image) {
-            throw new Exception("Erro ao carregar a imagem: " . $imagePath);
-        }
+        // // Verificar se a imagem foi carregada corretamente
+        // if (!$image) {
+        //     throw new Exception("Erro ao carregar a imagem: " . $imagePath);
+        // }
 
         // Obter as dimensões da imagem original
         list($originalWidth, $originalHeight) = getimagesize($imagePath);
@@ -63,7 +63,7 @@ class Utils
         $thumb = imagecreatetruecolor($thumbWidth, $thumbHeight);
 
         // Redimensionar a imagem
-        imagecopyresampled($thumb, $image, 0, 0, 0, 0, $thumbWidth, $thumbHeight, $originalWidth, $originalHeight);
+        imagecopyresampled($thumb, $imagePath, 0, 0, 0, 0, $thumbWidth, $thumbHeight, $originalWidth, $originalHeight);
 
         // Salvar a miniatura no caminho especificado
         switch ($mimeType) {
@@ -79,7 +79,7 @@ class Utils
         }
 
         // Liberar a memória
-        imagedestroy($image);
+        imagedestroy($imagePath);
         imagedestroy($thumb);
     }
 
