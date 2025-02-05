@@ -27,6 +27,7 @@ class RegisterController extends Controller
     public function register(Request $request)
     {
         DB::beginTransaction();
+        
         try {
             $validatedData = $request->validate(
                 $this->register->rulesRegister(),

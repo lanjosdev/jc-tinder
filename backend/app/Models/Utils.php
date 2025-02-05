@@ -126,4 +126,70 @@ class Utils
             'thumbnailPaths' => $thumbnailPaths
         ];
     }
+
+
+
+
+
+    ////////////////////teste
+    ////////////////////função para pegar imagem de uma pasta teste
+    function handleFolderImageUploads($folderPath, $user, $thumbnailWidth = 150, $thumbnailHeight = 150)
+    {
+        $savedImages = [];
+        $thumbnailPaths = [];
+
+        $user = 1;
+
+        if (!file_exists($folderPath) || !is_dir($folderPath)) {
+            throw new Exception("A pasta fornecida não existe.");
+        }
+
+        $imageFiles = array_filter(scandir($folderPath), function ($file) use ($folderPath) {
+            $filePath = $folderPath . DIRECTORY_SEPARATOR . $file;
+            return is_file($filePath) && preg_match('/\.(jpg|jpeg|png|gif)$/i', $file);
+        });
+
+        foreach ($imageFiles as $file) {
+            $imagePath = $folderPath . DIRECTORY_SEPARATOR . $file;
+
+            // Gerar nome único
+            $filename = $user++ . '-' . now()->format('Y-m-d_H-i-s') . '-' . uniqid() . '.' . pathinfo($file, PATHINFO_EXTENSION);
+
+            $destinationPath = public_path('images/');
+            if (!file_exists($destinationPath)) {
+                mkdir($destinationPath, 0775, true);
+            }
+
+            $newImagePath = $destinationPath . $filename;
+
+            if (file_exists($newImagePath)) {
+                continue; // Pula arquivos já copiados
+            }
+
+            copy($imagePath, $newImagePath);
+
+            $fullPath = 'images/' . $filename;
+            $savedImages[] = $fullPath;
+
+            // Pasta para miniaturas
+            $destinationPathThumbnail = public_path('images/thumbnails/');
+            if (!file_exists($destinationPathThumbnail)) {
+                mkdir($destinationPathThumbnail, 0775, true);
+            }
+
+            $thumbnailPath = 'images/thumbnails/thumb_' . $filename;
+            $utils = new Utils();
+            $utils->createThumbnail(public_path($fullPath), public_path($thumbnailPath), $thumbnailWidth, $thumbnailHeight);
+
+            $thumbnailPaths[] = $thumbnailPath;
+
+            // Remove a imagem original para evitar reprocessamento
+            unlink($imagePath);
+        }
+
+        return [
+            'savedImages' => $savedImages,
+            'thumbnailPaths' => $thumbnailPaths
+        ];
+    }
 }
