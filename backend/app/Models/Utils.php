@@ -27,9 +27,11 @@ class Utils
     // cria miniatura da imagem original
     public function createThumbnail($imagePath, $thumbPath, $width, $height)
     {
-        // Verifica o tipo de imagem
+        // Verifica o tipo de imagem e obtém as dimensões
         $imageInfo = getimagesize($imagePath);
         $mimeType = $imageInfo['mime'];
+        $originalWidth = $imageInfo[0];
+        $originalHeight = $imageInfo[1];
 
         // Carregar a imagem de acordo com o tipo
         switch ($mimeType) {
@@ -51,9 +53,6 @@ class Utils
             throw new Exception("Erro ao carregar a imagem: " . $imagePath);
         }
 
-        // Obter as dimensões da imagem original
-        list($originalWidth, $originalHeight) = getimagesize($imagePath);
-
         // Calculando a proporção da miniatura
         $ratio = min($width / $originalWidth, $height / $originalHeight);
         $thumbWidth = (int)($originalWidth * $ratio);
@@ -63,7 +62,7 @@ class Utils
         $thumb = imagecreatetruecolor($thumbWidth, $thumbHeight);
 
         // Redimensionar a imagem
-        imagecopyresampled($thumb, $imagePath, 0, 0, 0, 0, $thumbWidth, $thumbHeight, $originalWidth, $originalHeight);
+        imagecopyresampled($thumb, $image, 0, 0, 0, 0, $thumbWidth, $thumbHeight, $originalWidth, $originalHeight);
 
         // Salvar a miniatura no caminho especificado
         switch ($mimeType) {
@@ -79,7 +78,7 @@ class Utils
         }
 
         // Liberar a memória
-        imagedestroy($imagePath);
+        imagedestroy($image);
         imagedestroy($thumb);
     }
 
