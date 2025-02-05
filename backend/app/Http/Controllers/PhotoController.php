@@ -38,7 +38,7 @@ class PhotoController extends Controller
 
                 $quantityPhotoUser = Photo::where('fk_user_photos_id', $user->id)->get(); 
                 
-                if (count($quantityPhotoUser) > 4) {
+                if (count($quantityPhotoUser) <= 4) {
                     return response()->json([
                        'success' => false,
                        'message' => 'Não é possível adicionar mais fotos.' 
