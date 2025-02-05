@@ -47,16 +47,30 @@ class MeController extends Controller
                 ->whereIn('id', $preferencesUser)
                 ->pluck('name');
 
+            // $photosUser = DB::table('photos')
+            //     ->where('fk_user_photos_id', $myProfile->id)
+            //     ->whereNull('deleted_at')
+            //     ->pluck('thumb_photo', 'id', 'name_photo')
+            //     ->toArray();
+
+            // // Converte para array de objetos
+            // $photosUserArray = array_map(function ($id, $thumbPhoto, $photo) {
+            //     return (object) ['id' => $id, 'thumb_photo' => $thumbPhoto, 'photo' =>$photo];
+            // }, array_keys($photosUser),$photosUser);
+
             $photosUser = DB::table('photos')
                 ->where('fk_user_photos_id', $myProfile->id)
                 ->whereNull('deleted_at')
-                ->pluck('thumb_photo', 'id')
+                ->select('id', 'thumb_photo', 'name_photo')
+                ->get()
+                ->map(function ($photo) {
+                    return (object) [
+                        'id' => $photo->id,
+                        'photo' => $photo->name_photo,
+                        'thumb_photo' => $photo->thumb_photo,
+                    ];
+                })
                 ->toArray();
-
-            // Converte para array de objetos
-            $photosUserArray = array_map(function ($id, $thumbPhoto) {
-                return (object) ['id' => $id, 'thumb_photo' => $thumbPhoto];
-            }, array_keys($photosUser), $photosUser);
 
             $result = [
                 'id' => $myProfile->id,
@@ -73,7 +87,7 @@ class MeController extends Controller
                 'sexuality' => $myProfile->fk_sexuality_user_id ? $myProfile->sexuality->name : null,
                 'sexuality_description' => $myProfile->fk_sexuality_user_id ? $myProfile->sexuality->description : null,
                 'preferences' => $preferences,
-                'photos' => $photosUserArray,
+                'photos' => $photosUser,
                 'minimum_age_preference' => $myProfile->minimum_age,
                 'maximum_age_preference' => $myProfile->maximum_age,
                 'habits' => $habits,
@@ -163,7 +177,6 @@ class MeController extends Controller
                     'data' => $user,
                 ]);
             }
-            
         } catch (ValidationException $ve) {
             DB::rollBack();
             return response()->json([

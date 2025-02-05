@@ -83,8 +83,9 @@ class Utils
     }
 
     // em conjunto com a função de criar img miniatura, cria e salva ela e a maior na pasta public com path completo e identificador único
-    function handleImageUploads(array $photos, $user, $thumbnailWidth = 150, $thumbnailHeight = 150)
+    function handleImageUploads(array $photos, $user, $thumbnailWidth = 500, $thumbnailHeight = 150)
     {
+
         $savedImages = [];
         $thumbnailPaths = [];
 
@@ -104,6 +105,14 @@ class Utils
 
                 $fullPath = 'images/' . $filename;
                 $savedImages[] = $fullPath;
+
+                if (file_exists($fullPath)) {
+                    list($widthOld, $heightOld) = getimagesize($fullPath);
+                } else {
+                    throw new Exception("Largura da imagem inválida.");
+                }
+
+                $thumbnailHeight = ($heightOld * $thumbnailWidth) / $widthOld;
 
                 // Verificar e criar pasta para thumbnails
                 $destinationPathThumbnail = public_path('images/thumbnails/');
