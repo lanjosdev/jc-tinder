@@ -6,8 +6,7 @@ import { useState, useEffect } from "react";
 // import UserContext from "../../contexts/userContext";
 
 // Components:
-// import { toast } from "react-toastify";
-// import { NavMenu } from "../../components/NavMenu/NavMenu";
+import { NavBar } from "../../components/NavBar/NavBar";
 
 // Utils
 // import { primeiraPalavra } from "../../utils/formatStrings";
@@ -21,26 +20,29 @@ import './style.css';
 
 
 export default function Home() {
+    // Estados do componente:
     const [loading, setLoading] = useState(true);
-    const [hasError, setHasError] = useState(true);
+    const [error, setError] = useState(null);
     const [loadingSubmit, setLoadingSubmit] = useState(false);
     
-
+    // Dados pré-carregados:
     const [persons, setPersons] = useState([]);
     const [totalPersons, setTotalPersons] = useState(0);
 
+    // Logica da UI:
     const [step, setStep] = useState(0);
     const [animateMode, setAnimateMode] = useState('');
     // const [action, setAction] = useState('');
     
 
 
+    
     useEffect(()=> {
         function initializePage() {
             console.log('Effect /Home');
             
             setLoading(true);
-            setHasError(true);
+            setError(true);
 
             const pessoas = [
                 { nome: 'Ana Silva', idade: 30, urlImagem: 'https://randomuser.me/api/portraits/women/1.jpg' },
@@ -55,7 +57,7 @@ export default function Home() {
             ];
             setPersons(pessoas);
             setTotalPersons(pessoas.length);
-            setHasError(false);
+            setError(false);
 
             setLoading(false);
         } 
@@ -100,14 +102,14 @@ export default function Home() {
     return (
         <div className="Page Home">
             
-            {/* <NavMenu /> */}
+            <NavBar/>
 
             <main className='PageContent HomeContent grid'>
                 <div className="persons">
                     {loading ? (
                         <h1>CARREGANDO...</h1>
                     ) : (
-                        hasError ? (
+                        error ? (
                             <h1>Houver algum erro!</h1>
                         ) : (
                             persons.length > 0 ? (

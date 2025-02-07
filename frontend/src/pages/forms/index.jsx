@@ -14,6 +14,7 @@ import { HABIT_GET_ALL } from "../../API/habitsApi";
 
 // Components:
 import { toast } from "react-toastify";
+import { NavBarSecundary } from "../../components/NavBar/Secundary/NavBarSecundary";
 import { ModalPhoto } from "../../components/Modals/ModalPhoto/ModalPhoto";
 
 // Utils
@@ -28,12 +29,12 @@ import './style.css';
 
 
 export default function Forms() {
+    // Estados do componente:
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const [loadingSubmit, setLoadingSubmit] = useState(false);
-    //Modal
+    // Modal
     const [showModal, setShowModal] = useState(false);
-    const [inputSelect, setInputSelect] = useState(null);
 
     // Dados pré-carregados:
     const [genders, setGenders] = useState([]);
@@ -43,13 +44,16 @@ export default function Forms() {
 
     // Logica da UI:
     //const totalSteps = 3;
-    const [step, setStep] = useState(3);
+    const [step, setStep] = useState(1);
     // const [animateMode, setAnimateMode] = useState('');
+    //step 1
     const [showOptinalGender, setShowOptinalGender] = useState(false);
     const [showSexualities, setShowSexualities] = useState(false);
     //step 2
     const [qtdPreview, setQtdPreview] = useState(30);
     const [habitsPreview, setHabitsPreview] = useState([]);
+    //step 3
+    const [inputSelect, setInputSelect] = useState(null);
 
     
     // Dados a submeter
@@ -406,7 +410,7 @@ export default function Forms() {
             console.log(response);
 
             if(response.success) {
-                toast.success('FORM COMPLETO');
+                ////toast.success('FORM COMPLETO');
 
                 setTimeout(()=> navigate('/home'), 700);
             }
@@ -438,8 +442,7 @@ export default function Forms() {
     return (
         <div className="Page Forms">
 
-            {/* < back??? */}
-            {/* //=// <Progress Bar /> */}
+            <NavBarSecundary isForms={true} />
 
             <main className='PageContent FormsContent grid'>
                 <div className="title_page">

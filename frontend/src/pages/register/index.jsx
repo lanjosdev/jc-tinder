@@ -10,6 +10,7 @@ import UserContext from "../../contexts/userContext";
 
 // Components:
 import { toast } from "react-toastify";
+import { NavBarSecundary } from "../../components/NavBar/Secundary/NavBarSecundary";
 import { InputPassword } from "../../components/InputPassword/InputPassword";
 // import { NavMenu } from "../../components/NavMenu/NavMenu";
 
@@ -119,7 +120,7 @@ export default function Register() {
             console.log(response);
 
             if(response.success) {
-                toast.success('Cadastro realizado!');
+                ////toast.success('Cadastro realizado!');
 
                 await logarUser(phone, password, '/forms');
             }
@@ -159,7 +160,7 @@ export default function Register() {
     return (
         <div className="Page Register">
             
-            {/* <NavMenu /> */}
+            <NavBarSecundary/>
 
             <main className='PageContent RegisterContent grid'>
                 {/* <div className="top_actions">

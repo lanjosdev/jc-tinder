@@ -101,6 +101,49 @@ body:has(.Checkout) {
 
 
 /* ELEMENTOS */
+.link,
+.btn 
+{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: .7rem;
+
+    width: 100%;
+    max-width: fit-content;
+    height: auto;
+    border-radius: 13px;
+    padding: 1rem;
+
+    font-weight: 700;
+    text-align: center;
+    /* letter-spacing: -0.5px; */
+
+
+    transition: all .3s ease;
+}
+
+.link {
+    background-color: transparent;
+    position: relative;
+
+    &::after {
+        content: '';
+        background-color: var(--color-text);
+        position: absolute;
+        bottom: .5rem;
+        width: 0;
+        height: .2rem;
+
+        transition: all .3s ease;
+    } 
+    &:hover {
+        &::after {
+            width: 80%;
+        }
+    }
+}
+
 /* .btn {
     display: flex;
     justify-content: center;
@@ -159,30 +202,19 @@ body:has(.Checkout) {
     }
 } */
 .btn {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-    width: 100%;
-    max-width: fit-content;
-    height: auto;
-
-    border: 2px solid black;
-    border-radius: 13px;
+    border: .2rem solid black;
     padding: 1rem 2rem;
 
     /* font-size: 1.5rem; */
-    font-weight: 600;
-    text-align: center;
+    /* font-weight: 600; */
     /* letter-spacing: -0.5px; */
 
-    transition: all .3s ease;
 
     &.primary {
         background-color: var(--color-primary);
         
         color: var(--color-w);
-        box-shadow: 2px 2px 0 black;
+        box-shadow: .2rem .2rem 0 black;
         height: 5rem;
         min-height: 5rem;
         padding: 1rem;
@@ -192,30 +224,21 @@ body:has(.Checkout) {
             transform: translateY(3px);
         }
     }
+    &.back {
+        background-color: var(--color-w);
+        min-width: 3.5rem;
+        height: 3.5rem;
+        border-radius: 50%;
+        padding: 0;
+
+        &:hover {
+            transform: scale(0.8);
+        }
+    }
     &.secundary {
         background-color: var(--color-bg);
         
         color: var(--color-w);
-    }
-    &.transparent {
-        padding: 0;
-        min-width: fit-content;
-
-        background-color: transparent;
-        font-size: 3.2rem;
-        line-height: 0;
-        letter-spacing: -0.5px;
-        color: #fff;
-    }
-    &.cancel {
-        border: 2px solid var(--color-text);
-        padding: 1rem 1.2rem;
-
-        color: var(--color-text);
-    }
-    &.aviso {
-        background-color: var(--color-text);
-        color: #fff;
     }
 }
 .btn_radio {
@@ -230,8 +253,8 @@ body:has(.Checkout) {
     gap: .3rem; */
 
     background-color: var(--color-w);
-    border: 1px solid var(--color-b);
-    border-radius: 7px;
+    border: .2rem solid var(--color-text);
+    border-radius: 2rem;
     padding: .2rem 1rem;
     font-weight: 600;
     text-align: center;
@@ -240,6 +263,7 @@ body:has(.Checkout) {
 
     &:has(input:checked) {
         background-color: palevioletred;
+        border: .2rem solid var(--color-w);
         color: var(--color-w);
     }
 }
@@ -270,7 +294,7 @@ body:has(.Checkout) {
 
     .input {
         background-color: var(--color-w);
-        border: 1px solid var(--color-text);
+        border: .2rem solid var(--color-text);
         border-radius: 7px;
         padding: .7rem;
         
@@ -279,42 +303,10 @@ body:has(.Checkout) {
     }
 }
 
-
-.link-back {
-    background-color: transparent;
-    padding: .1rem .5rem .1rem .1rem;
-    border-radius: 5px;
-
-    display: flex;
-    align-items: center;
-    width: 100%;
-    max-width: fit-content;
-
-    transition: all .3s ease-in-out;
-
-    &:hover {
-        background-color: var(--color-bg-2);
-    }
-}
-
 .separator {
     background-color: var(--color-text);
     height: 1px;
     opacity: .7;
-}
-
-.result-empty {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    gap: .5rem;
-    
-    height: 12rem;
-
-    p {
-        font-weight: 600;
-    }
 }
 /* ELEMENTOS-FIM */
 

@@ -1,0 +1,129 @@
+.NavBar {
+    background-color: pink;
+
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    width: 100%;
+
+    .NavBarContent {
+        /* border: 2px solid yellow; */
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 2.5rem;
+
+        padding: 1rem var(--p-lateral);
+
+        .nav_left,
+        .nav_right {
+            /* background-color: aqua; */
+            display: flex;
+            align-items: center;
+        }
+
+        .nav_left {
+            gap: 0.5rem;
+            
+            .logo {
+                /* background-color: red; */
+                display: flex;
+                align-items: center;
+    
+                img {
+                    min-width: 11rem;
+                    max-height: 3.5rem;
+                }
+            }
+        }
+        
+        .nav_right {
+            
+            .link.profile,
+            .link.matches {
+                /* background-color: aquamarine; */
+                &::after {
+                    display: none;
+                }
+                color: var(--color-w);
+
+                &:hover {
+                    color: pink;
+                    background-color: var(--color-w);
+                }
+
+                .photo_profile, 
+                i {
+                    /* display: flex;
+                    align-items: center;
+                    justify-content: center; */
+                    /* background-color: red; */
+                    width: 100%;
+                    min-width: 3rem;
+                    max-width: 3.5rem;
+                    height: 3.5rem;
+                    
+                    img {
+                        object-fit: cover;
+                        height: 100%;
+                        border-radius: 50%;
+                    }
+                }
+                i {
+                    font-size: 3rem;
+                }
+            }
+        }
+        
+
+        
+
+       
+
+        
+    }
+   
+    .border_bottom {
+        background-color: var(--color-b);
+        height: .3rem;
+    }
+
+
+
+
+    /* RESPONSIVIDADE */
+}
+
+
+.NavBar.Secundary {
+
+    .NavBarContent {
+        height: 7.5rem;
+    }
+
+    .border_bottom.bar_progress {
+        background-color: blueviolet;
+        position: relative;
+
+        &::after {
+            content: '';
+            position: absolute;
+            background-color: yellow;
+            border-radius: 5px;
+            width: 0%;
+            height: .3rem;
+
+            transition: all .4s linear;
+        }
+
+        &.step1::after {
+            width: 30%;
+        }
+        &.step2::after {
+            width: 65%;
+        }
+        &.step3::after {
+            width: 100%;
+        }
+    }
+}

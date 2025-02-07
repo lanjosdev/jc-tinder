@@ -102,9 +102,9 @@ export function ModalPhoto({
             return;
         }
 
-        if(file.size > 3500000) {
-            console.warn('Arquivo muito grande! Tamanho máximo de 3.5MB.');
-            toast.warn('Arquivo muito grande! Tamanho máximo de 3.5MB.');
+        if(file.size > 20000000) {
+            console.warn('Arquivo muito grande! Tamanho máximo de 20MB.');
+            toast.warn('Arquivo muito grande! Tamanho máximo de 20MB.');
             return;
         }
 
