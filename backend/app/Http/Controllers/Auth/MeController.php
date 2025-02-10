@@ -370,19 +370,22 @@ class MeController extends Controller
                         ]);
                     }
                 }
-
-                $fk_sub_gender_user_id = !empty($fk_sub_gender_user_id) ? $fk_sub_gender_user_id : null;
+                
+                if ($fk_gender_user_id != $user->fk_gender_user_id && empty($fk_sub_gender_user_id) || $fk_sub_gender_user_id == null) {
+                    $fk_sub_gender_user_id = null;
+                }
 
                 //Atualiza as informações que foram alteradas
-                $updateUser = $user->update(array_filter([
-                    'name' => $name !== $user->name ? $name : null,
-                    'phone' => $phone !== $user->phone ? $phone : null,
-                    'birth_data' => $birth_data !== $user->birth_data ? $birth_data : null,
-                    'fk_sexuality_user_id' => $fk_sexuality_user_id !== $user->fk_sexuality_user_id ? $fk_sexuality_user_id : null,
-                    'fk_gender_user_id' => $fk_gender_user_id !== $user->fk_gender_user_id ? $fk_gender_user_id : null,
+                $updateUser = $user->update([
+                    'name' => $name ,
+                    'phone' => $phone ,
+                    'birth_data' => $birth_data ,
+                    'fk_sexuality_user_id' => $fk_sexuality_user_id,
+                    'fk_gender_user_id' => $fk_gender_user_id,
+                    // 'fk_sub_gender_user_id' => $fk_sub_gender_user_id !== $user->fk_sub_gender_user_id ? $fk_sub_gender_user_id : null,
                     'fk_sub_gender_user_id' => $fk_sub_gender_user_id,
-                    'about_me' => $about_me !== $user->about_me ? $about_me : null,
-                ]));
+                    'about_me' => $about_me,
+                ]);
 
 
                 if ($updateUser) {
