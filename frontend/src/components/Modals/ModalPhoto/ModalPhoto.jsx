@@ -11,7 +11,7 @@ import { toast } from "react-toastify";
 // import { toast } from "react-toastify";
 
 // Utils:
-//import { formatarHora } from '../../../utils/formatarNumbers';
+import { byteToMegabyte } from '../../../utils/convertUnit'
 
 // Assets:
 // import LogoHeader from '../../assets/logo-header.png';
@@ -102,12 +102,11 @@ export function ModalPhoto({
             return;
         }
 
-        if(file.size > 20000000) {
-            console.warn('Arquivo muito grande! Tamanho máximo de 20MB.');
-            toast.warn('Arquivo muito grande! Tamanho máximo de 20MB.');
-            return;
-        }
-
+        // if(file.size > 20000000) {
+        //     console.warn('Arquivo muito grande! Tamanho máximo de 20MB.');
+        //     toast.warn('Arquivo muito grande! Tamanho máximo de 20MB.');
+        //     return;
+        // }   
 
         // CHANGE FILE:
         console.log('ARQUIVO OK');                                               
@@ -121,6 +120,7 @@ export function ModalPhoto({
         setUrlsPhotos(newUrlsPhotos);   
 
         close();
+        alert('Tamanho do arquivo: ' + byteToMegabyte(file.size) + 'MB');
     }
 
     function handleDelFile() 

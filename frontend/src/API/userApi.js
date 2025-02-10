@@ -44,34 +44,31 @@ export async function USER_LOGIN(phone, password) {
    return response.data;
 }
 
+// Logout usuario (POST):
+export async function USER_LOGOUT(token) {
+   console.log('CALL FUNCTION API');
 
+   const res = await fetch(`${API_URL}/logout`, {
+      method: 'POST',
+      headers: { "Accept": "application/json", Authorization: 'Bearer ' + token }
+   });
+   const response = await res.json();
 
+   // console.log(response);
+   return response;
+}
 
-// // Logout usuario (POST):
-// export async function USER_LOGOUT(token) {
-//    console.log('CALL FUNCTION API');
+// Pega detalhes do perfil logado:
+export async function USER_PROFILE_DETAILS(token) {
+   console.log('CALL FUNCTION API');
 
-//    const res = await fetch(`${API_URL}/logout`, {
-//       method: 'POST',
-//       headers: { "Accept": "application/json", Authorization: 'Bearer ' + token }
-//    });
-//    const response = await res.json();
+   const response = await axios.get(`${API_URL}/my-profile`, {
+      headers: { "Accept": "application/json", Authorization: "Bearer " + token } 
+   });
 
-//    // console.log(response);
-//    return response;
-// }
-
-// // Pega detalhes do perfil logado:
-// export async function USER_PROFILE_DETAILS(token) {
-//    console.log('CALL FUNCTION API');
-
-//    const response = await axios.get(`${API_URL}/my-profile`, {
-//       headers: { "Accept": "application/json", Authorization: "Bearer " + token } 
-//    });
-
-//    // console.log(response.data);
-//    return response.data;
-// }
+   // console.log(response.data);
+   return response.data;
+}
 
 // // Pega todos os usuarios (GET):
 // export async function USER_GET_ALL(token, params) {

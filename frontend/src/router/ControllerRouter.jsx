@@ -2,7 +2,9 @@
 import PropTypes from 'prop-types';
 import Cookies from "js-cookie";
 import { useState, useContext, useEffect } from 'react';
-import { Navigate } from 'react-router-dom';
+import { Navigate } from 'react-router';
+
+// API:
 import { USER_PROFILE_DETAILS } from '../API/userApi';
 
 // Contexts:
@@ -15,19 +17,20 @@ import { toast } from 'react-toastify';
 //import { formatarHora } from '../../../utils/formatarNumbers';
 
 // Assets:
-import SpinnerLogo from '../assets/BIZSYS_logo_icon.png';
+// import SpinnerLogo from '../assets/BIZSYS_logo_icon.png';
 
 
 ControllerRouter.propTypes = {
     children: PropTypes.array.isRequired,
 }
 export default function ControllerRouter({ children }) {
-    const [loading, setLoading] = useState(true);
-    
     const {
         profileDetails, 
         setProfileDetails
     } = useContext(UserContext);
+    
+    const [loading, setLoading] = useState(true);
+    
 
 
 
@@ -36,7 +39,7 @@ export default function ControllerRouter({ children }) {
         async function checkToken()
         {
             console.log('Effect ControllerRouter');
-            const tokenCookie = Cookies.get('tokenEstoque') || null;  
+            const tokenCookie = Cookies.get('token_jc') || null;  
 
             try {
                 const response = await USER_PROFILE_DETAILS(JSON.parse(tokenCookie));
@@ -54,16 +57,17 @@ export default function ControllerRouter({ children }) {
                 }
             }
             catch(error) {
-                console.error('DEU ERRO: ', error);
-    
                 if(error?.response?.data?.message == 'Unauthenticated.') {
+                    console.error('Requisição não autenticada. Token Invalido!');
                     // remove token e profileDetails;
-                    Cookies.remove('tokenEstoque');
+                    Cookies.remove('token_jc');
                     setProfileDetails(null);
                 }
                 else {
                     console.error('Houve algum erro.');
                 }
+
+                console.error('DETALHES DO ERRO: ', error);
             }
 
             setLoading(false);
@@ -71,16 +75,17 @@ export default function ControllerRouter({ children }) {
         checkToken();
     }, [setProfileDetails]);
 
-    // console.log('Profile: ', profileDetails);
     
+
 
 
     return (
         <>
         {loading ? (
 
-            <div className="loading-route">
-                <img src={SpinnerLogo} alt="" />
+            <div className="loading_route">
+                {/* <img src={SpinnerLogo} alt="" /> */}
+                <span className="loader_black"></span>
             </div>
 
         ) : (
@@ -88,7 +93,7 @@ export default function ControllerRouter({ children }) {
             profileDetails ? (
                 children
             ) : (
-                <Navigate to='/' />
+                <Navigate to='/login' />
             )
         
         )}

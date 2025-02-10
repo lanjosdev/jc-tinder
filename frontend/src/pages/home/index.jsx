@@ -102,9 +102,9 @@ export default function Home() {
     return (
         <div className="Page Home">
             
-            <NavBar/>
+            <NavBar showBtnBack={false} />
 
-            <main className='PageContent HomeContent grid'>
+            <main className='PageContent HomeContent grid animate__animated animate__fadeIn'>
                 <div className="persons">
                     {loading ? (
                         <h1>CARREGANDO...</h1>

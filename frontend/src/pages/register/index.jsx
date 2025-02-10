@@ -207,9 +207,9 @@ export default function Register() {
 
                         <div className="label--input">
                             <label htmlFor="">Número de telefone</label>
-                            {/* //=// */}
                             <input className="input" type="tel" 
-                            placeholder="(99) 99999-9999" 
+                            placeholder="WhatsApp (Ex: 11980556891)" 
+                            minLength="11" maxLength="11"
                             value={phone}
                             onChange={(e)=> setPhone(e.target.value)}
                             data-error={`${error.phone}`}

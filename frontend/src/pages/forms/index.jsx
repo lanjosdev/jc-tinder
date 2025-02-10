@@ -76,7 +76,7 @@ export default function Forms() {
 
 
 
-    //=// refatorar esses effects para virar useCallback e try em dupla com genders + gendersOptional
+    //=// refatorar esses effects para virar useCallback e try em dupla com genders + gendersOptional (acho q um promises all)
     useEffect(()=> {
         async function getAllGenders() {
             console.log('Effect /Forms');
@@ -412,7 +412,8 @@ export default function Forms() {
             if(response.success) {
                 ////toast.success('FORM COMPLETO');
 
-                setTimeout(()=> navigate('/home'), 700);
+                // setTimeout(()=> navigate('/home'), 700);
+                navigate('/home');
             }
             else if(response.success == false) {
                 toast.error(response.message);

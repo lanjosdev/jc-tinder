@@ -6,7 +6,9 @@
 
 .PageContent.FormsContent {
     /* background-color: yellow; */
-    padding-bottom: 7.5rem;
+    &:has(.btns_container) {
+        padding-bottom: 10rem;
+    }
 
     .content_main {
 

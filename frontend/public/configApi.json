@@ -1,5 +1,5 @@
 {
     "base_url": "http://192.168.1.210:8000",
     "api_url": "https://euphoriatest.bizsys.com.br/v1/api",
-    "images_url": "https://orcamento.bizsys.com.br/v1/storage/"
+    "images_url": "https://euphoriatest.bizsys.com.br/v1/"
 }

@@ -5,7 +5,7 @@ import { createContext, useState } from "react";
 import { useNavigate } from 'react-router';
 
 // API
-import { USER_LOGIN } from "../API/userApi";
+import { USER_LOGIN, USER_LOGOUT } from "../API/userApi";
 
 // Cria o Contexto:
 const UserContext = createContext();
@@ -60,58 +60,63 @@ export function UserProvider({ children }) {
                 toast.error('Erro inesperado.');
             }
         }
-        catch(error) {
-            console.error('Deu erro: ', error);
-            
+        catch(error) {            
             if(error?.response?.data?.message == 'Unauthenticated.') {
                 console.error('Requisição não autenticada.');
             }
             else {
                 toast.error('Houve algum erro.');
             }
+
+            console.error('DETALHES DO ERRO: ', error);
         }
         
         setLoading(false);        
     }
 
     // Logout usuario:
-    // async function logoutUser() 
-    // {
-    //     setLoading(true);    
-    //     console.log('Call function Logout do Context...');
-    //     const tokenCookie = Cookies.get('tokenEstoque') || null;
+    function removeCookie() {
+        setProfileDetails(null);               
+        Cookies.remove('token_jc');
 
-    //     try {
-    //         const response = await USER_LOGOUT(JSON.parse(tokenCookie));
-    //         console.log(response);  
+        navigate('/login');
+        toast.success('Usuário desconectado.');
+    }
 
-    //         if(response.success || response.message == 'Unauthenticated.') {
-    //             setProfileDetails(null);               
-    //             Cookies.remove('tokenEstoque');
+    async function logoutUser() 
+    {
+        setLoading(true);    
+        console.log('Call function Logout do Context...');
+        const tokenCookie = Cookies.get('token_jc') || null;
 
-    //             navigate('/');
-    //             toast.success('Usuário desconectado.');
-    //         }
-    //         else if(response.success == false) {
-    //             toast.error(response.message);
-    //         }
-    //         else {
-    //             toast.error('Erro inesperado.');
-    //         }
-    //     }
-    //     catch(error) {
-    //         console.error('Deu erro: ', error);
+        try {
+            const response = await USER_LOGOUT(JSON.parse(tokenCookie));
+            console.log(response);  
 
-    //         if(error?.response?.data?.message == 'Unauthenticated.') {
-    //             toast.error('Requisição não autenticada.');
-    //         }
-    //         else {
-    //             toast.error('Houve algum erro.');
-    //         }
-    //     }
+            if(response.success || response.message == 'Unauthenticated.') {
+                removeCookie();
+            }
+            else if(response.success == false) {
+                toast.error(response.message);
+            }
+            else {
+                toast.error('Erro inesperado.');
+            }
+        }
+        catch(error) {
+            if(error?.response?.data?.message == 'Unauthenticated.') {
+                console.error('Requisição não autenticada.');
+                removeCookie();
+            }
+            else {
+                toast.error('Houve algum erro.');
+            }
 
-    //     setLoading(false);
-    // }
+            console.error('DETALHES DO ERRO: ', error);
+        }
+
+        setLoading(false);
+    }
 
     
     return (
@@ -121,6 +126,7 @@ export function UserProvider({ children }) {
             profileDetails, 
             setProfileDetails, 
             logarUser, 
+            logoutUser,
             settingsAdmin, 
             setSettingsAdmin
         }} 

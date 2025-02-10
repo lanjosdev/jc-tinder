@@ -4,6 +4,9 @@ import Cookies from "js-cookie";
 import { useContext, useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router';
 
+// Config JSON:
+import imagesServer from '../../../public/configApi.json';
+
 // API
 // import { PRODUCT_GET_ALERT } from '../../API/productApi';
 
@@ -29,7 +32,7 @@ NavBar.propTypes = {
 export function NavBar({ showBtnBack=true, showBtnProfile=true }) {
     const {
         loading,
-        profileDetails,
+        profileDetails
     } = useContext(UserContext);
     // Estados do componente:
     const [loadingMatches, setLoadingMatches] = useState(true);
@@ -118,12 +121,12 @@ export function NavBar({ showBtnBack=true, showBtnProfile=true }) {
 
             <nav className="NavBarContent grid">
                 <div className="nav_left">
-                    <button 
+                    <Link 
                     className={`btn back ${!showBtnBack ? 'hidden' : ''}`}
                     onClick={()=> navigate(-1)} 
                     >
                         <ion-icon name="chevron-back"></ion-icon>
-                    </button>
+                    </Link>
 
                     <Link 
                     className='logo' 
@@ -145,7 +148,7 @@ export function NavBar({ showBtnBack=true, showBtnProfile=true }) {
                                 <i className="bi bi-person-circle"></i>
                             ) : (
                                 <img 
-                                src="https://euphoriatest.bizsys.com.br/v1/images/thumbnails/thumb_4-2025-02-05_18-00-52-67a3d184d5c16.jpg" alt="Foto do perfil"
+                                src={`${imagesServer.images_url}${profileDetails.photos[0].thumb_photo}`} alt="Foto do perfil"
                                 />
                             )}
                         </div>

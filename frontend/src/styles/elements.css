@@ -70,7 +70,7 @@ body:has(.Checkout) {
     box-sizing: border-box;
     animation: rotation 1s linear infinite;
 }
-.loader-black {
+.loader_black {
     width: 17px;
     height: 17px;
     border: 2px solid var(--color-b);
@@ -80,7 +80,7 @@ body:has(.Checkout) {
     box-sizing: border-box;
     animation: rotation 1s linear infinite;
 }
-.loading-route {
+.loading_route {
     min-height: 100vh;
     min-height: 100dvh;
 
@@ -88,7 +88,7 @@ body:has(.Checkout) {
     justify-content: center;
     align-items: center;
 
-    .loader {
+    .loader, .loader_black {
         width: 10rem;
         height: 10rem;
     }
