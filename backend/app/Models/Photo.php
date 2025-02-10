@@ -23,7 +23,7 @@ class Photo extends Model
     {
         return [
             'name_photo' => 'required|array', // Certifique-se de validar como array
-            'name_photo.*' => 'required|image|mimes:jpeg,png,jpg|max:20480', // Valide cada item do array
+            'name_photo.*' => 'required|image|mimes:jpeg,png,jpg|', // Valide cada item do array
             'fk_user_photos_id' => 'exists:users,id'
         ];
     }
