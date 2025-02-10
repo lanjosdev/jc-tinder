@@ -81,16 +81,21 @@ class MeController extends Controller
                 'birth_data' => $myProfile->birth_data,
                 'email' => $myProfile->email,
                 'gender' => $myProfile->fk_gender_user_id ? $myProfile->gender->name : null,
+                'gender_id' => $myProfile->fk_gender_user_id ? $myProfile->gender->id : null,
                 'gender_description' => $myProfile->fk_gender_user_id ? $myProfile->gender->description : null,
                 'sub_gender' => $myProfile->fk_sub_gender_user_id ? $myProfile->sub_gender->name : null,
+                'sub_gender_id' => $myProfile->fk_sub_gender_user_id ? $myProfile->sub_gender->id : null,
                 'sub_gender_description' => $myProfile->fk_sub_gender_user_id ? $myProfile->sub_gender->description : null,
+                'gender_main' => $myProfile->fk_sub_gender_user_id ? $myProfile->sub_gender->fk_genders_sub_genders_id : null, //genero pai
                 'sexuality' => $myProfile->fk_sexuality_user_id ? $myProfile->sexuality->name : null,
                 'sexuality_description' => $myProfile->fk_sexuality_user_id ? $myProfile->sexuality->description : null,
+                'sexuality_id' => $myProfile->fk_sexuality_user_id ? $myProfile->sexuality->id : null,
                 'preferences' => $preferences,
                 'photos' => $photosUser,
                 'minimum_age_preference' => $myProfile->minimum_age,
                 'maximum_age_preference' => $myProfile->maximum_age,
                 'habits' => $habits,
+                'about_me' => $myProfile->about_me,
                 'created_at' => $myProfile->created_at ? $this->utils->formattedDate($myProfile, 'created_at') : null,
                 'updated_at' => $myProfile->updated_at ? $this->utils->formattedDate($myProfile, 'updated_at') : null,
                 'deleted_at' => $myProfile && $myProfile->trashed()
@@ -312,6 +317,8 @@ class MeController extends Controller
         try {
             $user = $request->user();
 
+            $id_gender = $user->fk_gender_user_id;
+
             $validatedData = $request->validate(
                 $this->user->rulesUpdateInfoUser(),
                 $this->user->feedbackUpdateInfoUser()
@@ -364,6 +371,8 @@ class MeController extends Controller
                     }
                 }
 
+                $fk_sub_gender_user_id = !empty($fk_sub_gender_user_id) ? $fk_sub_gender_user_id : null;
+
                 //Atualiza as informações que foram alteradas
                 $updateUser = $user->update(array_filter([
                     'name' => $name !== $user->name ? $name : null,
@@ -371,9 +380,10 @@ class MeController extends Controller
                     'birth_data' => $birth_data !== $user->birth_data ? $birth_data : null,
                     'fk_sexuality_user_id' => $fk_sexuality_user_id !== $user->fk_sexuality_user_id ? $fk_sexuality_user_id : null,
                     'fk_gender_user_id' => $fk_gender_user_id !== $user->fk_gender_user_id ? $fk_gender_user_id : null,
-                    'fk_sub_gender_user_id' => $fk_sub_gender_user_id !== $user->fk_sub_gender_user_id ? $fk_sub_gender_user_id : null,
+                    'fk_sub_gender_user_id' => $fk_sub_gender_user_id,
                     'about_me' => $about_me !== $user->about_me ? $about_me : null,
                 ]));
+
 
                 if ($updateUser) {
                     DB::commit();
