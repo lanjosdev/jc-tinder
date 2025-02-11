@@ -27,16 +27,10 @@ class MatcheController extends Controller
         try {
             $user = $request->user();
 
-            // $matches = Matche::where('status', 1)
-            //     ->where(function ($query) use ($user) {
-            //         $query->where('fk_user_matches_id', $user->id)
-            //             ->orWhere('fk_target_user_matches_id', $user->id);
-            //     })
-            //     ->get();
-
-            //pega os users que de like
+            //pega os users que dei like
             $userLikes = Matche::where('fk_user_matches_id', $user->id)
                 ->where('status', 1)
+                ->whereNull('deleted_at')
                 ->get();
 
             $matchedUserIds = [];
@@ -46,29 +40,33 @@ class MatcheController extends Controller
                 $matchingLike = Matche::where('fk_user_matches_id', $like->fk_target_user_matches_id)
                     ->where('fk_target_user_matches_id', $user->id)
                     ->where('status', 1)
+                    ->whereNull('deleted_at')
                     ->first();
 
                 if ($matchingLike) {
                     $matchedUserIds[] = $like->fk_target_user_matches_id;
                 }
             }
-
             //guarda ids sem repetição
             $matchedUserIds = array_unique($matchedUserIds);
 
-            //pega id, name e phone para retornar
+            //se diferente de vazio pega todos users com base nos id's informados
             if (!empty($matchedUserIds)) {
                 $users = User::whereIn('id', $matchedUserIds)->get();
+            } else {
+                $users = null;
             }
 
-            $users = $users->map(function ($users) {
-                return [
-                    'id' => $users->id,
-                    'name' => $users->name,
-                    'phone' => $users->phone,
-                    'age' => $this->utils->verifyAdult($users->birth_data),
-                ];
-            });
+            if ($users) {
+                $users = $users->map(function ($users) {
+                    return [
+                        'id' => $users->id,
+                        'name' => $users->name,
+                        'phone' => $users->phone,
+                        'age' => $this->utils->verifyAdult($users->birth_data),
+                    ];
+                });
+            } 
 
             return response()->json([
                 'success' => true,
