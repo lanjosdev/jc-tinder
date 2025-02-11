@@ -9,9 +9,11 @@ use App\Http\Controllers\GenderController;
 use App\Http\Controllers\HabitController;
 use App\Http\Controllers\MatcheController;
 use App\Http\Controllers\PhotoController;
+use App\Http\Controllers\SequenceController;
 use App\Http\Controllers\SexualityController;
 use App\Http\Controllers\SubGenderController;
 use App\Http\Controllers\UserController;
+use App\Models\Sequence;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -19,19 +21,20 @@ Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
 
-
+//register
 Route::post('/register', [AuthRegisterController::class, 'register']);
+//login
 Route::post('/login', [AuthLoginController::class, 'login']);
 
 Route::middleware(['auth:sanctum'])->group(function () {
-   
 
-    
+
+
     //logout
     Route::post('/logout', [AuthLogoutController::class, 'logout']);
 
 
-    
+
     //remove-account
     Route::delete('/remove-account', [AuthRemoveAccountController::class, 'removeAccount']);
 
@@ -54,13 +57,10 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
     //get-all-genders
     Route::get('/get-all-genders', [GenderController::class, 'getAll']);
-
     //get-all-sexualities
     Route::get('/get-all-sexualities', [SexualityController::class, 'getAll']);
-
     //get-all-sub-genders
     Route::get('/get-all-sub-genders', [SubGenderController::class, 'getAll']);
-
     //get-all-habits
     Route::get('/get-all-habits', [HabitController::class, 'getAll']);
 
@@ -77,7 +77,6 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
     //get-all-users
     Route::get('/get-all-users', [UserController::class, 'getAll']);
-    
     //get-user-especific
     Route::get('/get-user/{id}', [UserController::class, 'getUserId']);
 
@@ -86,4 +85,9 @@ Route::middleware(['auth:sanctum'])->group(function () {
     //match
     Route::post('/match', [MatcheController::class, 'matche']);
     Route::get('/get-all-match', [MatcheController::class, 'getAllMatches']);
+
+
+
+    //sequences_photos
+    Route::post('/update-sequence-photo', [SequenceController::class, 'updateSequence']);
 });

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\Sequence;
 use App\Models\SubGender;
 use App\Models\User;
 use App\Models\Utils;
@@ -47,21 +48,12 @@ class MeController extends Controller
                 ->whereIn('id', $preferencesUser)
                 ->pluck('name');
 
-            // $photosUser = DB::table('photos')
-            //     ->where('fk_user_photos_id', $myProfile->id)
-            //     ->whereNull('deleted_at')
-            //     ->pluck('thumb_photo', 'id', 'name_photo')
-            //     ->toArray();
-
-            // // Converte para array de objetos
-            // $photosUserArray = array_map(function ($id, $thumbPhoto, $photo) {
-            //     return (object) ['id' => $id, 'thumb_photo' => $thumbPhoto, 'photo' =>$photo];
-            // }, array_keys($photosUser),$photosUser);
-
             $photosUser = DB::table('photos')
-                ->where('fk_user_photos_id', $myProfile->id)
-                ->whereNull('deleted_at')
-                ->select('id', 'thumb_photo', 'name_photo')
+                ->join('sequences', 'photos.id', '=', 'sequences.fk_sequences_photos_id') // Faz o join com sequences
+                ->where('photos.fk_user_photos_id', $myProfile->id)
+                ->whereNull('photos.deleted_at')
+                ->select('photos.id', 'photos.thumb_photo', 'photos.name_photo', 'sequences.order') // Seleciona também a ordem
+                ->orderBy('sequences.order', 'asc') // Ordena com base na tabela sequences
                 ->get()
                 ->map(function ($photo) {
                     return (object) [

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Photo;
+use App\Models\Sequence;
 use App\Models\Utils;
 use Exception;
 use Illuminate\Database\QueryException;
@@ -14,11 +15,13 @@ class PhotoController extends Controller
 {
     protected $photo;
     protected $utils;
+    protected $sequence;
 
-    public function __construct(Photo $photo, Utils $utils)
+    public function __construct(Photo $photo, Utils $utils, Sequence $sequence)
     {
         $this->photo = $photo;
         $this->utils = $utils;
+        $this->sequence = $sequence;
     }
 
     public function store(Request $request)
@@ -27,6 +30,7 @@ class PhotoController extends Controller
         DB::beginTransaction();
 
         try {
+                        
             $user = $request->user();
 
             $validatedData = $request->validate(
@@ -36,15 +40,15 @@ class PhotoController extends Controller
 
             if ($validatedData) {
 
-                $quantityPhotoUser = Photo::where('fk_user_photos_id', $user->id)->get(); 
-                
+                $quantityPhotoUser = Photo::where('fk_user_photos_id', $user->id)->get();
+
                 if (count($quantityPhotoUser) == 4) {
                     return response()->json([
-                       'success' => false,
-                       'message' => 'Não é possível adicionar mais fotos.' 
+                        'success' => false,
+                        'message' => 'Não é possível adicionar mais fotos.'
                     ]);
                 }
-                
+
                 $photos = $request->file('name_photo');
 
                 // Garante que sempre será tratado como array
@@ -65,12 +69,12 @@ class PhotoController extends Controller
                         'success' => false,
                         'message' => 'Você já tem 1 foto registrada permitido a inserção de até mais 3 fotos.',
                     ]);
-                }elseif(count($quantityPhotoUser) == 2 && count($photos) > 2) {
+                } elseif (count($quantityPhotoUser) == 2 && count($photos) > 2) {
                     return response()->json([
                         'success' => false,
                         'message' => 'Você já tem 2 fotos registradas permitido a inserção de até mais 2 fotos.',
                     ]);
-                }elseif(count($quantityPhotoUser) == 3 && count($photos) > 1) {
+                } elseif (count($quantityPhotoUser) == 3 && count($photos) > 1) {
                     return response()->json([
                         'success' => false,
                         'message' => 'Você já tem 3 fotos registradas permitido a inserção de até mais 1 foto.',
@@ -88,6 +92,11 @@ class PhotoController extends Controller
                         'name_photo' => $imagePath,
                         'thumb_photo' => $thumbnailPaths[$index] ?? null,
                         'fk_user_photos_id' => $user->id,
+                    ]);
+                    
+                    $this->sequence->create([
+                        'order' => 0,
+                        'fk_sequences_photos_id' => $photoUser['id'],
                     ]);
                 }
             }
@@ -152,8 +161,6 @@ class PhotoController extends Controller
 
             // dd($responseResult);
 
-            // dd();
-
             if ($photoUser) {
                 DB::commit();
 
@@ -200,8 +207,10 @@ class PhotoController extends Controller
             }
 
             $photo = Photo::where('id', $id)->first();
+            
+            $sequence = Sequence::where('fk_sequences_photos_id', $id)->first();
 
-            if (!$photo) {
+            if (!$photo || !$sequence) {
                 return response()->json([
                     'success' => false,
                     'message' => 'Nenhum resultado encontrado, por favor verifique.'
@@ -245,6 +254,7 @@ class PhotoController extends Controller
 
             //deleta img antiga com soft-delete
             $photo->delete();
+            $sequence->delete();
 
             if ($validatedData) {
                 $newPhotoUser = $this->photo->create([
@@ -304,8 +314,9 @@ class PhotoController extends Controller
 
             //verificar se foto informada existe
             $photo = Photo::where('id', $id)->first();
+            $sequence = Sequence::where('fk_sequences_photos_id', $id)->first();
 
-            if (!$photo) {
+            if (!$photo || !$sequence) {
                 return response()->json([
                     'success' => false,
                     'message' => 'Nenhum resultado encontrado, por favor verifique.'
@@ -332,6 +343,7 @@ class PhotoController extends Controller
 
             //deleta com softdeletes
             $photo->delete();
+            $sequence->delete();
 
             if ($photo) {
                 DB::commit();

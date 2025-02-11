@@ -45,12 +45,20 @@ class Utils
                 $image = imagecreatefromgif($imagePath);
                 break;
             default:
-                throw new Exception("Formato de imagem não suportado para miniatura: " . $mimeType);
+                return response()->json([
+                    'success' => false,
+                    'message' =>  "Formato de imagem não suportado para miniatura: " . $mimeType,
+                ]);
+                // throw new Exception("Formato de imagem não suportado para miniatura: " . $mimeType);
         }
 
         // Verificar se a imagem foi carregada corretamente
         if (!$image) {
-            throw new Exception("Erro ao carregar a imagem: " . $imagePath);
+            return response()->json([
+                'success' => false,
+                'message' =>  "Erro ao carregar a imagem: " . $imagePath,
+            ]);
+            // throw new Exception("Erro ao carregar a imagem: " . $imagePath);
         }
 
         // Calculando a proporção da miniatura
@@ -109,7 +117,11 @@ class Utils
                 if (file_exists($fullPath)) {
                     list($widthOld, $heightOld) = getimagesize($fullPath);
                 } else {
-                    throw new Exception("Largura da imagem inválida.");
+                    return response()->json([
+                        'success' => false,
+                        'message' =>  "Largura da imagem inválida.",
+                    ]);
+                    // throw new Exception("Largura da imagem inválida.");
                 }
 
                 $thumbnailHeight = ($heightOld * $thumbnailWidth) / $widthOld;
@@ -139,6 +151,7 @@ class Utils
 
 
 
+    ////////////////////teste
     ////////////////////teste
     ////////////////////função para pegar imagem de uma pasta teste
     function handleFolderImageUploads($folderPath, $user, $thumbnailWidth = 150, $thumbnailHeight = 150)

@@ -57,6 +57,7 @@ class MatcheController extends Controller
                 $users = null;
             }
 
+            // se existir algum user que deu match
             if ($users) {
                 $users = $users->map(function ($users) {
                     return [
@@ -66,7 +67,7 @@ class MatcheController extends Controller
                         'age' => $this->utils->verifyAdult($users->birth_data),
                     ];
                 });
-            } 
+            }
 
             return response()->json([
                 'success' => true,
@@ -112,7 +113,7 @@ class MatcheController extends Controller
                 if ($fk_target_user_matches_id == $user->id) {
                     return response()->json([
                         'success' => false,
-                        'message' => 'Não é possível realizar essa ação. Tente novamente.',
+                        'message' => 'Não é possível realizar essa ação.',
                     ]);
                 }
 
@@ -138,7 +139,7 @@ class MatcheController extends Controller
                         'data' => $responseMatch,
                     ]);
                 }
-            } //97141-3423
+            }
         } catch (ValidationException $ve) {
             DB::rollBack();
             return response()->json([
