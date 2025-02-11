@@ -370,16 +370,16 @@ class MeController extends Controller
                         ]);
                     }
                 }
-                
+
                 if ($fk_gender_user_id != $user->fk_gender_user_id && empty($fk_sub_gender_user_id) || $fk_sub_gender_user_id == null) {
                     $fk_sub_gender_user_id = null;
                 }
 
                 //Atualiza as informações que foram alteradas
                 $updateUser = $user->update([
-                    'name' => $name ,
-                    'phone' => $phone ,
-                    'birth_data' => $birth_data ,
+                    'name' => $name,
+                    'phone' => $phone,
+                    'birth_data' => $birth_data,
                     'fk_sexuality_user_id' => $fk_sexuality_user_id,
                     'fk_gender_user_id' => $fk_gender_user_id,
                     // 'fk_sub_gender_user_id' => $fk_sub_gender_user_id !== $user->fk_sub_gender_user_id ? $fk_sub_gender_user_id : null,

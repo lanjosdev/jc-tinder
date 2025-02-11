@@ -73,6 +73,11 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
     //get-all-users
     Route::get('/get-all-users', [UserController::class, 'getAll']);
+    
+
+    
+    //get-user-especific
+    Route::get('/get-user/{id}', [UserController::class, 'getUserId']);
 
 
 

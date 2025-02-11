@@ -66,7 +66,7 @@ class UserController extends Controller
                 $habits = DB::table('habits')
                     ->whereIn('id', $habitsUser)
                     ->pluck('name');
-                    
+
                 $preferencesUser = DB::table('preferences')
                     ->where('fk_user_preferences_id', $users->id)
                     ->pluck('fk_gender_preferences_id')
@@ -106,6 +106,7 @@ class UserController extends Controller
                     'minimum_age_preference' => $users->minimum_age,
                     'maximum_age_preference' => $users->maximum_age,
                     'habits' => $habits,
+                    'about_me' => $users->about_me,
                     'created_at' => $users->created_at ? $this->utils->formattedDate($users, 'created_at') : null,
                     'updated_at' => $users->updated_at ? $this->utils->formattedDate($users, 'updated_at') : null,
                     'deleted_at' => $users && $users->trashed()
@@ -119,6 +120,108 @@ class UserController extends Controller
                     'success' => true,
                     'message' => 'Usuário com o seu perfil recuperados com sucesso',
                     'data' => $getAll,
+                ]);
+            }
+        } catch (ValidationException $ve) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Erro de validação.',
+                'errors' => $ve->errors(),
+            ]);
+        } catch (QueryException $qe) {
+            return response()->json([
+                'success' => false,
+                'message' => "Error DB: " . $qe->getMessage(),
+            ]);
+        } catch (Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => "Error: " . $e->getMessage(),
+            ]);
+        }
+    }
+
+    public function getUserId(Request $request, $id)
+    {
+        try {
+
+            $userId = User::where('id', $id)->get();
+
+            if (!$userId) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Nenhum resultado encontrado.'
+                ]);
+            }
+
+            //formata o retorno dos users com mais informações
+            $getUserId = $userId->map(function ($user) {
+
+                $habitsUser = DB::table('user_habits')
+                    ->where('fk_user_user_habits_id', $user->id)
+                    ->pluck('fk_habits_user_habits_id')
+                    ->toArray();
+
+                $habits = DB::table('habits')
+                    ->whereIn('id', $habitsUser)
+                    ->pluck('name');
+
+                $preferencesUser = DB::table('preferences')
+                    ->where('fk_user_preferences_id', $user->id)
+                    ->pluck('fk_gender_preferences_id')
+                    ->toArray();
+
+                $preferences = DB::table('genders')
+                    ->whereIn('id', $preferencesUser)
+                    ->pluck('name');
+
+                $photosUser = DB::table('photos')
+                    ->where('fk_user_photos_id', $user->id)
+                    ->whereNull('deleted_at')
+                    ->select('id', 'thumb_photo', 'name_photo')
+                    ->get()
+                    ->map(function ($photo) {
+                        return (object) [
+                            'id' => $photo->id,
+                            'photo' => $photo->name_photo,
+                            'thumb_photo' => $photo->thumb_photo,
+                        ];
+                    })
+                    ->toArray();
+
+                return [
+                    'id' => $user->id,
+                    'name' => $user->name,
+                    'age' => $this->utils->verifyAdult($user->birth_data),
+                    'adult' => $user->adult,
+                    'phone' => $user->phone,
+                    'birth_data' => $user->birth_data,
+                    'email' => $user->email,
+                    'gender' => $user->fk_gender_user_id ? $user->gender->name : null,
+                    'gender_description' => $user->fk_gender_user_id ? $user->gender->description : null,
+                    'sub_gender' => $user->fk_sub_gender_user_id ? $user->sub_gender->name : null,
+                    'sub_gender_description' => $user->fk_sub_gender_user_id ? $user->sub_gender->description : null,
+                    'sexuality' => $user->fk_sexuality_user_id ? $user->sexuality->name : null,
+                    'sexuality_description' => $user->fk_sexuality_user_id ? $user->sexuality->description : null,
+                    'preferences' => $preferences,
+                    'photos' => $photosUser,
+                    'minimum_age_preference' => $user->minimum_age,
+                    'maximum_age_preference' => $user->maximum_age,
+                    'habits' => $habits,
+                    'about_me' => $user->about_me,
+                    'created_at' => $user->created_at ? $this->utils->formattedDate($user, 'created_at') : null,
+                    'updated_at' => $user->updated_at ? $this->utils->formattedDate($user, 'updated_at') : null,
+                    'deleted_at' => $user && $user->trashed()
+                        ? $this->utils->formattedDate($user, 'deleted_at')
+                        : $user->deleted_at ?? null,
+                ];
+            });
+
+            if ($getUserId) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Usuário recuperado com sucesso',
+                    'data' => $getUserId,
                 ]);
             }
         } catch (ValidationException $ve) {

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Matche;
 use App\Models\User;
+use App\Models\Utils;
 use Exception;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
@@ -13,10 +14,12 @@ use Illuminate\Validation\ValidationException;
 class MatcheController extends Controller
 {
     protected $matche;
+    protected $utils;
 
-    public function __construct(Matche $matche)
+    public function __construct(Matche $matche, Utils $utils)
     {
         $this->matche = $matche;
+        $this->utils = $utils;
     }
 
     public function getAllMatches(Request $request)
@@ -52,17 +55,25 @@ class MatcheController extends Controller
 
             //guarda ids sem repetição
             $matchedUserIds = array_unique($matchedUserIds);
-           
+
             //pega id, name e phone para retornar
             if (!empty($matchedUserIds)) {
-                $users = User::whereIn('id', $matchedUserIds)
-                    ->get(['id', 'name', 'phone']);
+                $users = User::whereIn('id', $matchedUserIds)->get();
             }
-            
+
+            $users = $users->map(function ($users) {
+                return [
+                    'id' => $users->id,
+                    'name' => $users->name,
+                    'phone' => $users->phone,
+                    'age' => $this->utils->verifyAdult($users->birth_data),
+                ];
+            });
+
             return response()->json([
-               'success' => true,
-               'message' => 'Matches recuprados com sucesso.', 
-               'data' => $users, 
+                'success' => true,
+                'message' => 'Matches recuprados com sucesso.',
+                'data' => $users,
             ]);
         } catch (ValidationException $ve) {
             return response()->json([
@@ -115,13 +126,21 @@ class MatcheController extends Controller
 
                 if ($matche) {
                     DB::commit();
+
+                    $responseMatch = Matche::where('fk_user_matches_id', $fk_target_user_matches_id)
+                        ->where('fk_target_user_matches_id', $user->id)
+                        ->where('status', 1)
+                        ->get();
+
+                    $responseMatch = $responseMatch->isEmpty() ? "Não houve match" : "Match";
+
                     return response()->json([
                         'success' => true,
-                        'message' => 'Enviado com sucesso.',
-                        'data' => $matche,
+                        'message' => 'Resgistrado com sucesso.',
+                        'data' => $responseMatch,
                     ]);
                 }
-            }
+            } //97141-3423
         } catch (ValidationException $ve) {
             DB::rollBack();
             return response()->json([
