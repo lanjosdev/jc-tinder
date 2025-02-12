@@ -97,27 +97,10 @@ class PhotoController extends Controller
 
                     $result++;
 
-                    if (count($quantityPhotosUser) == 1) {
-                        $this->sequence->create([
-                            'order' => 1,
-                            'fk_sequences_photos_id' => $photoUser['id'],
-                        ]);
-                    } elseif (count($quantityPhotosUser) == 2) {
-                        $this->sequence->create([
-                            'order' => 2,
-                            'fk_sequences_photos_id' => $photoUser['id'],
-                        ]);
-                    } elseif (count($quantityPhotosUser) == 3) {
-                        $this->sequence->create([
-                            'order' => 3,
-                            'fk_sequences_photos_id' => $photoUser['id'],
-                        ]);
-                    } else {
-                        $this->sequence->create([
-                            'order' => $result,
-                            'fk_sequences_photos_id' => $photoUser['id'],
-                        ]);
-                    }
+                    $this->sequence->create([
+                        'order' => $result,
+                        'fk_sequences_photos_id' => $photoUser['id'],
+                    ]);
                 }
             }
 
@@ -211,7 +194,7 @@ class PhotoController extends Controller
         }
     }
 
-    public function update(Request $request, $id)
+    public  function update(Request $request, $id)
     {
         DB::beginTransaction();
         try {
