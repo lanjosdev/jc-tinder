@@ -1,6 +1,6 @@
 // Funcionalidades / Libs:
 import Cookies from "js-cookie";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router";
 
 // API:
@@ -10,12 +10,12 @@ import { FORMS_CREATE_PROFILE, FORMS_CREATE_PREFERENCES, FORMS_CREATE_PHOTOS } f
 import { HABIT_GET_ALL } from "../../API/habitsApi";
 
 // Contexts:
-// import UserContext from "../../contexts/userContext";
+import UserContext from "../../contexts/userContext";
 
 // Components:
 import { toast } from "react-toastify";
 import { NavBarSecundary } from "../../components/NavBar/Secundary/NavBarSecundary";
-import { ModalPhoto } from "../../components/Modals/ModalPhoto/ModalPhoto";
+import { ModalPhotoForms } from "../../components/Modals/ModalPhotoForms/ModalPhotoForms";
 
 // Utils
 // import { primeiraPalavra } from "../../utils/formatStrings";
@@ -29,6 +29,7 @@ import './style.css';
 
 
 export default function Forms() {
+    const { profileDetails } = useContext(UserContext);
     // Estados do componente:
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
@@ -81,6 +82,11 @@ export default function Forms() {
         async function getAllGenders() {
             console.log('Effect /Forms');
             setLoading(true);
+
+            //=// Só para teste
+            if(profileDetails.preferences.length > 0) {
+                setStep(3);
+            }
             
             try {
                 setError(true);
@@ -113,7 +119,7 @@ export default function Forms() {
             setLoading(false);
         } 
         getAllGenders();
-    }, [tokenCookie]);
+    }, [tokenCookie, profileDetails]);
 
 
     useEffect(()=> {
@@ -712,7 +718,7 @@ export default function Forms() {
 
 
             {showModal && (
-                <ModalPhoto 
+                <ModalPhotoForms 
                 close={()=> setShowModal(false)}
                 filesPhotos={filesPhotos}
                 setFilesPhotos={setFilesPhotos}

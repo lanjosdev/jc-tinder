@@ -1,0 +1,62 @@
+.Modal {
+    /* border: 4px solid red; */
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 10;
+    width: 100%;
+    height: 100%;
+    padding: 2.5rem 15px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    /* place-items: center; */
+
+    .bg-modal {
+        background-color: #000000b0;
+        /* border: 4px solid yellow; */
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: -1;
+        width: 100%;
+        height: 100%;
+    }
+
+    .Window {
+        background-color: var(--color-bg-2);
+        width: 100%;
+        max-width: 48rem;
+        padding: 2rem;
+        border-radius: 13px;
+    }
+}
+
+
+.Window.WindowPhotoForms {
+    /* background-color: aqua; */
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+
+    .label--input > label:has(span) {
+        display: flex;
+        align-items: center;
+        gap: .5rem;
+
+        font-size: 2rem;
+
+        ion-icon {
+            padding: 0;
+            line-height: 0;
+            font-size: 2.4rem;
+            margin-left: -0.4rem;
+        }
+
+        input[type="file"] {
+            display: none;
+        }
+    }
+}

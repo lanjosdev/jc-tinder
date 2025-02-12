@@ -75,10 +75,10 @@ export default function Settings() {
                     </Link>
 
                     <Link 
-                    to='/edit-photos'
+                    to='/photos'
                     className="btn primary"
                     >
-                        <span>Alterar Fotos</span>
+                        <span>Organizar Fotos</span>
                     </Link>
                 </div>
             </main>

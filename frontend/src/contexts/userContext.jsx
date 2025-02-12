@@ -21,6 +21,7 @@ UserProvider.propTypes = {
 export function UserProvider({ children }) {
     const navigate = useNavigate();
     const [loading, setLoading] = useState(false);
+    const [refreshContext, setRefreshContext] = useState(false);
 
     const [profileDetails, setProfileDetails] = useState(null);
     const [settingsAdmin, setSettingsAdmin] = useState({
@@ -28,6 +29,7 @@ export function UserProvider({ children }) {
         max_input_quantity_min: 100,
     }); //Configs do ambiente para futuras versões (ex: max_input_quantity = 100)
     
+
 
     
     // Logar usuario:
@@ -82,7 +84,6 @@ export function UserProvider({ children }) {
         navigate('/login');
         toast.success('Usuário desconectado.');
     }
-
     async function logoutUser() 
     {
         setLoading(true);    
@@ -123,6 +124,8 @@ export function UserProvider({ children }) {
         <UserContext.Provider
         value={{ 
             loading, 
+            refreshContext,
+            setRefreshContext,
             profileDetails, 
             setProfileDetails, 
             logarUser, 

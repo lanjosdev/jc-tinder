@@ -25,6 +25,7 @@ ControllerRouter.propTypes = {
 }
 export default function ControllerRouter({ children }) {
     const {
+        refreshContext,
         profileDetails, 
         setProfileDetails
     } = useContext(UserContext);
@@ -73,7 +74,7 @@ export default function ControllerRouter({ children }) {
             setLoading(false);
         }
         checkToken();
-    }, [setProfileDetails]);
+    }, [setProfileDetails, refreshContext]);
 
     
 

@@ -1,17 +1,16 @@
 // Funcionalidades / Libs:
 import PropTypes from "prop-types";
-// import { useEffect } from 'react';
+import { useState } from 'react';
 // import Cookies from "js-cookie";
 
 // Components:
 import { toast } from "react-toastify";
-// import { CreateStorage } from "./CreateStorage/CreateStorage";
-// import { UpdateStorage } from "./UpdateStorage/UpdateStorage";
-// import { DeleteStorage } from "./DeleteStorage/DeleteStorage";
-// import { toast } from "react-toastify";
+import { DeletePhoto } from "./DeletePhoto/DeletePhoto";
+import { CreatePhoto } from "./CreatePhoto/CreatePhoto";
+import { UpdatePhoto } from "./UpdatePhoto/UpdatePhoto";
 
 // Utils:
-import { byteToMegabyte } from '../../../utils/convertUnit'
+import { byteToMegabyte } from "../../../utils/convertUnit";
 
 // Assets:
 // import LogoHeader from '../../assets/logo-header.png';
@@ -22,72 +21,40 @@ import './modalphoto.css';
 
 ModalPhoto.propTypes = {
     close: PropTypes.func,
-    filesPhotos: PropTypes.array,
-    setFilesPhotos: PropTypes.func,
-    urlsPhotos: PropTypes.array,
-    setUrlsPhotos: PropTypes.func,
-    inputSelect: PropTypes.object
-    // storageSearchState: PropTypes.any,
-    // setStorageSearchState: PropTypes.func,
-    // setStorageFilterState: PropTypes.func
+    inputSelect: PropTypes.object,
 }
-export function ModalPhoto({ 
-    close, 
-    filesPhotos,
-    setFilesPhotos,
-    urlsPhotos,
-    setUrlsPhotos,
-    inputSelect
-    // storageSearchState, 
-    // setStorageSearchState, 
-    // setStorageFilterState 
-}) {
-    // const [loading, setLoading] = useState(false);
+export function ModalPhoto({ close, inputSelect }) {
+    const [loadingModal, setLoadingModal] = useState(false);
+
+    const [optionWindow, setOptionWindow] = useState(null);
+    const [filePhoto, setFilePhoto] = useState(null);
+    // const [urlPhoto, setUrlPhoto] = useState(null);
+
 
     // const tokenCookie = Cookies.get('tokenEstoque');
 
 
-    // useEffect(()=> {
-    //     // function initialComponent() {
-
-    //         const handleKeyDown = (event)=> {
-    //             if(event.key === 'Escape') {
-    //               close();
-    //             }
-    //         };
-          
-    //         document.addEventListener('keydown', handleKeyDown);
-          
-    //         // Remove o event listener ao desmontar o componente ou fechar o modal
-    //         return () => {
-    //             document.removeEventListener('keydown', handleKeyDown);
-    //         };
-    //     // }
-    //     // initialComponent();
-    // }, [close]);
-
-
     // Função que retorna JSX baseado no switch
-    // const renderWindowModal = ()=> {
-    //     switch(optionModal) {
-    //         case 'create':
-    //             return <h1>OIIIII</h1>;
-    //             // return <CreateStorage close={close} setReflashState={setReflashState} />;
-    //         // case 'update':
-    //         //     return <UpdateStorage close={close} setReflashState={setReflashState} storageSelect={storageSelect} />;
-    //         // case 'delete':
-    //         //     return <DeleteStorage close={close} setReflashState={setReflashState} storageSelect={storageSelect} />;
-    //         default:
-    //             return <div style={{color: 'red'}}>Modal indefinido</div>;
-    //     }
-    // };
+    const renderWindowModal = ()=> {
+        switch(optionWindow) {
+            case 'delete':
+                return <DeletePhoto close={close} setLoadingModal={setLoadingModal} inputSelect={inputSelect} />;
+            case 'create':
+                return <CreatePhoto close={close} setLoadingModal={setLoadingModal} file={filePhoto} />;
+            case 'update':
+                return <UpdatePhoto close={close} setLoadingModal={setLoadingModal} inputSelect={inputSelect} file={filePhoto} />;
+            default:
+                return <div style={{color: 'red'}}><h1>Modal indefinido</h1></div>;
+        }
+    };
 
 
+    
 
-    function handleChangeFile(e) 
-    {
+    function handleChangeFile(e) {
         const file = e.target.files[0] || undefined;
-        //// console.log(file);
+        console.log(file);
+        const optWindow = inputSelect.id ? 'update' : 'create';
 
         // VALIDAÇÕES:
         if(!file) {
@@ -108,50 +75,35 @@ export function ModalPhoto({
         //     return;
         // }   
 
+
         // CHANGE FILE:
         console.log('ARQUIVO OK');                                               
-        const newFilesPhotos = [...filesPhotos];
-        const newUrlsPhotos = [...urlsPhotos];
-        newFilesPhotos[inputSelect.index] = file;
-        newUrlsPhotos[inputSelect.index] = URL.createObjectURL(file);
-        // console.log(newFilesPhotos);  
-        // console.log(newUrlsPhotos);  
-        setFilesPhotos(newFilesPhotos);   
-        setUrlsPhotos(newUrlsPhotos);   
-
-        close();
+        console.log(optWindow);
+        setFilePhoto(file);   
         alert('Tamanho do arquivo: ' + byteToMegabyte(file.size) + 'MB');
+        setOptionWindow(optWindow);
     }
 
-    function handleDelFile() 
-    {
-        console.log(inputSelect);
-
-        const newFilesPhotos = filesPhotos.filter((item, idx)=> idx !== inputSelect.index);
-        const newUrlsPhotos = urlsPhotos.filter((item, idx)=> idx !== inputSelect.index);
-        // console.log(newFilesPhotos);  
-        // console.log(newUrlsPhotos);  
-        setFilesPhotos(newFilesPhotos);   
-        setUrlsPhotos(newUrlsPhotos);  
-
-        close();
+    function handleOptionDel() {
+        console.log('delete');
+        setOptionWindow('delete');
     }
-    
 
 
 
 
     return (
         <div className="Modal ModalPhoto">
-            <div className='bg-modal' onClick={close}></div>
+            <div className='bg-modal' onClick={()=> !loadingModal && close()}></div>
 
-            {/* ??? pode ser q use o renderWindowModal aqui */}
+            {!optionWindow ? (
+
             <div className='Window WindowPhoto'>
                 <div className="label--input">
                     <label>
                         <i className="bi bi-image-fill"></i>
                         <span>
-                            {filesPhotos[inputSelect.index] ? 'Substituir foto' : 'Adicionar foto da galeria'}
+                            {inputSelect.id ? 'Substituir foto' : 'Adicionar foto da galeria'}
                         </span>
 
                         <input 
@@ -179,12 +131,12 @@ export function ModalPhoto({
                 </div>
 
 
-                {inputSelect.index !== 0 && filesPhotos[inputSelect.index] && (
+                {(inputSelect.id && inputSelect.index != 0) && (
                 <>
                 <div className="separator"></div>
 
                 <div className="label--input">
-                    <label onClick={handleDelFile}>
+                    <label onClick={handleOptionDel}>
                         <ion-icon name="close"></ion-icon>
                         {/* <i className="bi bi-trash3"></i> */}
                         <span>Deletar foto</span>
@@ -194,7 +146,13 @@ export function ModalPhoto({
                 )}
             </div>
 
-            {/* {renderWindowModal()} */}
+            ) : (
+
+            <>{renderWindowModal()}</>
+
+            )}
+            
+
         </div>
     )        
 }

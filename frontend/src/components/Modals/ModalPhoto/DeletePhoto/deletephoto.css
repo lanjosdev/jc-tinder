@@ -1,0 +1,40 @@
+.WindowConfirm {
+    background-color: pink;
+    width: 100%;
+    max-width: fit-content;
+
+    border: .2rem solid var(--color-w);
+    border-radius: 22px;
+    box-shadow: 2px 2px 0 var(--color-w);
+    
+    .photo {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        position: relative;
+        border-bottom: .2rem solid var(--color-b);
+
+        img {
+            border-radius: 20px 20px 0 0;
+            max-width: 100%;
+            height: 60dvh;
+            min-height: 35rem;
+            max-height: 70rem;
+        }
+        .preview {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+    }
+
+    .text_confirm {
+
+    }
+
+    .btns_container {
+
+    }
+}

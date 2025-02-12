@@ -25,7 +25,7 @@ import { NavBar } from "../../components/NavBar/NavBar";
 
 
 
-export default function Profile() {
+export default function Preferences() {
     const {
         setRefreshContext,
         profileDetails
