@@ -277,7 +277,7 @@ class PhotoController extends Controller
             $photo->delete();
             $sequence->delete();
             $result = -1;
-dd();
+
             // dd(count($quantityPhotosUser) == 1, count($quantityPhotosUser) == 2, count($quantityPhotosUser) == 3);
 
             if ($validatedData) {
