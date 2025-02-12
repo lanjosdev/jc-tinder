@@ -272,32 +272,10 @@ class PhotoController extends Controller
 
                 $result++;
 
-                if (count($quantityPhotosUser) == 1) {
-                    $this->sequence->create([
-                        'order' => 2,
-                        'fk_sequences_photos_id' => $newPhotoUser['id'],
-                    ]);
-                } elseif (count($quantityPhotosUser) == 2) {
-                    $this->sequence->create([
-                        'order' => 3,
-                        'fk_sequences_photos_id' => $newPhotoUser['id'],
-                    ]);
-                } elseif (count($quantityPhotosUser) == 3) {
-                    $this->sequence->create([
-                        'order' => 4,
-                        'fk_sequences_photos_id' => $newPhotoUser['id'],
-                    ]);
-                } elseif (count($quantityPhotosUser) == 0) {
-                    $this->sequence->create([
-                        'order' => $result,
-                        'fk_sequences_photos_id' => $newPhotoUser['id'],
-                    ]);
-                } else {
-                    $this->sequence->create([
-                        'order' => 5,
-                        'fk_sequences_photos_id' => $newPhotoUser['id'],
-                    ]);
-                }
+                $this->sequence->create([
+                    'order' => 5,
+                    'fk_sequences_photos_id' => $newPhotoUser['id'],
+                ]);
             }
 
             if ($newPhotoUser) {
