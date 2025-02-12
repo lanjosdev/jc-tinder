@@ -40,9 +40,9 @@ class PhotoController extends Controller
 
             if ($validatedData) {
 
-                $quantityPhotoUser = Photo::where('fk_user_photos_id', $user->id)->get();
+                $quantityPhotosUser = Photo::where('fk_user_photos_id', $user->id)->get();
 
-                if (count($quantityPhotoUser) == 4) {
+                if (count($quantityPhotosUser) == 4) {
                     return response()->json([
                         'success' => false,
                         'message' => 'Não é possível adicionar mais fotos.'
@@ -64,17 +64,17 @@ class PhotoController extends Controller
                     ]);
                 }
 
-                if (count($quantityPhotoUser) == 1 && count($photos) > 3) {
+                if (count($quantityPhotosUser) == 1 && count($photos) > 3) {
                     return response()->json([
                         'success' => false,
                         'message' => 'Você já tem 1 foto registrada permitido a inserção de até mais 3 fotos.',
                     ]);
-                } elseif (count($quantityPhotoUser) == 2 && count($photos) > 2) {
+                } elseif (count($quantityPhotosUser) == 2 && count($photos) > 2) {
                     return response()->json([
                         'success' => false,
                         'message' => 'Você já tem 2 fotos registradas permitido a inserção de até mais 2 fotos.',
                     ]);
-                } elseif (count($quantityPhotoUser) == 3 && count($photos) > 1) {
+                } elseif (count($quantityPhotosUser) == 3 && count($photos) > 1) {
                     return response()->json([
                         'success' => false,
                         'message' => 'Você já tem 3 fotos registradas permitido a inserção de até mais 1 foto.',
@@ -97,17 +97,17 @@ class PhotoController extends Controller
 
                     $result++;
 
-                    if (count($quantityPhotoUser) == 1) {
+                    if (count($quantityPhotosUser) == 1) {
                         $this->sequence->create([
                             'order' => 1,
                             'fk_sequences_photos_id' => $photoUser['id'],
                         ]);
-                    } elseif (count($quantityPhotoUser) == 2) {
+                    } elseif (count($quantityPhotosUser) == 2) {
                         $this->sequence->create([
                             'order' => 2,
                             'fk_sequences_photos_id' => $photoUser['id'],
                         ]);
-                    } elseif (count($quantityPhotoUser) == 3) {
+                    } elseif (count($quantityPhotosUser) == 3) {
                         $this->sequence->create([
                             'order' => 3,
                             'fk_sequences_photos_id' => $photoUser['id'],
@@ -219,6 +219,7 @@ class PhotoController extends Controller
 
             $quantityPhotosUser = Photo::where('fk_user_photos_id', $user->id)->get();
 
+
             if ($quantityPhotosUser->isEmpty()) {
                 return response()->json([
                     'success' => false,
@@ -233,7 +234,7 @@ class PhotoController extends Controller
             if (!$photo || !$sequence) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Nenhum resultado encontrado, por favor verifique.'
+                    'message' => 'Usuário não tem nenhum foto para atualizar.'
                 ]);
             }
 
@@ -275,6 +276,9 @@ class PhotoController extends Controller
             //deleta img antiga com soft-delete
             $photo->delete();
             $sequence->delete();
+            $result = -1;
+dd();
+            // dd(count($quantityPhotosUser) == 1, count($quantityPhotosUser) == 2, count($quantityPhotosUser) == 3);
 
             if ($validatedData) {
                 $newPhotoUser = $this->photo->create([
@@ -282,6 +286,35 @@ class PhotoController extends Controller
                     'thumb_photo' => $thumbnailPaths,
                     'fk_user_photos_id' => $user->id,
                 ]);
+
+                $result++;
+
+                if (count($quantityPhotosUser) == 1) {
+                    $this->sequence->create([
+                        'order' => 2,
+                        'fk_sequences_photos_id' => $newPhotoUser['id'],
+                    ]);
+                } elseif (count($quantityPhotosUser) == 2) {
+                    $this->sequence->create([
+                        'order' => 3,
+                        'fk_sequences_photos_id' => $newPhotoUser['id'],
+                    ]);
+                } elseif (count($quantityPhotosUser) == 3) {
+                    $this->sequence->create([
+                        'order' => 4,
+                        'fk_sequences_photos_id' => $newPhotoUser['id'],
+                    ]);
+                } elseif (count($quantityPhotosUser) == 0) {
+                    $this->sequence->create([
+                        'order' => $result,
+                        'fk_sequences_photos_id' => $newPhotoUser['id'],
+                    ]);
+                } else {
+                    $this->sequence->create([
+                        'order' => 5,
+                        'fk_sequences_photos_id' => $newPhotoUser['id'],
+                    ]);
+                }
             }
 
             if ($newPhotoUser) {

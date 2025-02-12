@@ -91,7 +91,7 @@ class Utils
         imagedestroy($thumb);
     }
 
-    // em conjunto com a função de criar img miniatura, cria e salva ela e a maior na pasta public com path completo e identificador único
+    //em conjunto com a função de criar img miniatura, cria e salva ela e a maior na pasta public com path completo e identificador único
     function handleImageUploads(array $photos, $user, $thumbnailWidth = 500, $thumbnailHeight = 150)
     {
 
@@ -158,7 +158,7 @@ class Utils
             //     'thumbnailPaths' => $thumbnailPaths
             // ];
 
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             DB::rollBack(); // Desfaz alterações no banco em caso de erro
 
             // Excluir as imagens já salvas na pasta
@@ -181,12 +181,98 @@ class Utils
         }
     }
 
+    // function handleImageUploads(array $photos, $user, $thumbnailWidth = 500, $thumbnailHeight = 150)
+    // {
+    //     $savedImages = [];
+    //     $thumbnailPaths = [];
+
+    //     DB::beginTransaction(); // Iniciar transação
+    //     try {
+    //         foreach ($photos as $photo) {
+    //             if ($photo->isValid()) {
+    //                 // Gerar nome de arquivo único
+    //                 $filename = $user->id . '-' . now()->format('Y-m-d_H-i-s') . '-' . uniqid() . '.' . $photo->getClientOriginalExtension();
+
+    //                 // Caminho de destino para imagem original
+    //                 $destinationPath = public_path('images/');
+    //                 if (!file_exists($destinationPath)) {
+    //                     mkdir($destinationPath, 0775, true);
+    //                 }
+
+    //                 // Caminho completo
+    //                 $fullPath = 'images/' . $filename;
+    //                 $photo->move($destinationPath, $filename);
+
+    //                 // Salvar caminho correto
+    //                 $savedImages[] = public_path($fullPath);
+
+    //                 if (!file_exists(public_path($fullPath))) {
+    //                     throw new Exception("Erro ao salvar a imagem.");
+    //                 }
+
+    //                 // Obter dimensões da imagem
+    //                 list($widthOld, $heightOld) = getimagesize(public_path($fullPath));
+
+    //                 if (!$widthOld || !$heightOld) {
+    //                     throw new Exception("Largura da imagem inválida.");
+    //                 }
+
+    //                 // Calcular altura proporcional
+    //                 $thumbnailHeight = ($heightOld * $thumbnailWidth) / $widthOld;
+
+    //                 // Criar diretório para thumbnails
+    //                 $destinationPathThumbnail = public_path('images/thumbnails/');
+    //                 if (!file_exists($destinationPathThumbnail)) {
+    //                     mkdir($destinationPathThumbnail, 0775, true);
+    //                 }
+
+    //                 // Criar miniatura
+    //                 $thumbnailPath = 'images/thumbnails/thumb_' . $filename;
+    //                 $utils = new Utils();
+    //                 $utils->createThumbnail(public_path($fullPath), public_path($thumbnailPath), $thumbnailWidth, $thumbnailHeight);
+
+    //                 // Salvar caminho correto
+    //                 $thumbnailPaths[] = public_path($thumbnailPath);
+    //             }
+    //         }
+
+    //         DB::commit(); // Confirma a transação se tudo estiver correto
+
+    //         return [
+    //             'success' => true,
+    //             'savedImages' => $savedImages,
+    //             'thumbnailPaths' => $thumbnailPaths
+    //         ];
+    //     } catch (Exception $e) {
+    //         DB::rollBack(); // Desfaz alterações no banco em caso de erro
+
+    //         // Excluir imagens já salvas
+    //         foreach ($savedImages as $imagePath) {
+    //             if (file_exists($imagePath)) {
+    //                 unlink($imagePath);
+    //             }
+    //         }
+
+    //         foreach ($thumbnailPaths as $thumbPath) {
+    //             if (file_exists($thumbPath)) {
+    //                 unlink($thumbPath);
+    //             }
+    //         }
+
+    //         return [
+    //             'success' => false,
+    //             'message' => 'Erro ao salvar as imagens: ' . $e->getMessage()
+    //         ];
+    //     }
+    // }
 
 
 
 
 
-    
+
+
+
     ////////////////////teste
     ////////////////////teste
     ////////////////////função para pegar imagem de uma pasta teste
