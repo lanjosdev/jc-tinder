@@ -86,6 +86,7 @@ class PhotoController extends Controller
                 $savedImages = $result['savedImages'];
                 $thumbnailPaths = $result['thumbnailPaths'];
                 $result = -1;
+                $arrayIds = [];
 
                 //cria no db
                 foreach ($savedImages as $index => $imagePath) {
@@ -96,6 +97,8 @@ class PhotoController extends Controller
                     ]);
 
                     $result++;
+
+                    $arrayIds[] = $photoUser->id;
 
                     $this->sequence->create([
                         'order' => $result,
@@ -170,6 +173,7 @@ class PhotoController extends Controller
                 return response()->json([
                     'success' => true,
                     'message' => 'Foto(s) salva(s) com sucesso.',
+                    'data' => $arrayIds
                 ]);
             }
         } catch (ValidationException $ve) {
