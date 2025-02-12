@@ -30,7 +30,7 @@ class PhotoController extends Controller
         DB::beginTransaction();
 
         try {
-                        
+
             $user = $request->user();
 
             $validatedData = $request->validate(
@@ -85,6 +85,7 @@ class PhotoController extends Controller
                 $result = $this->utils->handleImageUploads($photos, $user);
                 $savedImages = $result['savedImages'];
                 $thumbnailPaths = $result['thumbnailPaths'];
+                $result = -1;
 
                 //cria no db
                 foreach ($savedImages as $index => $imagePath) {
@@ -93,11 +94,30 @@ class PhotoController extends Controller
                         'thumb_photo' => $thumbnailPaths[$index] ?? null,
                         'fk_user_photos_id' => $user->id,
                     ]);
-                    
-                    $this->sequence->create([
-                        'order' => 0,
-                        'fk_sequences_photos_id' => $photoUser['id'],
-                    ]);
+
+                    $result++;
+
+                    if (count($quantityPhotoUser) == 1) {
+                        $this->sequence->create([
+                            'order' => 1,
+                            'fk_sequences_photos_id' => $photoUser['id'],
+                        ]);
+                    } elseif (count($quantityPhotoUser) == 2) {
+                        $this->sequence->create([
+                            'order' => 2,
+                            'fk_sequences_photos_id' => $photoUser['id'],
+                        ]);
+                    } elseif (count($quantityPhotoUser) == 3) {
+                        $this->sequence->create([
+                            'order' => 3,
+                            'fk_sequences_photos_id' => $photoUser['id'],
+                        ]);
+                    } else {
+                        $this->sequence->create([
+                            'order' => $result,
+                            'fk_sequences_photos_id' => $photoUser['id'],
+                        ]);
+                    }
                 }
             }
 
@@ -207,7 +227,7 @@ class PhotoController extends Controller
             }
 
             $photo = Photo::where('id', $id)->first();
-            
+
             $sequence = Sequence::where('fk_sequences_photos_id', $id)->first();
 
             if (!$photo || !$sequence) {

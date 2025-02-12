@@ -80,7 +80,7 @@ class SequenceController extends Controller
                         //soma os updates com sucesso
                         $result += $updatedRows;
                     }
-                    
+
                     //se tiver algum sucesso retorna
                     if ($result > 0) {
                         DB::commit();

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Carbon\Carbon;
 use Exception;
+use Illuminate\Support\Facades\DB;
 
 class Utils
 {
@@ -97,60 +98,95 @@ class Utils
         $savedImages = [];
         $thumbnailPaths = [];
 
-        foreach ($photos as $photo) {
-            if ($photo->isValid()) {
-                // Gerar nome de arquivo único
-                $filename = $user->id . '-' . now()->format('Y-m-d_H-i-s') . '-' . uniqid() . '.' . $photo->getClientOriginalExtension();
+        DB::beginTransaction(); // Iniciar transação
+        try {
 
-                // Caminho de destino para imagem original
-                $destinationPath = public_path('images/');
-                if (!file_exists($destinationPath)) {
-                    mkdir($destinationPath, 0775, true);
+            foreach ($photos as $photo) {
+                if ($photo->isValid()) {
+                    // Gerar nome de arquivo único
+                    $filename = $user->id . '-' . now()->format('Y-m-d_H-i-s') . '-' . uniqid() . '.' . $photo->getClientOriginalExtension();
+
+                    // Caminho de destino para imagem original
+                    $destinationPath = public_path('images/');
+                    if (!file_exists($destinationPath)) {
+                        mkdir($destinationPath, 0775, true);
+                    }
+
+                    // Mover imagem para destino
+                    $photo->move($destinationPath, $filename);
+
+                    $fullPath = 'images/' . $filename;
+                    $savedImages[] = $fullPath;
+
+                    if (file_exists($fullPath)) {
+                        list($widthOld, $heightOld) = getimagesize($fullPath);
+                    } else {
+                        return response()->json([
+                            'success' => false,
+                            'message' =>  "Largura da imagem inválida.",
+                        ]);
+                        // throw new Exception("Largura da imagem inválida.");
+                    }
+
+                    $thumbnailHeight = ($heightOld * $thumbnailWidth) / $widthOld;
+
+                    // Verificar e criar pasta para thumbnails
+                    $destinationPathThumbnail = public_path('images/thumbnails/');
+                    if (!file_exists($destinationPathThumbnail)) {
+                        mkdir($destinationPathThumbnail, 0775, true);
+                    }
+
+                    // Gerar miniatura
+                    $thumbnailPath = 'images/thumbnails/thumb_' . $filename;
+                    $utils = new Utils(); // Certifique-se de que a classe Utils esteja disponível
+                    $utils->createThumbnail(public_path($fullPath), public_path($thumbnailPath), $thumbnailWidth, $thumbnailHeight);
+
+                    $thumbnailPaths[] = $thumbnailPath;
                 }
-
-                // Mover imagem para destino
-                $photo->move($destinationPath, $filename);
-
-                $fullPath = 'images/' . $filename;
-                $savedImages[] = $fullPath;
-
-                if (file_exists($fullPath)) {
-                    list($widthOld, $heightOld) = getimagesize($fullPath);
-                } else {
-                    return response()->json([
-                        'success' => false,
-                        'message' =>  "Largura da imagem inválida.",
-                    ]);
-                    // throw new Exception("Largura da imagem inválida.");
-                }
-
-                $thumbnailHeight = ($heightOld * $thumbnailWidth) / $widthOld;
-
-                // Verificar e criar pasta para thumbnails
-                $destinationPathThumbnail = public_path('images/thumbnails/');
-                if (!file_exists($destinationPathThumbnail)) {
-                    mkdir($destinationPathThumbnail, 0775, true);
-                }
-
-                // Gerar miniatura
-                $thumbnailPath = 'images/thumbnails/thumb_' . $filename;
-                $utils = new Utils(); // Certifique-se de que a classe Utils esteja disponível
-                $utils->createThumbnail(public_path($fullPath), public_path($thumbnailPath), $thumbnailWidth, $thumbnailHeight);
-
-                $thumbnailPaths[] = $thumbnailPath;
             }
-        }
 
-        return [
-            'savedImages' => $savedImages,
-            'thumbnailPaths' => $thumbnailPaths
-        ];
+            DB::commit(); // Confirma a transação se tudo estiver correto
+
+            return [
+                'success' => true,
+                'savedImages' => $savedImages,
+                'thumbnailPaths' => $thumbnailPaths
+            ];
+
+            // return [
+            //     'savedImages' => $savedImages,
+            //     'thumbnailPaths' => $thumbnailPaths
+            // ];
+
+        } catch (\Exception $e) {
+            DB::rollBack(); // Desfaz alterações no banco em caso de erro
+
+            // Excluir as imagens já salvas na pasta
+            foreach ($savedImages as $imagePath) {
+                if (file_exists($imagePath)) {
+                    unlink($imagePath);
+                }
+            }
+
+            foreach ($thumbnailPaths as $thumbPath) {
+                if (file_exists($thumbPath)) {
+                    unlink($thumbPath);
+                }
+            }
+
+            return [
+                'success' => false,
+                'message' => 'Erro ao salvar as imagens: ' . $e->getMessage()
+            ];
+        }
     }
 
 
 
 
 
+
+    
     ////////////////////teste
     ////////////////////teste
     ////////////////////função para pegar imagem de uma pasta teste
