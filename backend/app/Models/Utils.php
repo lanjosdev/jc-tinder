@@ -173,15 +173,90 @@ class Utils
     //     imagedestroy($thumb);
     // }
 
-    public function createThumbnail($imagePath, $thumbPath, $thumbWidth, $thumbHeight)
+    // public function createThumbnail($imagePath, $thumbPath, $thumbWidth, $thumbHeight)
+    // {
+    //     // Obtém informações da imagem original
+    //     $imageInfo = getimagesize($imagePath);
+    //     $mimeType = $imageInfo['mime'];
+    //     $originalWidth = $imageInfo[0];
+    //     $originalHeight = $imageInfo[1];
+
+    //     // Carrega a imagem conforme o tipo
+    //     switch ($mimeType) {
+    //         case 'image/jpeg':
+    //             $image = imagecreatefromjpeg($imagePath);
+    //             break;
+    //         case 'image/png':
+    //             $image = imagecreatefrompng($imagePath);
+    //             break;
+    //         case 'image/gif':
+    //             $image = imagecreatefromgif($imagePath);
+    //             break;
+    //         default:
+    //             return false; // Tipo não suportado
+    //     }
+
+    //     if (!$image) {
+    //         return false;
+    //     }
+
+    //     // Corrigir a orientação da imagem usando EXIF (somente para JPEG)
+    //     if ($mimeType === 'image/jpeg' && function_exists('exif_read_data')) {
+    //         $exif = @exif_read_data($imagePath);
+    //         if (!empty($exif['Orientation'])) {
+    //             switch ($exif['Orientation']) {
+    //                 case 3:
+    //                     $image = imagerotate($image, 180, 0);
+    //                     break;
+    //                 case 6:
+    //                     $image = imagerotate($image, -90, 0);
+    //                     break;
+    //                 case 8:
+    //                     $image = imagerotate($image, 90, 0);
+    //                     break;
+    //             }
+    //         }
+    //     }
+
+    //     //Calculando a proporção da miniatura
+    //     $ratio = min($thumbWidth / $originalWidth, $thumbHeight / $originalHeight);
+    //     $thumbWidth = (int)($originalWidth * $ratio);
+    //     $thumbHeight = (int)($originalHeight * $ratio);
+
+    //     // Criar a imagem de miniatura
+    //     $thumb = imagecreatetruecolor($thumbWidth, $thumbHeight);
+
+    //     // Redimensionar a imagem
+    //     imagecopyresampled($thumb, $image, 0, 0, 0, 0, $thumbWidth, $thumbHeight, $originalWidth, $originalHeight);
+
+    //     // Salvar a miniatura no caminho especificado
+    //     switch ($mimeType) {
+    //         case 'image/jpeg':
+    //             imagejpeg($thumb, $thumbPath);
+    //             break;
+    //         case 'image/png':
+    //             imagepng($thumb, $thumbPath);
+    //             break;
+    //         case 'image/gif':
+    //             imagegif($thumb, $thumbPath);
+    //             break;
+    //     }
+
+    //     // Liberar a memória
+    //     imagedestroy($image);
+    //     imagedestroy($thumb);
+    // }
+
+
+    public function createThumbnail($imagePath, $thumbPath, $maxWidth = 400)
     {
-        // Obtém informações da imagem original
+        // Verifica o tipo de imagem e obtém as dimensões
         $imageInfo = getimagesize($imagePath);
         $mimeType = $imageInfo['mime'];
         $originalWidth = $imageInfo[0];
         $originalHeight = $imageInfo[1];
 
-        // Carrega a imagem conforme o tipo
+        // Carregar a imagem de acordo com o tipo
         switch ($mimeType) {
             case 'image/jpeg':
                 $image = imagecreatefromjpeg($imagePath);
@@ -193,17 +268,23 @@ class Utils
                 $image = imagecreatefromgif($imagePath);
                 break;
             default:
-                return false; // Tipo não suportado
+                return response()->json([
+                    'success' => false,
+                    'message' => "Formato de imagem não suportado: " . $mimeType,
+                ]);
         }
 
         if (!$image) {
-            return false;
+            return response()->json([
+                'success' => false,
+                'message' => "Erro ao carregar a imagem: " . $imagePath,
+            ]);
         }
 
-        // Corrigir a orientação da imagem usando EXIF (somente para JPEG)
-        if ($mimeType === 'image/jpeg' && function_exists('exif_read_data')) {
+        // 🔹 Corrigir rotação automática usando EXIF (para imagens JPEG)
+        if ($mimeType === 'image/jpeg') {
             $exif = @exif_read_data($imagePath);
-            if (!empty($exif['Orientation'])) {
+            if ($exif && isset($exif['Orientation'])) {
                 switch ($exif['Orientation']) {
                     case 3:
                         $image = imagerotate($image, 180, 0);
@@ -218,21 +299,28 @@ class Utils
             }
         }
 
-        //Calculando a proporção da miniatura
-        $ratio = min($thumbWidth / $originalWidth, $thumbHeight / $originalHeight);
-        $thumbWidth = (int)($originalWidth * $ratio);
-        $thumbHeight = (int)($originalHeight * $ratio);
+        // 🔹 Redimensionar mantendo a proporção sem cortar
+        $ratio = $maxWidth / $originalWidth;
+        $newWidth = $maxWidth;
+        $newHeight = (int)($originalHeight * $ratio);
 
-        // Criar a imagem de miniatura
-        $thumb = imagecreatetruecolor($thumbWidth, $thumbHeight);
+        // Criar uma nova imagem com tamanho ajustado
+        $thumb = imagecreatetruecolor($newWidth, $newHeight);
 
-        // Redimensionar a imagem
-        imagecopyresampled($thumb, $image, 0, 0, 0, 0, $thumbWidth, $thumbHeight, $originalWidth, $originalHeight);
+        // 🔹 Preservar transparência para PNGs e GIFs
+        if ($mimeType === 'image/png' || $mimeType === 'image/gif') {
+            imagecolortransparent($thumb, imagecolorallocatealpha($thumb, 0, 0, 0, 127));
+            imagealphablending($thumb, false);
+            imagesavealpha($thumb, true);
+        }
 
-        // Salvar a miniatura no caminho especificado
+        // Redimensionar a imagem sem cortar
+        imagecopyresampled($thumb, $image, 0, 0, 0, 0, $newWidth, $newHeight, $originalWidth, $originalHeight);
+
+        // Salvar a miniatura
         switch ($mimeType) {
             case 'image/jpeg':
-                imagejpeg($thumb, $thumbPath);
+                imagejpeg($thumb, $thumbPath, 90);
                 break;
             case 'image/png':
                 imagepng($thumb, $thumbPath);
@@ -242,11 +330,10 @@ class Utils
                 break;
         }
 
-        // Liberar a memória
+        // Liberar memória
         imagedestroy($image);
         imagedestroy($thumb);
     }
-
 
 
 
