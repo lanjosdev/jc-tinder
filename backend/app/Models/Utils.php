@@ -275,7 +275,7 @@ class Utils
 
 
     //em conjunto com a função de criar img miniatura, cria e salva ela e a maior na pasta public com path completo e identificador único
-    function handleImageUploads(array $photos, $user, $thumbnailWidth = 500, $thumbnailHeight = 150)
+    function handleImageUploads(array $photos, $user, $thumbnailWidth = 400, $thumbnailHeight = 150)
     {
 
         $savedImages = [];
