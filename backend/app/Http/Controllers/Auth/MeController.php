@@ -28,6 +28,7 @@ class MeController extends Controller
     public function me(Request $request)
     {
         try {
+
             $myProfile = $request->user();
 
             $habitsUser = DB::table('user_habits')

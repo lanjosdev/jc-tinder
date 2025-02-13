@@ -26,10 +26,85 @@ class Utils
     }
 
     // cria miniatura da imagem original
+    // public function createThumbnail($imagePath, $thumbPath, $width, $height)
+    // {
+    //     // Verifica o tipo de imagem e obtém as dimensões
+    //     $imageInfo = getimagesize($imagePath);
+    //     $mimeType = $imageInfo['mime'];
+    //     $originalWidth = $imageInfo[0];
+    //     $originalHeight = $imageInfo[1];
+
+
+    //     // Carregar a imagem de acordo com o tipo
+    //     switch ($mimeType) {
+    //         case 'image/jpeg':
+    //             $image = imagecreatefromjpeg($imagePath);
+    //             break;
+    //         case 'image/png':
+    //             $image = imagecreatefrompng($imagePath);
+    //             break;
+    //         case 'image/gif':
+    //             $image = imagecreatefromgif($imagePath);
+    //             break;
+    //         default:
+    //             // return response()->json([
+    //             //     'success' => false,
+    //             //     'message' =>  "Formato de imagem não suportado para miniatura: " . $mimeType,
+    //             // ]);
+    //             throw new Exception("Formato de imagem não suportado para miniatura: " . $mimeType);
+    //     }
+
+    //     // Verificar se a imagem foi carregada corretamente
+    //     if (!$image) {
+    //         // return response()->json([
+    //         //     'success' => false,
+    //         //     'message' =>  "Erro ao carregar a imagem: " . $imagePath,
+    //         // ]);
+    //         throw new Exception("Erro ao carregar a imagem: " . $imagePath);
+    //     }
+
+    //     // Calculando a proporção da miniatura
+    //     $ratio = min($width / $originalWidth, $height / $originalHeight);
+    //     $thumbWidth = (int)($originalWidth * $ratio);
+    //     $thumbHeight = (int)($originalHeight * $ratio);
+
+    //     // // Se a imagem estiver na horizontal, girar 90 graus
+    //     // if ($originalWidth > $originalHeight) {
+    //     //     $image = imagerotate($image, 90, 0);
+    //     // }
+
+    //     // Criar a imagem de miniatura
+    //     $thumb = imagecreatetruecolor($thumbWidth, $thumbHeight);
+
+    //     // Redimensionar a imagem
+    //     imagecopyresampled($thumb, $image, 0, 0, 0, 0, $thumbWidth, $thumbHeight, $originalWidth, $originalHeight);
+
+    //     // Salvar a miniatura no caminho especificado
+    //     switch ($mimeType) {
+    //         case 'image/jpeg':
+    //             imagejpeg($thumb, $thumbPath);
+    //             break;
+    //         case 'image/png':
+    //             imagepng($thumb, $thumbPath);
+    //             break;
+    //         case 'image/gif':
+    //             imagegif($thumb, $thumbPath);
+    //             break;
+    //     }
+
+    //     // Liberar a memória
+    //     imagedestroy($image);
+    //     imagedestroy($thumb);
+    // }
+
     public function createThumbnail($imagePath, $thumbPath, $width, $height)
     {
-        // Verifica o tipo de imagem e obtém as dimensões
+        // Obtém as informações da imagem
         $imageInfo = getimagesize($imagePath);
+        if (!$imageInfo) {
+            throw new Exception("Erro ao obter informações da imagem: " . $imagePath);
+        }
+
         $mimeType = $imageInfo['mime'];
         $originalWidth = $imageInfo[0];
         $originalHeight = $imageInfo[1];
@@ -46,37 +121,44 @@ class Utils
                 $image = imagecreatefromgif($imagePath);
                 break;
             default:
-                return response()->json([
-                    'success' => false,
-                    'message' =>  "Formato de imagem não suportado para miniatura: " . $mimeType,
-                ]);
-                // throw new Exception("Formato de imagem não suportado para miniatura: " . $mimeType);
+                throw new Exception("Formato de imagem não suportado: " . $mimeType);
         }
 
-        // Verificar se a imagem foi carregada corretamente
         if (!$image) {
-            return response()->json([
-                'success' => false,
-                'message' =>  "Erro ao carregar a imagem: " . $imagePath,
-            ]);
-            // throw new Exception("Erro ao carregar a imagem: " . $imagePath);
+            throw new Exception("Erro ao carregar a imagem: " . $imagePath);
         }
 
-        // Calculando a proporção da miniatura
+        // Corrigir rotação baseada nos metadados EXIF (apenas para JPEG)
+        if ($mimeType === 'image/jpeg' && function_exists('exif_read_data')) {
+            $exif = @exif_read_data($imagePath);
+            if (!empty($exif['Orientation'])) {
+                switch ($exif['Orientation']) {
+                    case 3:
+                        $image = imagerotate($image, 180, 0);
+                        break;
+                    case 6:
+                        $image = imagerotate($image, -90, 0);
+                        break;
+                    case 8:
+                        $image = imagerotate($image, 90, 0);
+                        break;
+                }
+            }
+        }
+
+        // Criar a miniatura mantendo a proporção original
         $ratio = min($width / $originalWidth, $height / $originalHeight);
         $thumbWidth = (int)($originalWidth * $ratio);
         $thumbHeight = (int)($originalHeight * $ratio);
 
-        // Criar a imagem de miniatura
+        // Criar imagem para miniatura
         $thumb = imagecreatetruecolor($thumbWidth, $thumbHeight);
-
-        // Redimensionar a imagem
         imagecopyresampled($thumb, $image, 0, 0, 0, 0, $thumbWidth, $thumbHeight, $originalWidth, $originalHeight);
 
-        // Salvar a miniatura no caminho especificado
+        // Salvar a miniatura
         switch ($mimeType) {
             case 'image/jpeg':
-                imagejpeg($thumb, $thumbPath);
+                imagejpeg($thumb, $thumbPath, 90); // Qualidade 90%
                 break;
             case 'image/png':
                 imagepng($thumb, $thumbPath);
@@ -86,10 +168,12 @@ class Utils
                 break;
         }
 
-        // Liberar a memória
+        // Liberar memória
         imagedestroy($image);
         imagedestroy($thumb);
     }
+
+
 
     //em conjunto com a função de criar img miniatura, cria e salva ela e a maior na pasta public com path completo e identificador único
     function handleImageUploads(array $photos, $user, $thumbnailWidth = 500, $thumbnailHeight = 150)
@@ -113,6 +197,7 @@ class Utils
                     }
 
                     // Mover imagem para destino
+                    // $photo->move($destinationPath, $filename);
                     $photo->move($destinationPath, $filename);
 
                     $fullPath = 'images/' . $filename;
@@ -180,92 +265,6 @@ class Utils
             ];
         }
     }
-
-    // function handleImageUploads(array $photos, $user, $thumbnailWidth = 500, $thumbnailHeight = 150)
-    // {
-    //     $savedImages = [];
-    //     $thumbnailPaths = [];
-
-    //     DB::beginTransaction(); // Iniciar transação
-    //     try {
-    //         foreach ($photos as $photo) {
-    //             if ($photo->isValid()) {
-    //                 // Gerar nome de arquivo único
-    //                 $filename = $user->id . '-' . now()->format('Y-m-d_H-i-s') . '-' . uniqid() . '.' . $photo->getClientOriginalExtension();
-
-    //                 // Caminho de destino para imagem original
-    //                 $destinationPath = public_path('images/');
-    //                 if (!file_exists($destinationPath)) {
-    //                     mkdir($destinationPath, 0775, true);
-    //                 }
-
-    //                 // Caminho completo
-    //                 $fullPath = 'images/' . $filename;
-    //                 $photo->move($destinationPath, $filename);
-
-    //                 // Salvar caminho correto
-    //                 $savedImages[] = public_path($fullPath);
-
-    //                 if (!file_exists(public_path($fullPath))) {
-    //                     throw new Exception("Erro ao salvar a imagem.");
-    //                 }
-
-    //                 // Obter dimensões da imagem
-    //                 list($widthOld, $heightOld) = getimagesize(public_path($fullPath));
-
-    //                 if (!$widthOld || !$heightOld) {
-    //                     throw new Exception("Largura da imagem inválida.");
-    //                 }
-
-    //                 // Calcular altura proporcional
-    //                 $thumbnailHeight = ($heightOld * $thumbnailWidth) / $widthOld;
-
-    //                 // Criar diretório para thumbnails
-    //                 $destinationPathThumbnail = public_path('images/thumbnails/');
-    //                 if (!file_exists($destinationPathThumbnail)) {
-    //                     mkdir($destinationPathThumbnail, 0775, true);
-    //                 }
-
-    //                 // Criar miniatura
-    //                 $thumbnailPath = 'images/thumbnails/thumb_' . $filename;
-    //                 $utils = new Utils();
-    //                 $utils->createThumbnail(public_path($fullPath), public_path($thumbnailPath), $thumbnailWidth, $thumbnailHeight);
-
-    //                 // Salvar caminho correto
-    //                 $thumbnailPaths[] = public_path($thumbnailPath);
-    //             }
-    //         }
-
-    //         DB::commit(); // Confirma a transação se tudo estiver correto
-
-    //         return [
-    //             'success' => true,
-    //             'savedImages' => $savedImages,
-    //             'thumbnailPaths' => $thumbnailPaths
-    //         ];
-    //     } catch (Exception $e) {
-    //         DB::rollBack(); // Desfaz alterações no banco em caso de erro
-
-    //         // Excluir imagens já salvas
-    //         foreach ($savedImages as $imagePath) {
-    //             if (file_exists($imagePath)) {
-    //                 unlink($imagePath);
-    //             }
-    //         }
-
-    //         foreach ($thumbnailPaths as $thumbPath) {
-    //             if (file_exists($thumbPath)) {
-    //                 unlink($thumbPath);
-    //             }
-    //         }
-
-    //         return [
-    //             'success' => false,
-    //             'message' => 'Erro ao salvar as imagens: ' . $e->getMessage()
-    //         ];
-    //     }
-    // }
-
 
 
 
