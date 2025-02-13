@@ -4,7 +4,14 @@ namespace App\Models;
 
 use Carbon\Carbon;
 use Exception;
+use Illuminate\Http\Client\Request;
 use Illuminate\Support\Facades\DB;
+use Intervention\Image\Laravel\Facades\Image;
+use Illuminate\Support\Facades\File;
+
+
+// use Intervention\Image\ImageManagerStatic as Image;
+
 
 class Utils
 {
@@ -247,106 +254,346 @@ class Utils
     //     imagedestroy($thumb);
     // }
 
+    // public function createThumbnail($imagePath, $thumbPath, $maxWidth = 400)
+    // {
+    //     // Verifica o tipo de imagem e obtém as dimensões
+    //     $imageInfo = getimagesize($imagePath);
+    //     $mimeType = $imageInfo['mime'];
+    //     $originalWidth = $imageInfo[0];
+    //     $originalHeight = $imageInfo[1];
 
-    public function createThumbnail($imagePath, $thumbPath, $maxWidth = 400)
+    //     // Carregar a imagem de acordo com o tipo
+    //     switch ($mimeType) {
+    //         case 'image/jpeg':
+    //             $image = imagecreatefromjpeg($imagePath);
+    //             break;
+    //         case 'image/png':
+    //             $image = imagecreatefrompng($imagePath);
+    //             break;
+    //         case 'image/gif':
+    //             $image = imagecreatefromgif($imagePath);
+    //             break;
+    //         default:
+    //             return response()->json([
+    //                 'success' => false,
+    //                 'message' => "Formato de imagem não suportado: " . $mimeType,
+    //             ]);
+    //     }
+
+    //     if (!$image) {
+    //         return response()->json([
+    //             'success' => false,
+    //             'message' => "Erro ao carregar a imagem: " . $imagePath,
+    //         ]);
+    //     }
+
+    //     // 🔹 Corrigir rotação automática usando EXIF (para imagens JPEG)
+    //     if ($mimeType === 'image/jpeg') {
+    //         $exif = @exif_read_data($imagePath);
+    //         if ($exif && isset($exif['Orientation'])) {
+    //             switch ($exif['Orientation']) {
+    //                 case 3:
+    //                     $image = imagerotate($image, 180, 0);
+    //                     break;
+    //                 case 6:
+    //                     $image = imagerotate($image, -90, 0);
+    //                     break;
+    //                 case 8:
+    //                     $image = imagerotate($image, 90, 0);
+    //                     break;
+    //             }
+    //         }
+    //     }
+
+    //     // 🔹 Redimensionar mantendo a proporção sem cortar
+    //     $ratio = $maxWidth / $originalWidth;
+    //     $newWidth = $maxWidth;
+    //     $newHeight = (int)($originalHeight * $ratio);
+
+    //     // Criar uma nova imagem com tamanho ajustado
+    //     $thumb = imagecreatetruecolor($newWidth, $newHeight);
+
+    //     // 🔹 Preservar transparência para PNGs e GIFs
+    //     if ($mimeType === 'image/png' || $mimeType === 'image/gif') {
+    //         imagecolortransparent($thumb, imagecolorallocatealpha($thumb, 0, 0, 0, 127));
+    //         imagealphablending($thumb, false);
+    //         imagesavealpha($thumb, true);
+    //     }
+
+    //     // Redimensionar a imagem sem cortar
+    //     imagecopyresampled($thumb, $image, 0, 0, 0, 0, $newWidth, $newHeight, $originalWidth, $originalHeight);
+
+    //     // Salvar a miniatura
+    //     switch ($mimeType) {
+    //         case 'image/jpeg':
+    //             imagejpeg($thumb, $thumbPath, 90);
+    //             break;
+    //         case 'image/png':
+    //             imagepng($thumb, $thumbPath);
+    //             break;
+    //         case 'image/gif':
+    //             imagegif($thumb, $thumbPath);
+    //             break;
+    //     }
+
+    //     // Liberar memória
+    //     imagedestroy($image);
+    //     imagedestroy($thumb);
+    // }
+
+
+    // function createThumbnail($fullPath, $thumbnailPath, $maxWidth = 400)
+    // {
+    //     // // Obtendo a imagem
+    //     // $image = $request->file('image');
+    //     // $imageName = time() . '.' . $image->extension();
+
+    //     // Caminho para a pasta de miniaturas
+    //     // $destinationPathThumbnail = public_path('images/thumbnail');
+
+    //     // Usando Intervention Image para processar a imagem
+    //     $img = Image::make($image->path());
+
+    //     // Obtendo as dimensões da imagem original
+    //     $widthOld = $img->width();
+    //     $heightOld = $img->height();
+
+    //     // Definindo a largura da miniatura
+    //     $widthThumbnail = $maxWidth;
+
+    //     // Calculando a altura proporcional com base na largura
+    //     $heightThumbnail = ($widthThumbnail / $widthOld) * $heightOld;
+
+    //     // Caminho de destino para imagem original
+    //     $destinationPath = public_path('images/');
+    //     if (!file_exists($destinationPath)) {
+    //         mkdir($destinationPath, 0775, true);
+    //     }
+    //     // Verificar e criar pasta para thumbnails
+    //     $destinationPathThumbnail = public_path('images/thumbnails/');
+    //     if (!file_exists($destinationPathThumbnail)) {
+    //         mkdir($destinationPathThumbnail, 0775, true);
+    //     }
+
+    //     // Redimensionando a imagem para a miniatura mantendo a proporção
+    //     $img->resize($widthThumbnail, $heightThumbnail, function ($constraint) {
+    //         $constraint->aspectRatio(); // Mantém a proporção
+    //     })->save($thumbnailPath);
+
+    //     // Salvando a imagem original na pasta de imagens
+    //     $image->move($fullPath);
+
+    //     // Retornando a resposta com sucesso
+    //     return response()->json([
+    //         'success' => 'Image Uploaded successfully!',
+    //         'imageName' => $imageName
+    //     ]);
+    // }
+
+    // public function createThumbnail($fullPath, $thumbnailPath, $maxWidth = 400)
+    // {
+    //     // Usando Intervention Image para processar a imagem
+    //     $img = Image::make($fullPath);
+
+    //     // Obtendo as dimensões da imagem original
+    //     $widthOld = $img->width();
+    //     $heightOld = $img->height();
+
+    //     // Definindo a largura da miniatura
+    //     $widthThumbnail = $maxWidth;
+
+    //     // Calculando a altura proporcional com base na largura
+    //     $heightThumbnail = ($heightOld * $widthThumbnail) / $widthOld;
+
+    //     // Redimensionando a imagem para a miniatura mantendo a proporção
+    //     $img->resize($widthThumbnail, $heightThumbnail, function ($constraint) {
+    //         $constraint->aspectRatio(); // Mantém a proporção
+    //     })->save($thumbnailPath); // Salva a miniatura
+
+    //     return true;
+    // }
+
+
+
+
+
+
+
+    // //em conjunto com a função de criar img miniatura, cria e salva ela e a maior na pasta public com path completo e identificador único
+    // function handleImageUploads(array $photos, $user, $thumbnailWidth = 400, $thumbnailHeight = 150)
+    // {
+
+    //     $savedImages = [];
+    //     $thumbnailPaths = [];
+
+    //     DB::beginTransaction(); // Iniciar transação
+    //     try {
+
+    //         foreach ($photos as $photo) {
+    //             if ($photo->isValid()) {
+    //                 // Gerar nome de arquivo único
+    //                 $filename = $user->id . '-' . now()->format('Y-m-d_H-i-s') . '-' . uniqid() . '.' . $photo->getClientOriginalExtension();
+
+    //                 // Caminho de destino para imagem original
+    //                 $destinationPath = public_path('images/');
+    //                 if (!file_exists($destinationPath)) {
+    //                     mkdir($destinationPath, 0775, true);
+    //                 }
+
+    //                 // Mover imagem para destino
+    //                 $photo->move($destinationPath, $filename);
+
+    //                 $fullPath = 'images/' . $filename;
+    //                 $savedImages[] = $fullPath;
+
+    //                 if (file_exists($fullPath)) {
+    //                     list($widthOld, $heightOld) = getimagesize($fullPath);
+    //                 } else {
+    //                     throw new Exception("Largura da imagem inválida.");
+    //                 }
+
+    //                 $thumbnailHeight = ($heightOld * $thumbnailWidth) / $widthOld;
+
+    //                 // Verificar e criar pasta para thumbnails
+    //                 $destinationPathThumbnail = public_path('images/thumbnails/');
+    //                 if (!file_exists($destinationPathThumbnail)) {
+    //                     mkdir($destinationPathThumbnail, 0775, true);
+    //                 }
+
+    //                 // Gerar miniatura
+    //                 $thumbnailPath = 'images/thumbnails/thumb_' . $filename;
+    //                 $utils = new Utils(); // Certifique-se de que a classe Utils esteja disponível
+    //                 $utils->createThumbnail(public_path($fullPath), public_path($thumbnailPath), $thumbnailWidth, $thumbnailHeight);
+
+    //                 $thumbnailPaths[] = $thumbnailPath;
+    //             }
+    //         }
+
+    //         DB::commit(); // Confirma a transação se tudo estiver correto
+
+    //         return [
+    //             'success' => true,
+    //             'savedImages' => $savedImages,
+    //             'thumbnailPaths' => $thumbnailPaths
+    //         ];
+    //     } catch (Exception $e) {
+    //         DB::rollBack(); // Desfaz alterações no banco em caso de erro
+
+    //         // Excluir as imagens já salvas na pasta
+    //         foreach ($savedImages as $imagePath) {
+    //             if (file_exists($imagePath)) {
+    //                 unlink($imagePath);
+    //             }
+    //         }
+
+    //         foreach ($thumbnailPaths as $thumbPath) {
+    //             if (file_exists($thumbPath)) {
+    //                 unlink($thumbPath);
+    //             }
+    //         }
+
+    //         return [
+    //             'success' => false,
+    //             'message' => 'Erro ao salvar as imagens: ' . $e->getMessage()
+    //         ];
+    //     }
+    // }
+
+    // function handleImageUploads(array $photos, $user, $thumbnailWidth = 400, $thumbnailHeight = 150)
+    // {
+    //     $savedImages = [];
+    //     $thumbnailPaths = [];
+
+    //     DB::beginTransaction(); // Iniciar transação
+    //     try {
+
+    //         foreach ($photos as $photo) {
+    //             if ($photo->isValid()) {
+    //                 // Gerar nome de arquivo único
+    //                 $filename = $user->id . '-' . now()->format('Y-m-d_H-i-s') . '-' . uniqid() . '.' . $photo->getClientOriginalExtension();
+
+    //                 // Caminho de destino para imagem original
+    //                 $destinationPath = public_path('images/');
+    //                 if (!file_exists($destinationPath)) {
+    //                     mkdir($destinationPath, 0775, true);
+    //                 }
+
+    //                 // Mover imagem para destino
+    //                 $photo->move($destinationPath, $filename);
+
+    //                 $fullPath = 'images/' . $filename;
+    //                 $savedImages[] = $fullPath;
+
+    //                 // Verifica se a imagem foi salva com sucesso
+    //                 if (file_exists(public_path($fullPath))) {
+    //                     // list($widthOld, $heightOld) = getimagesize(public_path($fullPath));
+    //                 } else {
+    //                     throw new Exception("Erro ao obter as dimensões da imagem.");
+    //                 }
+
+    //                 // // Calculando altura proporcional com base na largura da miniatura
+    //                 // $thumbnailHeightCalculated = ($heightOld * $thumbnailWidth) / $widthOld;
+
+    //                 // Verificar e criar pasta para thumbnails
+    //                 $destinationPathThumbnail = public_path('images/thumbnails/');
+    //                 if (!file_exists($destinationPathThumbnail)) {
+    //                     mkdir($destinationPathThumbnail, 0775, true);
+    //                 }
+
+    //                 // Gerar miniatura
+    //                 $thumbnailPath = 'images/thumbnails/thumb_' . $filename;
+    //                 // $this->createThumbnail(public_path($fullPath), public_path($thumbnailPath), $thumbnailWidth);
+
+    //                 // Usando Intervention Image para processar a imagem
+    //                 $img = Image::make($fullPath);
+
+    //                 // Obtendo as dimensões da imagem original
+    //                 $widthOld = $img->width();
+    //                 $heightOld = $img->height();
+
+    //                 // Definindo a largura da miniatura
+    //                 $widthThumbnail = $thumbnailWidth;
+
+    //                 // Calculando a altura proporcional com base na largura
+    //                 $heightThumbnail = ($heightOld * $widthThumbnail) / $widthOld;
+
+    //                 // Redimensionando a imagem para a miniatura mantendo a proporção
+    //                 $img->resize($widthThumbnail, $heightThumbnail, function ($constraint) {
+    //                     $constraint->aspectRatio(); // Mantém a proporção
+    //                 })->save($thumbnailPath); // Salva a miniatura
+
+    //                 // Salva o caminho da miniatura gerada
+    //                 $thumbnailPaths[] = $thumbnailPath;
+    //             }
+    //         }
+
+    //         DB::commit(); // Confirma a transação se tudo estiver correto
+
+    //         // Retorna as imagens e miniaturas salvas
+    //         return [
+    //             'success' => true,
+    //             'savedImages' => $savedImages,
+    //             'thumbnailPaths' => $thumbnailPaths
+    //         ];
+    //     } catch (\Exception $e) {
+    //         DB::rollBack(); // Reverte a transação em caso de erro
+
+    //         return [
+    //             'success' => false,
+    //             'error' => $e->getMessage(),
+    //             'savedImages' => $savedImages ?? [],
+    //             'thumbnailPaths' => $thumbnailPaths ?? []
+    //         ];
+    //     }
+    // }
+
+    function handleImageUploads(array $photos, $user, $thumbnailWidth = 400)
     {
-        // Verifica o tipo de imagem e obtém as dimensões
-        $imageInfo = getimagesize($imagePath);
-        $mimeType = $imageInfo['mime'];
-        $originalWidth = $imageInfo[0];
-        $originalHeight = $imageInfo[1];
-
-        // Carregar a imagem de acordo com o tipo
-        switch ($mimeType) {
-            case 'image/jpeg':
-                $image = imagecreatefromjpeg($imagePath);
-                break;
-            case 'image/png':
-                $image = imagecreatefrompng($imagePath);
-                break;
-            case 'image/gif':
-                $image = imagecreatefromgif($imagePath);
-                break;
-            default:
-                return response()->json([
-                    'success' => false,
-                    'message' => "Formato de imagem não suportado: " . $mimeType,
-                ]);
-        }
-
-        if (!$image) {
-            return response()->json([
-                'success' => false,
-                'message' => "Erro ao carregar a imagem: " . $imagePath,
-            ]);
-        }
-
-        // 🔹 Corrigir rotação automática usando EXIF (para imagens JPEG)
-        if ($mimeType === 'image/jpeg') {
-            $exif = @exif_read_data($imagePath);
-            if ($exif && isset($exif['Orientation'])) {
-                switch ($exif['Orientation']) {
-                    case 3:
-                        $image = imagerotate($image, 180, 0);
-                        break;
-                    case 6:
-                        $image = imagerotate($image, -90, 0);
-                        break;
-                    case 8:
-                        $image = imagerotate($image, 90, 0);
-                        break;
-                }
-            }
-        }
-
-        // 🔹 Redimensionar mantendo a proporção sem cortar
-        $ratio = $maxWidth / $originalWidth;
-        $newWidth = $maxWidth;
-        $newHeight = (int)($originalHeight * $ratio);
-
-        // Criar uma nova imagem com tamanho ajustado
-        $thumb = imagecreatetruecolor($newWidth, $newHeight);
-
-        // 🔹 Preservar transparência para PNGs e GIFs
-        if ($mimeType === 'image/png' || $mimeType === 'image/gif') {
-            imagecolortransparent($thumb, imagecolorallocatealpha($thumb, 0, 0, 0, 127));
-            imagealphablending($thumb, false);
-            imagesavealpha($thumb, true);
-        }
-
-        // Redimensionar a imagem sem cortar
-        imagecopyresampled($thumb, $image, 0, 0, 0, 0, $newWidth, $newHeight, $originalWidth, $originalHeight);
-
-        // Salvar a miniatura
-        switch ($mimeType) {
-            case 'image/jpeg':
-                imagejpeg($thumb, $thumbPath, 90);
-                break;
-            case 'image/png':
-                imagepng($thumb, $thumbPath);
-                break;
-            case 'image/gif':
-                imagegif($thumb, $thumbPath);
-                break;
-        }
-
-        // Liberar memória
-        imagedestroy($image);
-        imagedestroy($thumb);
-    }
-
-
-
-    //em conjunto com a função de criar img miniatura, cria e salva ela e a maior na pasta public com path completo e identificador único
-    function handleImageUploads(array $photos, $user, $thumbnailWidth = 400, $thumbnailHeight = 150)
-    {
-
         $savedImages = [];
         $thumbnailPaths = [];
 
         DB::beginTransaction(); // Iniciar transação
         try {
-
             foreach ($photos as $photo) {
                 if ($photo->isValid()) {
                     // Gerar nome de arquivo único
@@ -354,40 +601,45 @@ class Utils
 
                     // Caminho de destino para imagem original
                     $destinationPath = public_path('images/');
-                    if (!file_exists($destinationPath)) {
-                        mkdir($destinationPath, 0775, true);
+                    if (!File::exists($destinationPath)) {
+                        File::makeDirectory($destinationPath, 0775, true);
                     }
 
                     // Mover imagem para destino
-                    // $photo->move($destinationPath, $filename);
                     $photo->move($destinationPath, $filename);
-
                     $fullPath = 'images/' . $filename;
                     $savedImages[] = $fullPath;
 
-                    if (file_exists($fullPath)) {
-                        list($widthOld, $heightOld) = getimagesize($fullPath);
-                    } else {
-                        return response()->json([
-                            'success' => false,
-                            'message' =>  "Largura da imagem inválida.",
-                        ]);
-                        // throw new Exception("Largura da imagem inválida.");
+                    // Verifica se a imagem foi salva com sucesso
+                    if (!File::exists(public_path($fullPath))) {
+                        throw new Exception("Erro ao salvar a imagem.");
                     }
-
-                    $thumbnailHeight = ($heightOld * $thumbnailWidth) / $widthOld;
 
                     // Verificar e criar pasta para thumbnails
                     $destinationPathThumbnail = public_path('images/thumbnails/');
-                    if (!file_exists($destinationPathThumbnail)) {
-                        mkdir($destinationPathThumbnail, 0775, true);
+                    if (!File::exists($destinationPathThumbnail)) {
+                        File::makeDirectory($destinationPathThumbnail, 0775, true);
                     }
 
-                    // Gerar miniatura
-                    $thumbnailPath = 'images/thumbnails/thumb_' . $filename;
-                    $utils = new Utils(); // Certifique-se de que a classe Utils esteja disponível
-                    $utils->createThumbnail(public_path($fullPath), public_path($thumbnailPath), $thumbnailWidth, $thumbnailHeight);
+                    // Gerar miniatura usando Intervention Image
+                    $img = Image::make(public_path($fullPath));
 
+                    // Obtendo as dimensões da imagem original
+                    $widthOld = $img->width();
+                    $heightOld = $img->height();
+
+                    // Calculando a altura proporcional com base na largura da miniatura
+                    $heightThumbnail = ($heightOld * $thumbnailWidth) / $widthOld;
+
+                    // Caminho para salvar a miniatura
+                    $thumbnailPath = 'images/thumbnails/thumb_' . $filename;
+
+                    // Redimensionando a imagem e salvando a miniatura
+                    $img->resize($thumbnailWidth, $heightThumbnail, function ($constraint) {
+                        $constraint->aspectRatio(); // Mantém a proporção
+                    })->save(public_path($thumbnailPath));
+
+                    // Salva o caminho da miniatura gerada
                     $thumbnailPaths[] = $thumbnailPath;
                 }
             }
@@ -399,101 +651,15 @@ class Utils
                 'savedImages' => $savedImages,
                 'thumbnailPaths' => $thumbnailPaths
             ];
-
-            // return [
-            //     'savedImages' => $savedImages,
-            //     'thumbnailPaths' => $thumbnailPaths
-            // ];
-
-        } catch (Exception $e) {
-            DB::rollBack(); // Desfaz alterações no banco em caso de erro
-
-            // Excluir as imagens já salvas na pasta
-            foreach ($savedImages as $imagePath) {
-                if (file_exists($imagePath)) {
-                    unlink($imagePath);
-                }
-            }
-
-            foreach ($thumbnailPaths as $thumbPath) {
-                if (file_exists($thumbPath)) {
-                    unlink($thumbPath);
-                }
-            }
+        } catch (\Exception $e) {
+            DB::rollBack(); // Reverte a transação em caso de erro
 
             return [
                 'success' => false,
-                'message' => 'Erro ao salvar as imagens: ' . $e->getMessage()
+                'error' => $e->getMessage(),
+                'savedImages' => $savedImages ?? [],
+                'thumbnailPaths' => $thumbnailPaths ?? []
             ];
         }
-    }
-
-
-
-
-
-
-
-    ////////////////////teste
-    ////////////////////teste
-    ////////////////////função para pegar imagem de uma pasta teste
-    function handleFolderImageUploads($folderPath, $user, $thumbnailWidth = 150, $thumbnailHeight = 150)
-    {
-        $savedImages = [];
-        $thumbnailPaths = [];
-
-        $user = 1;
-
-        if (!file_exists($folderPath) || !is_dir($folderPath)) {
-            throw new Exception("A pasta fornecida não existe.");
-        }
-
-        $imageFiles = array_filter(scandir($folderPath), function ($file) use ($folderPath) {
-            $filePath = $folderPath . DIRECTORY_SEPARATOR . $file;
-            return is_file($filePath) && preg_match('/\.(jpg|jpeg|png|gif)$/i', $file);
-        });
-
-        foreach ($imageFiles as $file) {
-            $imagePath = $folderPath . DIRECTORY_SEPARATOR . $file;
-
-            // Gerar nome único
-            $filename = $user++ . '-' . now()->format('Y-m-d_H-i-s') . '-' . uniqid() . '.' . pathinfo($file, PATHINFO_EXTENSION);
-
-            $destinationPath = public_path('images/');
-            if (!file_exists($destinationPath)) {
-                mkdir($destinationPath, 0775, true);
-            }
-
-            $newImagePath = $destinationPath . $filename;
-
-            if (file_exists($newImagePath)) {
-                continue; // Pula arquivos já copiados
-            }
-
-            copy($imagePath, $newImagePath);
-
-            $fullPath = 'images/' . $filename;
-            $savedImages[] = $fullPath;
-
-            // Pasta para miniaturas
-            $destinationPathThumbnail = public_path('images/thumbnails/');
-            if (!file_exists($destinationPathThumbnail)) {
-                mkdir($destinationPathThumbnail, 0775, true);
-            }
-
-            $thumbnailPath = 'images/thumbnails/thumb_' . $filename;
-            $utils = new Utils();
-            $utils->createThumbnail(public_path($fullPath), public_path($thumbnailPath), $thumbnailWidth, $thumbnailHeight);
-
-            $thumbnailPaths[] = $thumbnailPath;
-
-            // Remove a imagem original para evitar reprocessamento
-            unlink($imagePath);
-        }
-
-        return [
-            'savedImages' => $savedImages,
-            'thumbnailPaths' => $thumbnailPaths
-        ];
     }
 }

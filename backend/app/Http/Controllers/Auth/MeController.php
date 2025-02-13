@@ -47,7 +47,14 @@ class MeController extends Controller
 
             $preferences = DB::table('genders')
                 ->whereIn('id', $preferencesUser)
-                ->pluck('name');
+                ->get()
+                ->map(function ($preference) {
+                    return (object) [
+                        'id' => $preference->id,
+                        'name' => $preference->name,
+                    ];
+                })
+                ->toArray();
 
             $photosUser = DB::table('photos')
                 ->join('sequences', 'photos.id', '=', 'sequences.fk_sequences_photos_id') // Faz o join com sequences

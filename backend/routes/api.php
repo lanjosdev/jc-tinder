@@ -12,6 +12,7 @@ use App\Http\Controllers\PhotoController;
 use App\Http\Controllers\SequenceController;
 use App\Http\Controllers\SexualityController;
 use App\Http\Controllers\SubGenderController;
+use App\Http\Controllers\testeController;
 use App\Http\Controllers\UserController;
 use App\Models\Sequence;
 use Illuminate\Http\Request;
@@ -90,4 +91,6 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
     //sequences_photos
     Route::post('/update-sequence-photo', [SequenceController::class, 'updateSequence']);
+
+    Route::post('/teste', [testeController::class, 'store']);
 });
