@@ -219,37 +219,37 @@ class Utils
         }
 
         // Calcula a proporção para recorte centralizado
-        $srcRatio = $originalWidth / $originalHeight;
-        $thumbRatio = $thumbWidth / $thumbHeight;
+        // $srcRatio = $originalWidth / $originalHeight;
+        // $thumbRatio = $thumbWidth / $thumbHeight;
 
-        if ($srcRatio > $thumbRatio) {
-            // Imagem original é mais larga -> corta as laterais
-            $newHeight = $originalHeight;
-            $newWidth = (int)($originalHeight * $thumbRatio);
-            $srcX = (int)(($originalWidth - $newWidth) / 2);
-            $srcY = 0;
-        } else {
-            // Imagem original é mais alta -> corta o topo e a base
-            $newWidth = $originalWidth;
-            $newHeight = (int)($originalWidth / $thumbRatio);
-            $srcX = 0;
-            $srcY = (int)(($originalHeight - $newHeight) / 2);
-        }
+        // if ($srcRatio > $thumbRatio) {
+        //     // Imagem original é mais larga -> corta as laterais
+        //     $newHeight = $originalHeight;
+        //     $newWidth = (int)($originalHeight * $thumbRatio);
+        //     $srcX = (int)(($originalWidth - $newWidth) / 2);
+        //     $srcY = 0;
+        // } else {
+        //     // Imagem original é mais alta -> corta o topo e a base
+        //     $newWidth = $originalWidth;
+        //     $newHeight = (int)($originalWidth / $thumbRatio);
+        //     $srcX = 0;
+        //     $srcY = (int)(($originalHeight - $newHeight) / 2);
+        // }
 
         // Criar a miniatura com corte centralizado
         $thumb = imagecreatetruecolor($thumbWidth, $thumbHeight);
-        imagecopyresampled(
-            $thumb,
-            $image,
-            0,
-            0,  // Posição inicial da miniatura
-            $srcX,
-            $srcY,  // Recorte da imagem original
-            $thumbWidth,
-            $thumbHeight,  // Novo tamanho
-            $newWidth,
-            $newHeight  // Tamanho de recorte
-        );
+        // imagecopyresampled(
+        //     $thumb,
+        //     $image,
+        //     0,
+        //     0,  // Posição inicial da miniatura
+        //     $srcX,
+        //     $srcY,  // Recorte da imagem original
+        //     $thumbWidth,
+        //     $thumbHeight,  // Novo tamanho
+        //     $newWidth,
+        //     $newHeight  // Tamanho de recorte
+        // );
 
         // Salva a miniatura
         switch ($mimeType) {
@@ -312,7 +312,7 @@ class Utils
                         // throw new Exception("Largura da imagem inválida.");
                     }
 
-                    $thumbnailHeight = ($heightOld * $thumbnailWidth) / $widthOld;
+                    // $thumbnailHeight = ($heightOld * $thumbnailWidth) / $widthOld;
 
                     // Verificar e criar pasta para thumbnails
                     $destinationPathThumbnail = public_path('images/thumbnails/');
@@ -323,7 +323,7 @@ class Utils
                     // Gerar miniatura
                     $thumbnailPath = 'images/thumbnails/thumb_' . $filename;
                     $utils = new Utils(); // Certifique-se de que a classe Utils esteja disponível
-                    $utils->createThumbnail(public_path($fullPath), public_path($thumbnailPath), $thumbnailWidth, $thumbnailHeight);
+                    $utils->createThumbnail(public_path($fullPath), public_path($heightOld), $widthOld, $thumbnailHeight);
 
                     $thumbnailPaths[] = $thumbnailPath;
                 }
