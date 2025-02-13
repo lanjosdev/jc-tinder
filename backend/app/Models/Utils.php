@@ -218,14 +218,10 @@ class Utils
             }
         }
 
+        //Calculando a proporção da miniatura
         $ratio = min($thumbWidth / $originalWidth, $thumbHeight / $originalHeight);
         $thumbWidth = (int)($originalWidth * $ratio);
         $thumbHeight = (int)($originalHeight * $ratio);
-
-        // // Se a imagem estiver na horizontal, girar 90 graus
-        // if ($originalWidth > $originalHeight) {
-        //     $image = imagerotate($image, 90, 0);
-        // }
 
         // Criar a imagem de miniatura
         $thumb = imagecreatetruecolor($thumbWidth, $thumbHeight);
