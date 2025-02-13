@@ -630,16 +630,16 @@ class Utils
 
                     // Lê a imagem do sistema de arquivos
                     $image = $manager->read(public_path($fullPath));
-                    
-                    $widthOld = $image->width();
-                    $heightOld= $image->height();
 
+                    $widthOld = $image->width();
+                    $heightOld = $image->height();
+
+                    // Calcula a altura proporcional
                     $heightThumbnail = ($heightOld * $thumbnailWidth) / $widthOld;
 
                     // Redimensiona proporcionalmente para 400px de largura
-                    $image->resize($thumbnailWidth, $heightThumbnail, function ($constraint) {
-                        $constraint->aspectRatio();
-                    });
+                    $image->resize($thumbnailWidth, $heightThumbnail);
+
 
                     // Salva a miniatura
                     $thumbnailPath = public_path('images/thumbnails/thumb_' . $filename);
