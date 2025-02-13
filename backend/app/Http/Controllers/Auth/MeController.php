@@ -38,7 +38,12 @@ class MeController extends Controller
 
             $habits = DB::table('habits')
                 ->whereIn('id', $habitsUser)
-                ->pluck('name');
+                ->get()->map(function ($habit) {
+                    return [
+                        'id' => $habit->id,
+                        'name' => $habit->name,
+                    ];
+                })->toArray();
 
             $preferencesUser = DB::table('preferences')
                 ->where('fk_user_preferences_id', $myProfile->id)

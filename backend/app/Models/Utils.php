@@ -8,7 +8,11 @@ use Illuminate\Http\Client\Request;
 use Illuminate\Support\Facades\DB;
 use Intervention\Image\Laravel\Facades\Image;
 use Illuminate\Support\Facades\File;
+use Intervention\Image\Drivers\Gd\Driver;
+use Spatie\Image\Drivers\Gd\GdDriver as GdGdDriver;
 
+use Intervention\Image\ImageManager;
+use Intervention\Image\Drivers\ImagickDriver;
 
 // use Intervention\Image\ImageManagerStatic as Image;
 
@@ -621,26 +625,50 @@ class Utils
                         File::makeDirectory($destinationPathThumbnail, 0775, true);
                     }
 
-                    // Gerar miniatura usando Intervention Image
-                    $img = Image::make(public_path($fullPath));
+                    // $manager = new ImageManager(new Driver());
+                    $manager = new ImageManager(new Driver());
 
-                    // Obtendo as dimensões da imagem original
-                    $widthOld = $img->width();
-                    $heightOld = $img->height();
+                    // Lê a imagem do sistema de arquivos
+                    $image = $manager->read(public_path($fullPath));
+                    
+                    $widthOld = $image->width();
+                    $heightOld= $image->height();
 
-                    // Calculando a altura proporcional com base na largura da miniatura
                     $heightThumbnail = ($heightOld * $thumbnailWidth) / $widthOld;
 
-                    // Caminho para salvar a miniatura
-                    $thumbnailPath = 'images/thumbnails/thumb_' . $filename;
+                    // Redimensiona proporcionalmente para 400px de largura
+                    $image->resize($thumbnailWidth, $heightThumbnail, function ($constraint) {
+                        $constraint->aspectRatio();
+                    });
 
-                    // Redimensionando a imagem e salvando a miniatura
-                    $img->resize($thumbnailWidth, $heightThumbnail, function ($constraint) {
-                        $constraint->aspectRatio(); // Mantém a proporção
-                    })->save(public_path($thumbnailPath));
+                    // Salva a miniatura
+                    $thumbnailPath = public_path('images/thumbnails/thumb_' . $filename);
+                    $image->save($thumbnailPath);
 
-                    // Salva o caminho da miniatura gerada
-                    $thumbnailPaths[] = $thumbnailPath;
+                    // Adiciona o caminho ao array de thumbnails
+                    $thumbnailPaths[] = 'images/thumbnails/thumb_' . $filename;
+
+
+                    // // Gerar miniatura usando Intervention Image
+                    // $img = Image::make(public_path($fullPath));
+
+                    // // Obtendo as dimensões da imagem original
+                    // $widthOld = $img->width();
+                    // $heightOld = $img->height();
+
+                    // // Calculando a altura proporcional com base na largura da miniatura
+                    // $heightThumbnail = ($heightOld * $thumbnailWidth) / $widthOld;
+
+                    // // Caminho para salvar a miniatura
+                    // $thumbnailPath = 'images/thumbnails/thumb_' . $filename;
+
+                    // // Redimensionando a imagem e salvando a miniatura
+                    // $img->resize($thumbnailWidth, $heightThumbnail, function ($constraint) {
+                    //     $constraint->aspectRatio(); // Mantém a proporção
+                    // })->save(public_path($thumbnailPath));
+
+                    // // Salva o caminho da miniatura gerada
+                    // $thumbnailPaths[] = $thumbnailPath;
                 }
             }
 
