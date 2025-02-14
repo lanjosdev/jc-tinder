@@ -12,6 +12,7 @@ import Forms from "../pages/forms";
 import Home from "../pages/home";
 import Settings from "../pages/settings";
 import Profile from "../pages/profile";
+import Preferences from "../pages/preferences";
 import Photos from "../pages/photos";
 
 
@@ -27,6 +28,7 @@ export default function AppRoutes() {
             <Route path="/home" element={ <ControllerRouter> <Home/> </ControllerRouter> } />
             <Route path="/settings" element={ <ControllerRouter> <Settings/> </ControllerRouter> } />
             <Route path="/profile" element={ <ControllerRouter> <Profile/> </ControllerRouter> } />
+            <Route path="/preferences" element={ <ControllerRouter> <Preferences/> </ControllerRouter> } />
             <Route path="/photos" element={ <ControllerRouter> <Photos/> </ControllerRouter> } />
 
         </Routes>

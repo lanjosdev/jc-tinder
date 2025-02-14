@@ -1,0 +1,61 @@
+/* @import "@radix-ui/colors/black-alpha.css"; */
+/* @import "@radix-ui/colors/violet.css"; */
+
+.SliderRange {
+	
+	.SliderRoot {
+		/* border: 1px solid red; */
+		position: relative;
+		display: flex;
+		align-items: center;
+		user-select: none;
+		touch-action: none;
+		/* width: 200px; */
+		height: 20px;
+		padding: 2.5rem 0rem 2rem;
+	}
+	
+	.SliderTrack {
+		background-color: #EBFE81;
+		position: relative;
+		flex-grow: 1;
+		border-radius: 9999px;
+		height: 1.5rem;
+		border: .2rem solid #69329A;
+	}
+	
+	.SliderRange {
+		position: absolute;
+		background-color: #FF59E2;
+		border-radius: 9999px;
+		height: 100%;
+	}
+	
+	.SliderThumb {
+		display: block;
+		width: 4rem;
+		height: 4rem;
+		background-color: #FF59E2;
+		border: .2rem solid #69329A;
+		box-shadow: 1px 1px #69329A;
+		border-radius: 50%;
+	
+		color: var(--color-w);
+		font-size: 1.8rem;
+		font-weight: 900;
+		align-content: center;
+		text-align: center;
+		cursor: pointer;
+
+		&.red {
+			background-color: red;
+		}
+	}
+	/* .SliderThumb:hover {
+		background-color: red;
+	} */
+	.SliderThumb:focus {
+		outline: none;
+		transform: scale(1.3);
+	}
+}

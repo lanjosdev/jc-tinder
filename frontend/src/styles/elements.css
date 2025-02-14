@@ -281,7 +281,7 @@ body:has(.Checkout) {
 .label--select {
     display: flex;
     flex-direction: column;
-    gap: 0.2rem;
+    gap: 0.7rem;
 
     > label {
         /* font-size: 1.5rem; */
@@ -307,6 +307,63 @@ body:has(.Checkout) {
     background-color: var(--color-text);
     height: 1px;
     opacity: .7;
+}
+
+.switch {
+    position: relative;
+    display: inline-block !important;
+    min-width: 4.2rem;
+    height: 2.5rem;
+
+    input { 
+        display: none;
+    }
+    .slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #ccc;
+        -webkit-transition: .4s;
+        transition: .4s;
+
+        &:before {
+            position: absolute;
+            content: "";
+            height: 1.85rem;
+            width: 1.85rem;
+            left: .3rem;
+            bottom: .32rem;
+            background-color: white;
+            -webkit-transition: .4s;
+            transition: .4s;
+        }
+    }
+
+    input:checked + .slider {
+        background-color: #ff59e2;
+        outline: .2rem solid purple;
+    }
+    input:focus + .slider {
+        box-shadow: 0 0 .1rem #2196F3;
+    }
+    input:checked + .slider:before {
+        -webkit-transform: translateX(1.75rem);
+        -ms-transform: translateX(1.75rem);
+        transform: translateX(1.75rem);
+        /* outline: .2rem solid purple; */
+    }
+
+    /* Rounded sliders */
+    .slider.round {
+        border-radius: 34px;
+    }
+    
+    .slider.round:before {
+        border-radius: 50%;
+    }
 }
 /* ELEMENTOS-FIM */
 

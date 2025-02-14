@@ -16,7 +16,7 @@
             /* border: 2px solid red; */
             display: flex;
             flex-direction: column;
-            gap: 1.5rem;
+            gap: 3.5rem;
 
 
             .label--input {
@@ -83,6 +83,12 @@
                         margin-top: 0rem;
                         max-height: 0;
                     }
+                }
+            }
+            .label--input.habits {
+                > label {
+                    display: flex;
+                    justify-content: space-between;
                 }
             }
 

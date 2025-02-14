@@ -93,11 +93,11 @@ html {
     @media screen and (max-width: 480px) {
         font-size: 56.5%;
     }
-    /* @media screen and (max-height: 600px) {
-        @media screen and (max-width: 360px) {
+    @media screen and (max-height: 600px) {
+        @media screen and (max-width: 340px) {
             font-size: 52%;
         }
-    } */
+    }
 }
 
 body, #root {
@@ -117,9 +117,34 @@ body, input, textarea, button, select, a {
 }
 
 
-/* Barra scroll */
+@media (min-width: 900px) {
+    /* Barra scroll */
+    /* width */
+    ::-webkit-scrollbar {
+        width: 7px;
 
-/* Barra scroll */
+        transition: all .3s ease;
+    }
+    
+    /* Track */
+    ::-webkit-scrollbar-track {
+        background: var(--color-bg-2); 
+    }
+    
+    /* Handle */
+    ::-webkit-scrollbar-thumb {
+        background: var(--color-bg-3); 
+        border-radius: 5px;
+
+        transition: all .3s ease;
+    }
+    /* Handle on hover */
+    ::-webkit-scrollbar-thumb:hover {
+        background: var(--gray-400); 
+    }
+    /* Barra scroll */
+}
+
 
 
 [disabled] {

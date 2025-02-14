@@ -1,0 +1,64 @@
+.PreferencesContent {
+
+    .content_main {
+        
+        .label--input.agr_group {
+            label {
+                display: flex;
+                justify-content: space-between;
+            }
+
+            .range_extra {
+                /* background-color: aqua; */
+                display: flex;
+                align-items: center;
+                gap: 1rem;
+            }
+        }
+
+        .label--input.habits {
+            /* border: 1px solid red; */
+
+            .habits_preview {
+                /* background-color: #EBFE81; */
+                border: .2rem solid purple;
+                border-radius: 25px;
+                @media (max-width: 515px) {
+                    border-radius: 0;
+                    border: none;
+                    border-top: .2rem solid purple;
+                    border-bottom: .2rem solid purple;
+                }
+                margin: 0 -15px 1rem;
+                /* padding: 1rem 15px 2rem; */
+                padding: 1rem 15px;
+
+                overflow-x: auto;
+                scroll-behavior: smooth;
+                @media (max-width: 650px) {
+                    &::-webkit-scrollbar {
+                        display: none;
+                    }
+                }
+
+                display: flex;
+                flex-wrap: nowrap;
+                gap: .5rem;
+
+                .btn_radio {
+                    display: flex;
+                    align-items: center;
+                    gap: .2rem;
+
+                    white-space: nowrap;
+    
+                    i {
+                        transform: translateX(0.3rem);
+                        font-size: 1.8rem;
+                        line-height: 0;
+                    }
+                }
+            }
+        } 
+    }
+}

@@ -34,15 +34,15 @@ export default function Forms() {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const [loadingSubmit, setLoadingSubmit] = useState(false);
-    // Modal
-    const [showModal, setShowModal] = useState(false);
 
+    
     // Dados pré-carregados:
     const [genders, setGenders] = useState([]);
     const [gendersOptionals, setGendersOptionals] = useState([]);
     const [sexualities, setSexualities] = useState([]);
     const [habits, setHabits] = useState([]);
 
+    
     // Logica da UI:
     //const totalSteps = 3;
     const [step, setStep] = useState(1);
@@ -55,6 +55,7 @@ export default function Forms() {
     const [habitsPreview, setHabitsPreview] = useState([]);
     //step 3
     const [inputSelect, setInputSelect] = useState(null);
+    const [showModal, setShowModal] = useState(false);
 
     
     // Dados a submeter
@@ -268,7 +269,7 @@ export default function Forms() {
         }
         else {
             if(habitsIdsPreferences.length >= 10) {
-                toast.info('Selecione no máximo 10 interesses!');
+                // toast.info('Selecione no máximo 10 interesses!');
                 return;
             }
             
@@ -589,8 +590,14 @@ export default function Forms() {
                             </div>
                         </div>
 
-                        <div className="label--input">
-                            <label>Qual seu tipo de bloquinho? (Interesses)</label>
+                        <div className="label--input habits">
+                            <label>
+                                <span>Qual seu tipo de bloquinho? (Interesses)</span>
+
+                                {habitsPreview.length > 0 && (
+                                <span>{habitsPreview.length} de 10</span>
+                                )}
+                            </label>
                             
                             <div className="btns_radio_container habits">
                                 {habits
@@ -610,7 +617,7 @@ export default function Forms() {
 
                             {qtdPreview != habits.length && (
                             <button className="show_more" onClick={()=> setQtdPreview(habits.length)}>
-                                Mostrar todos
+                                Ver todos
                             </button>
                             )}
                         </div>

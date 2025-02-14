@@ -116,3 +116,21 @@ export async function FORMS_UPDATE_PROFILE(token, name, phone, birthDate, idGend
    // console.log(response.data);
    return response.data;
 }
+
+// Registra dados de preferenciua (POST):
+export async function FORMS_UPDATE_PREFERENCES(token, idsGenders, minAge, maxAge, idsHabits) {
+   console.log('CALL FUNCTION API');
+
+   const response = await axios.post(`${API_URL}/update-preferences`, {
+      "fk_gender_preferences_id": idsGenders,
+      "minimum_age": minAge,
+      "maximum_age": maxAge,
+      "habits": idsHabits
+   },
+   { 
+      headers: { "Accept": "application/json", Authorization: "Bearer " + token }
+   });
+   
+   // console.log(response.data);
+   return response.data;
+}
