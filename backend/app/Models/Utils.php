@@ -418,11 +418,6 @@ class Utils
     // }
 
 
-
-
-
-
-
     // //em conjunto com a função de criar img miniatura, cria e salva ela e a maior na pasta public com path completo e identificador único
     // function handleImageUploads(array $photos, $user, $thumbnailWidth = 400, $thumbnailHeight = 150)
     // {
@@ -591,96 +586,85 @@ class Utils
     //     }
     // }
 
+
+
+
+
+
+
+
+    
+
     function handleImageUploads(array $photos, $user, $thumbnailWidth = 400)
     {
         $savedImages = [];
         $thumbnailPaths = [];
 
-        DB::beginTransaction(); // Iniciar transação
+        DB::beginTransaction();
+        
         try {
             foreach ($photos as $photo) {
                 if ($photo->isValid()) {
-                    // Gerar nome de arquivo único
+                    
+                    // geraa nome de arquivo único
                     $filename = $user->id . '-' . now()->format('Y-m-d_H-i-s') . '-' . uniqid() . '.' . $photo->getClientOriginalExtension();
 
-                    // Caminho de destino para imagem original
+                    // caminho para a imagem original
                     $destinationPath = public_path('images/');
                     if (!File::exists($destinationPath)) {
                         File::makeDirectory($destinationPath, 0775, true);
                     }
 
-                    // Mover imagem para destino
+                    // mover imagem original para destino
                     $photo->move($destinationPath, $filename);
                     $fullPath = 'images/' . $filename;
                     $savedImages[] = $fullPath;
 
-                    // Verifica se a imagem foi salva com sucesso
+                    // verifica se a imagem foi salva
                     if (!File::exists(public_path($fullPath))) {
                         throw new Exception("Erro ao salvar a imagem.");
                     }
 
-                    // Verificar e criar pasta para thumbnails
+                    // se não existir caminho para thumb, cria
                     $destinationPathThumbnail = public_path('images/thumbnails/');
                     if (!File::exists($destinationPathThumbnail)) {
                         File::makeDirectory($destinationPathThumbnail, 0775, true);
                     }
 
-                    // $manager = new ImageManager(new Driver());
+                    // instancia o objeto
                     $manager = new ImageManager(new Driver());
 
-                    // Lê a imagem do sistema de arquivos
+                    // lê a imagem original
                     $image = $manager->read(public_path($fullPath));
 
+                    //armazena largura e altura da imagem original
                     $widthOld = $image->width();
                     $heightOld = $image->height();
 
-                    // Calcula a altura proporcional
+                    // calcula a altura da thumb para ficar proporcional aos 400px de largura
                     $heightThumbnail = ($heightOld * $thumbnailWidth) / $widthOld;
 
-                    // Redimensiona proporcionalmente para 400px de largura
+                    // redimensiona proporcionalmente
                     $image->resize($thumbnailWidth, $heightThumbnail);
 
-
-                    // Salva a miniatura
+                    // Salva a thumb
                     $thumbnailPath = public_path('images/thumbnails/thumb_' . $filename);
                     $image->save($thumbnailPath);
 
                     // Adiciona o caminho ao array de thumbnails
                     $thumbnailPaths[] = 'images/thumbnails/thumb_' . $filename;
-
-
-                    // // Gerar miniatura usando Intervention Image
-                    // $img = Image::make(public_path($fullPath));
-
-                    // // Obtendo as dimensões da imagem original
-                    // $widthOld = $img->width();
-                    // $heightOld = $img->height();
-
-                    // // Calculando a altura proporcional com base na largura da miniatura
-                    // $heightThumbnail = ($heightOld * $thumbnailWidth) / $widthOld;
-
-                    // // Caminho para salvar a miniatura
-                    // $thumbnailPath = 'images/thumbnails/thumb_' . $filename;
-
-                    // // Redimensionando a imagem e salvando a miniatura
-                    // $img->resize($thumbnailWidth, $heightThumbnail, function ($constraint) {
-                    //     $constraint->aspectRatio(); // Mantém a proporção
-                    // })->save(public_path($thumbnailPath));
-
-                    // // Salva o caminho da miniatura gerada
-                    // $thumbnailPaths[] = $thumbnailPath;
                 }
             }
 
-            DB::commit(); // Confirma a transação se tudo estiver correto
+            DB::commit(); 
 
             return [
                 'success' => true,
                 'savedImages' => $savedImages,
                 'thumbnailPaths' => $thumbnailPaths
             ];
-        } catch (\Exception $e) {
-            DB::rollBack(); // Reverte a transação em caso de erro
+        } catch (Exception $e) {
+            DB::rollBack();
 
             return [
                 'success' => false,

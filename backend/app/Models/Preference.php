@@ -12,4 +12,9 @@ class Preference extends Model
 
     protected $tables = 'preferences';
     protected $dates = ['deleted_at'];
+
+    public function gender()
+    {
+        return $this->belongsTo(Gender::class, 'fk_gender_preferences_id');
+    }
 }

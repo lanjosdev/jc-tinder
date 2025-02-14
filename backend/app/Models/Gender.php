@@ -12,5 +12,4 @@ class Gender extends Model
 
     protected $tables = 'genders';
     protected $dates = ['deleted_at'];
-
 }

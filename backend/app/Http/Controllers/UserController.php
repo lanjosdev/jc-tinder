@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Habit;
 use App\Models\Preference;
 use App\Models\User;
 use App\Models\Utils;
@@ -25,6 +26,7 @@ class UserController extends Controller
     public function getAll(Request $request)
     {
         try {
+
             $userRequest = $request->user();
 
             //pega a preferencia do user da requisição
@@ -60,21 +62,25 @@ class UserController extends Controller
 
                 $habitsUser = DB::table('user_habits')
                     ->where('fk_user_user_habits_id', $users->id)
+                    ->whereNull('deleted_at')
                     ->pluck('fk_habits_user_habits_id')
                     ->toArray();
 
                 $habits = DB::table('habits')
                     ->whereIn('id', $habitsUser)
-                    ->pluck('name');
+                    ->select('id', 'name')
+                    ->get();
 
-                $preferencesUser = DB::table('preferences')
-                    ->where('fk_user_preferences_id', $users->id)
-                    ->pluck('fk_gender_preferences_id')
+                $preferencesArray = Preference::with('gender')
+                    ->where('fk_user_preferences_id',  $users->id)
+                    ->get()
+                    ->map(function ($preference) {
+                        return [
+                            'id' => $preference->fk_gender_preferences_id,
+                            'name' => $preference->gender ? $preference->gender->name : null,
+                        ];
+                    })
                     ->toArray();
-
-                $preferences = DB::table('genders')
-                    ->whereIn('id', $preferencesUser)
-                    ->pluck('name');
 
                 $photosUser = DB::table('photos')
                     ->where('fk_user_photos_id', $users->id)
@@ -101,7 +107,7 @@ class UserController extends Controller
                     'sub_gender_description' => $users->fk_sub_gender_user_id ? $users->sub_gender->description : null,
                     'sexuality' => $users->fk_sexuality_user_id ? $users->sexuality->name : null,
                     'sexuality_description' => $users->fk_sexuality_user_id ? $users->sexuality->description : null,
-                    'preferences' => $preferences,
+                    'preferences' => $preferencesArray,
                     'photos' => $photosUserArray,
                     'minimum_age_preference' => $users->minimum_age,
                     'maximum_age_preference' => $users->maximum_age,
@@ -159,21 +165,26 @@ class UserController extends Controller
 
                 $habitsUser = DB::table('user_habits')
                     ->where('fk_user_user_habits_id', $user->id)
+                    ->whereNull('deleted_at')
                     ->pluck('fk_habits_user_habits_id')
                     ->toArray();
 
                 $habits = DB::table('habits')
                     ->whereIn('id', $habitsUser)
-                    ->pluck('name');
+                    ->select('id', 'name')
+                    ->get();
 
-                $preferencesUser = DB::table('preferences')
-                    ->where('fk_user_preferences_id', $user->id)
-                    ->pluck('fk_gender_preferences_id')
+
+                $preferencesArray = Preference::with('gender')
+                    ->where('fk_user_preferences_id',  $user->id)
+                    ->get()
+                    ->map(function ($preference) {
+                        return [
+                            'id' => $preference->fk_gender_preferences_id,
+                            'name' => $preference->gender ? $preference->gender->name : null,
+                        ];
+                    })
                     ->toArray();
-
-                $preferences = DB::table('genders')
-                    ->whereIn('id', $preferencesUser)
-                    ->pluck('name');
 
                 $photosUser = DB::table('photos')
                     ->where('fk_user_photos_id', $user->id)
@@ -203,7 +214,7 @@ class UserController extends Controller
                     'sub_gender_description' => $user->fk_sub_gender_user_id ? $user->sub_gender->description : null,
                     'sexuality' => $user->fk_sexuality_user_id ? $user->sexuality->name : null,
                     'sexuality_description' => $user->fk_sexuality_user_id ? $user->sexuality->description : null,
-                    'preferences' => $preferences,
+                    'preferences' => $preferencesArray,
                     'photos' => $photosUser,
                     'minimum_age_preference' => $user->minimum_age,
                     'maximum_age_preference' => $user->maximum_age,
