@@ -82,16 +82,32 @@ class UserController extends Controller
                     })
                     ->toArray();
 
-                $photosUser = DB::table('photos')
-                    ->where('fk_user_photos_id', $users->id)
-                    ->whereNull('deleted_at')
-                    ->pluck('thumb_photo', 'id')
-                    ->toArray();
+                // $photosUser = DB::table('photos')
+                //     ->where('fk_user_photos_id', $users->id)
+                //     ->whereNull('deleted_at')
+                //     ->pluck('thumb_photo', 'id')
+                //     ->toArray();
 
-                // Converte para array de objetos
-                $photosUserArray = array_map(function ($id, $thumbPhoto) {
-                    return (object) ['id' => $id, 'thumb_photo' => $thumbPhoto];
-                }, array_keys($photosUser), $photosUser);
+                // // Converte para array de objetos
+                // $photosUserArray = array_map(function ($id, $thumbPhoto) {
+                //     return (object) ['id' => $id, 'thumb_photo' => $thumbPhoto];
+                // }, array_keys($photosUser), $photosUser);
+
+                $photosUserArray = DB::table('photos')
+                    ->join('sequences', 'photos.id', '=', 'sequences.fk_sequences_photos_id') // Faz o join com sequences
+                    ->where('photos.fk_user_photos_id', $users->id)
+                    ->whereNull('photos.deleted_at')
+                    ->select('photos.id', 'photos.thumb_photo', 'photos.name_photo', 'sequences.order') // Seleciona também a ordem
+                    ->orderBy('sequences.order', 'asc') // Ordena com base na tabela sequences
+                    ->get()
+                    ->map(function ($photo) {
+                        return (object) [
+                            'id' => $photo->id,
+                            'photo' => $photo->name_photo,
+                            'thumb_photo' => $photo->thumb_photo,
+                        ];
+                    })
+                    ->toArray();
 
                 return [
                     'id' => $users->id,
@@ -186,10 +202,26 @@ class UserController extends Controller
                     })
                     ->toArray();
 
-                $photosUser = DB::table('photos')
-                    ->where('fk_user_photos_id', $user->id)
-                    ->whereNull('deleted_at')
-                    ->select('id', 'thumb_photo', 'name_photo')
+                // $photosUser = DB::table('photos')
+                //     ->where('fk_user_photos_id', $user->id)
+                //     ->whereNull('deleted_at')
+                //     ->select('id', 'thumb_photo', 'name_photo')
+                //     ->get()
+                //     ->map(function ($photo) {
+                //         return (object) [
+                //             'id' => $photo->id,
+                //             'photo' => $photo->name_photo,
+                //             'thumb_photo' => $photo->thumb_photo,
+                //         ];
+                //     })
+                //     ->toArray();
+
+                $photosUserArray = DB::table('photos')
+                    ->join('sequences', 'photos.id', '=', 'sequences.fk_sequences_photos_id') // Faz o join com sequences
+                    ->where('photos.fk_user_photos_id', $user->id)
+                    ->whereNull('photos.deleted_at')
+                    ->select('photos.id', 'photos.thumb_photo', 'photos.name_photo', 'sequences.order') // Seleciona também a ordem
+                    ->orderBy('sequences.order', 'asc') // Ordena com base na tabela sequences
                     ->get()
                     ->map(function ($photo) {
                         return (object) [
@@ -215,7 +247,7 @@ class UserController extends Controller
                     'sexuality' => $user->fk_sexuality_user_id ? $user->sexuality->name : null,
                     'sexuality_description' => $user->fk_sexuality_user_id ? $user->sexuality->description : null,
                     'preferences' => $preferencesArray,
-                    'photos' => $photosUser,
+                    'photos' => $photosUserArray,
                     'minimum_age_preference' => $user->minimum_age,
                     'maximum_age_preference' => $user->maximum_age,
                     'habits' => $habits,
