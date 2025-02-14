@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Jobs\SendImageToApiJob;
+use App\Models\Photo;
 use App\Models\Sequence;
 use App\Models\SubGender;
 use App\Models\User;

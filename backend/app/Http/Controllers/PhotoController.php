@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Jobs\SendImageToApiJob;
 use App\Models\Photo;
 use App\Models\Sequence;
 use App\Models\Utils;
 use Exception;
+use GuzzleHttp\Client;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -104,6 +106,9 @@ class PhotoController extends Controller
                         'order' => $result,
                         'fk_sequences_photos_id' => $photoUser['id'],
                     ]);
+
+                    //envia uma imagem por vez para moderação
+                    // SendImageToApiJob::dispatch($photoUser, $user->id, $user->phone);
                 }
             }
 
@@ -113,7 +118,7 @@ class PhotoController extends Controller
 
             // $responseResult = [];
 
-            // //for para enviar uma foto de cada vez para moderação caso tenha mais de uma
+            // // //for para enviar uma foto de cada vez para moderação caso tenha mais de uma
             // for ($i = 0; $i < count($savedImages); $i++) {
             //     $response = $client->request('POST', 'https://moderacao.bizsys.com.br/api/media_insert', [
             //         'headers' => [
@@ -162,10 +167,12 @@ class PhotoController extends Controller
             //     ]);
             //     $result = json_decode($response->getBody(), true);
 
+            //     dd($result);
+
             //     $responseResult[] = $result;
             // }
 
-            // dd($responseResult);
+            
 
             if ($photoUser) {
                 DB::commit();

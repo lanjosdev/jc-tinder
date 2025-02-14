@@ -159,7 +159,7 @@ class UsersSeeder extends Seeder
         $photos = [];
         $sequence = [];
 
-        for ($i = 0; $i < 120; $i++) {
+        for ($i = 0; $i < 5; $i++) {
             $gender = $faker->randomElement(['male', 'female']);
             $name = $faker->name($gender);
             $birthDate = $faker->dateTimeBetween('-100 years', '-18 years')->format('Y-m-d');
