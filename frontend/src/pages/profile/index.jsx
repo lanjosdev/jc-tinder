@@ -437,13 +437,13 @@ export default function Profile() {
                         </div>
 
 
-                        {((name !== profileDetails.name || dateBirth !== profileDetails.birth_data || phone !== profileDetails.phone || genderSelect?.name !== profileDetails.gender || genderOptionalSelect?.name !== profileDetails.sub_gender || sexualitySelect?.name !== profileDetails.sexuality || aboutMe !== profileDetails.about_me) && (phone.length == 11 && name !== '' && aboutMe != '')) && (
+                        {/* {((name !== profileDetails.name || dateBirth !== profileDetails.birth_data || phone !== profileDetails.phone || genderSelect?.name !== profileDetails.gender || genderOptionalSelect?.name !== profileDetails.sub_gender || sexualitySelect?.name !== profileDetails.sexuality || aboutMe !== profileDetails.about_me) && (phone.length == 11 && name !== '' && aboutMe != '')) && ( */}
                         <div className="btns_container animate__animated animate__fadeInUp">
                             <button className="btn primary" disabled={loadingSubmit}>
                                 Confirmar Alterações
                             </button>
                         </div>
-                        )}
+                        {/* )} */}
                     </form>
 
                     ))}
