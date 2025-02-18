@@ -53,7 +53,7 @@ class UserController extends Controller
                 ->where('level', 0)
                 // ->where('id', '!=', $userRequest->id)
                 // ->orderByRaw('RAND()')
-                ->inRandomOrder();
+                ->inRandomOrder()
                 ->get();
 
             // //query para retornar users que ainda não dei like 
