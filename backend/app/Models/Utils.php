@@ -586,6 +586,32 @@ class Utils
 
 
 
+    function getAllMatchs($idUserRequest)
+    {
+        $userLikes = Matche::where('fk_user_matches_id', $idUserRequest)
+            ->where('status', 1)
+            ->whereNull('deleted_at')
+            ->get();
+
+        $matchedUserIds = [];
+
+        //guarda na variavel os ids dos users "like"
+        foreach ($userLikes as $like) {
+            $matchingLike = Matche::where('fk_user_matches_id', $like->fk_target_user_matches_id)
+                ->where('fk_target_user_matches_id', $idUserRequest)
+                ->where('status', 1)
+                ->whereNull('deleted_at')
+                ->first();
+
+            if ($matchingLike) {
+                $matchedUserIds[] = $like->fk_target_user_matches_id;
+            }
+        }
+
+        //guarda ids sem repetição
+        return $matchedUserIds = array_unique($matchedUserIds);
+    }
+
     function handleImageUploads(array $photos, $user, $thumbnailWidth = 400)
     {
         $savedImages = [];

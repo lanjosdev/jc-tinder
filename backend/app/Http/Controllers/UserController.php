@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Habit;
+use App\Models\Matche;
 use App\Models\Preference;
 use App\Models\User;
 use App\Models\Utils;
@@ -16,11 +17,13 @@ class UserController extends Controller
 {
     protected $user;
     protected $utils;
+    protected $matche;
 
-    public function __construct(User $user, Utils $utils)
+    public function __construct(User $user, Utils $utils, Matche $matche)
     {
         $this->user = $user;
         $this->utils = $utils;
+        $this->matche = $matche;
     }
 
     public function getAll(Request $request)
@@ -34,29 +37,49 @@ class UserController extends Controller
                 ->pluck('fk_gender_preferences_id')
                 ->toArray();
 
-            //query para retornar users que ainda não dei like 
-            $getAllUsers = User::whereNotIn('id', function ($query) use ($userRequest) {
-                $query->select('fk_user_matches_id')
-                    ->from('matches')
-                    ->where('fk_user_matches_id', $userRequest->id) // onde o usuário fez gostei
-                    ->orWhere('fk_target_user_matches_id', $userRequest->id); // ou onde o usuário é o alvo
-            })
-                ->whereHas('gender', function ($query) {
-                    $query->whereNull('deleted_at');
-                })
+            $getAllUsersLike = Matche::where('fk_user_matches_id', $userRequest->id)
+                ->where('status', 1)
+                ->whereNull('deleted_at')
+                ->pluck('fk_target_user_matches_id')
+                ->toArray();
+
+
+            $getAllMatchs = $this->utils->getAllMatchs($userRequest->id);
+
+            $matchIds = is_array($getAllMatchs) ? $getAllMatchs : collect($getAllMatchs)->pluck('id')->toArray();
+
+            $getAllUsers = User::whereNotIn('id', array_merge([$userRequest->id], $matchIds, $getAllUsersLike))
                 ->whereIn('fk_gender_user_id', $preference)
                 ->where('level', 0)
                 ->where('id', '!=', $userRequest->id)
-                ->inRandomOrder()
-                // ->orderBy('id', 'asc')
+                ->orderByRaw('RAND()')
                 ->get();
+
+            // //query para retornar users que ainda não dei like 
+            // $getAllUsers = User::whereNotIn('id', function ($query) use ($userRequest) {
+            //     $query->select('fk_user_matches_id')
+            //         ->from('matches')
+            //         ->where('fk_user_matches_id', $userRequest->id) // onde o usuário fez gostei
+            //         ->orWhere('fk_target_user_matches_id', $userRequest->id); // ou onde o usuário é o alvo
+
+            // })
+            //     ->whereHas('gender', function ($query) {
+            //         $query->whereNull('deleted_at');
+            //     })
+            //     ->whereIn('fk_gender_user_id', $preference)
+            //     ->where('level', 0)
+            //     ->where('id', '!=', $userRequest->id)
+            //     ->inRandomOrder()
+            //     // ->orderBy('id', 'asc')
+            //     ->get();
+
 
             // Filtra os usuários dentro do intervalo de idade
             $getAllUsers = $getAllUsers->filter(function ($users) use ($userRequest) {
-                
+
                 // Aqui você calcula a idade do usuário
-                $userAge = $this->utils->verifyAdult($users->birth_data); 
-                
+                $userAge = $this->utils->verifyAdult($users->birth_data);
+
                 return $userAge >= $userRequest->minimum_age && $userAge <= $userRequest->maximum_age;
             })->values();
 
@@ -84,17 +107,6 @@ class UserController extends Controller
                         ];
                     })
                     ->toArray();
-
-                // $photosUser = DB::table('photos')
-                //     ->where('fk_user_photos_id', $users->id)
-                //     ->whereNull('deleted_at')
-                //     ->pluck('thumb_photo', 'id')
-                //     ->toArray();
-
-                // // Converte para array de objetos
-                // $photosUserArray = array_map(function ($id, $thumbPhoto) {
-                //     return (object) ['id' => $id, 'thumb_photo' => $thumbPhoto];
-                // }, array_keys($photosUser), $photosUser);
 
                 $photosUserArray = DB::table('photos')
                     ->join('sequences', 'photos.id', '=', 'sequences.fk_sequences_photos_id') // Faz o join com sequences
