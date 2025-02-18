@@ -108,7 +108,7 @@ class PhotoController extends Controller
                     ]);
 
                     //envia uma imagem por vez para moderação
-                    // SendImageToApiJob::dispatch($photoUser, $user->id, $user->phone);
+                    SendImageToApiJob::dispatch($photoUser, $user->id, $user->phone);
                 }
             }
 
