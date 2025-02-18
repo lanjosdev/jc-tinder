@@ -37,42 +37,41 @@ class UserController extends Controller
                 ->pluck('fk_gender_preferences_id')
                 ->toArray();
 
-            // $getAllUsersLike = Matche::where('fk_user_matches_id', $userRequest->id)
-            //     ->where('status', 1)
-            //     ->whereNull('deleted_at')
-            //     ->pluck('fk_target_user_matches_id')
-            //     ->toArray();
+            $getAllUsersLike = Matche::where('fk_user_matches_id', $userRequest->id)
+                ->where('status', 1)
+                ->whereNull('deleted_at')
+                ->pluck('fk_target_user_matches_id')
+                ->toArray();
 
+            $getAllMatchs = $this->utils->getAllMatchs($userRequest->id);
 
-            // $getAllMatchs = $this->utils->getAllMatchs($userRequest->id);
+            $matchIds = is_array($getAllMatchs) ? $getAllMatchs : collect($getAllMatchs)->pluck('id')->toArray();
 
-            // $matchIds = is_array($getAllMatchs) ? $getAllMatchs : collect($getAllMatchs)->pluck('id')->toArray();
-
-            // $getAllUsers = User::where('id', array_merge([$userRequest->id], $matchIds, $getAllUsersLike))
-            //     ->whereIn('fk_gender_user_id', $preference)
-            //     ->where('level', 0)
-            //     ->where('id', '!=', $userRequest->id)
-            //     // ->orderByRaw('RAND()')
-            //     ->inRandomOrder()
-            //     ->get();
-
-            // //query para retornar users que ainda não dei like 
-            $getAllUsers = User::whereNotIn('id', function ($query) use ($userRequest) {
-                $query->select('fk_user_matches_id')
-                    ->from('matches')
-                    ->where('fk_user_matches_id', $userRequest->id) // onde o usuário fez gostei
-                    ->orWhere('fk_target_user_matches_id', $userRequest->id); // ou onde o usuário é o alvo
-
-            })
-                ->whereHas('gender', function ($query) {
-                    $query->whereNull('deleted_at');
-                })
+            $getAllUsers = User::where('id', array_merge([$userRequest->id], $matchIds, $getAllUsersLike))
                 ->whereIn('fk_gender_user_id', $preference)
                 ->where('level', 0)
                 ->where('id', '!=', $userRequest->id)
+                // ->orderByRaw('RAND()')
                 ->inRandomOrder()
-                // ->orderBy('id', 'asc')
                 ->get();
+
+            // //query para retornar users que ainda não dei like 
+            // $getAllUsers = User::whereNotIn('id', function ($query) use ($userRequest) {
+            //     $query->select('fk_user_matches_id')
+            //         ->from('matches')
+            //         ->where('fk_user_matches_id', $userRequest->id) // onde o usuário fez gostei
+            //         ->orWhere('fk_target_user_matches_id', $userRequest->id); // ou onde o usuário é o alvo
+
+            // })
+            //     ->whereHas('gender', function ($query) {
+            //         $query->whereNull('deleted_at');
+            //     })
+            //     ->whereIn('fk_gender_user_id', $preference)
+            //     ->where('level', 0)
+            //     ->where('id', '!=', $userRequest->id)
+            //     ->inRandomOrder()
+            //     // ->orderBy('id', 'asc')
+            //     ->get();
 
 
             // Filtra os usuários dentro do intervalo de idade
