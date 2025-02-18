@@ -28,13 +28,10 @@ class UsersSeeder extends Seeder
         $users = [];
 
         for ($i = 0; $i < 5; $i++) {
-            $gender = $faker->randomElement(['male', 'female']);
+            $gender = $faker->randomElement(['male']);
             $name = $faker->name($gender);
             $birthDate = $faker->dateTimeBetween('-100 years', '-18 years')->format('Y-m-d');
             $phone = '119' . $faker->numerify('########');
-            $genderId = $faker->numberBetween(1, 3);
-            $sexualityId = $faker->numberBetween(1, 11);
-            $subGenderId = $faker->numberBetween(1, 15);
 
             $users[] = [
                 'name' => $name,
@@ -43,9 +40,9 @@ class UsersSeeder extends Seeder
                 'level' => 0,
                 'phone' => $phone,
                 'birth_data' => $birthDate,
-                'fk_gender_user_id' => $genderId,
-                'fk_sexuality_user_id' => $sexualityId,
-                'fk_sub_gender_user_id' => $subGenderId,
+                'fk_gender_user_id' => 1,
+                'fk_sexuality_user_id' => 1,
+                'fk_sub_gender_user_id' => 1,
                 'minimum_age' => 18,
                 'maximum_age' => 100,
                 'created_at' => now(),
