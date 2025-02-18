@@ -117,13 +117,23 @@ class MatcheController extends Controller
                     ]);
                 }
 
-                $matche = $this->matche->create([
-                    'fk_user_matches_id' => $user->id,
-                    'fk_target_user_matches_id' => $fk_target_user_matches_id,
-                    'status' => $status,
-                ]);
+                $getMatch = Matche::where('fk_user_matches_id', $user->id)
+                    ->where('fk_target_user_matches_id', $fk_target_user_matches_id)
+                    ->first();
 
-                if ($matche) {
+                $matche = null;
+
+                if ($getMatch) {
+                    $getMatch->update(['status' => $status]);
+                } else {
+                    $matche = $this->matche->create([
+                        'fk_user_matches_id' => $user->id,
+                        'fk_target_user_matches_id' => $fk_target_user_matches_id,
+                        'status' => $status,
+                    ]);
+                }
+
+                if ($matche || $getMatch) {
                     DB::commit();
 
                     $responseMatch = Matche::where('fk_user_matches_id', $fk_target_user_matches_id)
