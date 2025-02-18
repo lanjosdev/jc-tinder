@@ -1,8 +1,8 @@
 :root {
-    --color-primary: #3483fa;
+    --color-primary: #6C2E99;
     --color-secundary: #333133;
     
-    --color-bg-1: #fff;
+    --color-bg-1: #EAE1F2;
     --color-bg-2: #dddddd;
     --color-bg-3: #a8a8ad;
     --color-text: #222121;
@@ -100,16 +100,18 @@ html {
     }
 }
 
-body, #root {
+#root {
     min-height: 100vh;
     min-height: 100dvh;
+    
+    position: relative;
+    overflow-y: hidden;
 }
 body {
     background-color: var(--color-bg-1);
     color: var(--color-text);
 
     overflow-x: hidden;
-    overflow-y: hidden;
 }
 body, input, textarea, button, select, a {
     font-size: 1.6rem; /* Pra garantir q o padrao seja 16px no navegador*/

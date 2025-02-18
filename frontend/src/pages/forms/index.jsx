@@ -29,7 +29,7 @@ import './style.css';
 
 
 export default function Forms() {
-    const { profileDetails } = useContext(UserContext);
+    const { setRefreshContext, profileDetails } = useContext(UserContext);
     // Estados do componente:
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
@@ -419,7 +419,7 @@ export default function Forms() {
             if(response.success) {
                 ////toast.success('FORM COMPLETO');
 
-                // setTimeout(()=> navigate('/home'), 700);
+                setRefreshContext(prev => !prev);
                 navigate('/home');
             }
             else if(response.success == false) {

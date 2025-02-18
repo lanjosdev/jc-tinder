@@ -70,17 +70,18 @@ export async function USER_PROFILE_DETAILS(token) {
    return response.data;
 }
 
-// // Pega todos os usuarios (GET):
-// export async function USER_GET_ALL(token, params) {
-//    console.log('CALL FUNCTION API');
 
-//    const response = await axios.get(`${API_URL}/get-all-user?${params}`, { 
-//       headers: { "Accept": "application/json", Authorization: "Bearer " + token } 
-//    });
+// Pega todos os usuarios (GET):
+export async function USER_GET_ALL(token, params='') {
+   console.log('CALL FUNCTION API');
 
-//    // console.log(response.data);
-//    return response.data;
-// }
+   const response = await axios.get(`${API_URL}/get-all-users?${params}`, {
+      headers: { "Accept": "application/json", Authorization: "Bearer " + token } 
+   });
+
+   // console.log(response.data);
+   return response.data;
+}
 
 // // Cria novo usuario (POST):
 // export async function USER_CREATE(token, email, password, name) {

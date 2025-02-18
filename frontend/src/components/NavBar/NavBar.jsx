@@ -147,9 +147,13 @@ export function NavBar({ showBtnBack=true, showBtnProfile=true }) {
                             {loading ? (
                                 <i className="bi bi-person-circle"></i>
                             ) : (
+                                profileDetails.photos[0] ? (
                                 <img 
                                 src={`${imagesServer.images_url}${profileDetails.photos[0]?.thumb_photo}`} alt="Foto do perfil"
                                 />
+                                ) : (
+                                <i className="bi bi-person-circle"></i>
+                                )
                             )}
                         </div>
                     </Link>
