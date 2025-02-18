@@ -650,8 +650,8 @@ class Utils
                 }
             }
 
-            //Liberar memória
-            imagedestroy($image);
+            // //Liberar memória
+            // imagedestroy($image);
 
             DB::commit();
 
