@@ -47,11 +47,9 @@ class UserController extends Controller
 
             $matchIds = is_array($getAllMatchs) ? $getAllMatchs : collect($getAllMatchs)->pluck('id')->toArray();
 
-            $getAllUsers = User::where('id', array_merge($userRequest->id, $matchIds, $getAllUsersLike))
+            $getAllUsers = User::whereNotIn('id', array_merge([$userRequest->id], $matchIds, $getAllUsersLike))
                 ->whereIn('fk_gender_user_id', $preference)
                 ->where('level', 0)
-                ->where('id', '!=', $userRequest->id)
-                // ->orderByRaw('RAND()')
                 ->inRandomOrder()
                 ->get();
 
