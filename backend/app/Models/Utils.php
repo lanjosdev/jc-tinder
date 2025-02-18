@@ -4,15 +4,10 @@ namespace App\Models;
 
 use Carbon\Carbon;
 use Exception;
-use Illuminate\Http\Client\Request;
 use Illuminate\Support\Facades\DB;
-use Intervention\Image\Laravel\Facades\Image;
 use Illuminate\Support\Facades\File;
 use Intervention\Image\Drivers\Gd\Driver;
-use Spatie\Image\Drivers\Gd\GdDriver as GdGdDriver;
-
 use Intervention\Image\ImageManager;
-use Intervention\Image\Drivers\ImagickDriver;
 
 // use Intervention\Image\ImageManagerStatic as Image;
 
@@ -417,7 +412,6 @@ class Utils
     //     return true;
     // }
 
-
     // //em conjunto com a função de criar img miniatura, cria e salva ela e a maior na pasta public com path completo e identificador único
     // function handleImageUploads(array $photos, $user, $thumbnailWidth = 400, $thumbnailHeight = 150)
     // {
@@ -593,7 +587,7 @@ class Utils
 
 
 
-    
+
 
     function handleImageUploads(array $photos, $user, $thumbnailWidth = 400)
     {
@@ -601,11 +595,11 @@ class Utils
         $thumbnailPaths = [];
 
         DB::beginTransaction();
-        
+
         try {
             foreach ($photos as $photo) {
                 if ($photo->isValid()) {
-                    
+
                     // geraa nome de arquivo único
                     $filename = $user->id . '-' . now()->format('Y-m-d_H-i-s') . '-' . uniqid() . '.' . $photo->getClientOriginalExtension();
 
@@ -656,7 +650,10 @@ class Utils
                 }
             }
 
-            DB::commit(); 
+            //Liberar memória
+            imagedestroy($image);
+
+            DB::commit();
 
             return [
                 'success' => true,

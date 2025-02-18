@@ -57,7 +57,7 @@ return new class extends Migration
             'password' => Hash::make('r4bhvp2h372020'),
             'adult' => 1,
             'level' => 1,
-            'phone' => '00000000',
+            'phone' => '11900000000',
             'birth_data' => '2000-01-01',
             'minimum_age' => 18,
             'maximum_age' => 100,

@@ -30,7 +30,7 @@ class MeController extends Controller
     public function me(Request $request)
     {
         try {
-
+            
             $myProfile = $request->user();
 
             $habitsUser = DB::table('user_habits')
@@ -393,7 +393,6 @@ class MeController extends Controller
                     'fk_sub_gender_user_id' => $fk_sub_gender_user_id,
                     'about_me' => $about_me,
                 ]);
-
 
                 if ($updateUser) {
                     DB::commit();

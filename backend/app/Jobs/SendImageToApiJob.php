@@ -17,7 +17,19 @@ class SendImageToApiJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    public int $tries = 3; // Tenta 3 vezes antes de falhar
+    /**
+     * The number of times the job may be attempted.
+     *
+     * @var int
+     */
+    public $tries = 25;
+
+    /**
+     * The maximum number of unhandled exceptions to allow before failing.
+     *
+     * @var int
+     */
+    public $maxExceptions = 3;
 
     protected $photo;
     protected $userId;
@@ -97,7 +109,7 @@ class SendImageToApiJob implements ShouldQueue
             ]);
 
             $result = json_decode($response->getBody(), true);
-            
+
             //dd($result);
             // verifica se a API retornou true
             // Log::error("AAAAAErro no envio da imagem ID {$this->photo->id}: " . json_encode($result));
