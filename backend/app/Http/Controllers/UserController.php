@@ -53,7 +53,10 @@ class UserController extends Controller
 
             // Filtra os usuários dentro do intervalo de idade
             $getAllUsers = $getAllUsers->filter(function ($users) use ($userRequest) {
-                $userAge = $this->utils->verifyAdult($users->birth_data); // Aqui você calcula a idade do usuário
+                
+                // Aqui você calcula a idade do usuário
+                $userAge = $this->utils->verifyAdult($users->birth_data); 
+                
                 return $userAge >= $userRequest->minimum_age && $userAge <= $userRequest->maximum_age;
             })->values();
 

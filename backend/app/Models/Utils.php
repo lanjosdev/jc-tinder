@@ -9,9 +9,6 @@ use Illuminate\Support\Facades\File;
 use Intervention\Image\Drivers\Gd\Driver;
 use Intervention\Image\ImageManager;
 
-// use Intervention\Image\ImageManagerStatic as Image;
-
-
 class Utils
 {
     //formata data e hora para retornar ao front

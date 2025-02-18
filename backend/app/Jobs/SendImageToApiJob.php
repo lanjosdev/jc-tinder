@@ -52,8 +52,11 @@ class SendImageToApiJob implements ShouldQueue
 
         // instacia o objeto
         $client = new Client();
+        
         // recupera o token para conseguir comunicação com a api
         $apiKey = env('API_TOKEN');
+
+        
         $user = User::find($this->userId);
 
         if (!$user) {

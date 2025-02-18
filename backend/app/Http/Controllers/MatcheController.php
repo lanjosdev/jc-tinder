@@ -131,12 +131,39 @@ class MatcheController extends Controller
                         ->where('status', 1)
                         ->get();
 
-                    $responseMatch = $responseMatch->isEmpty() ? "Não houve match" : "Match";
+                    if ($responseMatch) {
+                        $userMatch = User::where('id', $fk_target_user_matches_id)->get();
+
+                        if ($userMatch) {
+                            $photosUserArray = DB::table('photos')
+                                ->join('sequences', 'photos.id', '=', 'sequences.fk_sequences_photos_id') // Faz o join com sequences
+                                ->where('photos.fk_user_photos_id', $fk_target_user_matches_id)
+                                ->whereNull('photos.deleted_at')
+                                ->select('photos.id', 'photos.thumb_photo', 'photos.name_photo', 'sequences.order') // Seleciona também a ordem
+                                ->orderBy('sequences.order', 'asc') // Ordena com base na tabela sequences
+                                ->get()
+                                ->map(function ($photo) {
+                                    return (object) [
+                                        'id' => $photo->id,
+                                        'photo' => $photo->name_photo,
+                                        'thumb_photo' => $photo->thumb_photo,
+                                    ];
+                                })
+                                ->toArray();
+                        }
+                    }
+
+
+                    $responseMatch = $responseMatch->isEmpty() ? false : true;
 
                     return response()->json([
                         'success' => true,
                         'message' => 'Resgistrado com sucesso.',
-                        'data' => $responseMatch,
+                        'data' => [
+                            'response_for_match' => $responseMatch,
+                            'info_user_match' =>  $responseMatch == 'Match' ? $userMatch : null,
+                            'photo_user_match' => $responseMatch == 'Match' ? $photosUserArray : null
+                        ],
                     ]);
                 }
             }
