@@ -1,5 +1,5 @@
 .NavBar {
-    background-color: pink;
+    background-color: var(--color-secundary);
 
     position: sticky;
     top: 0;
@@ -50,7 +50,7 @@
                 color: var(--color-w);
 
                 &:hover {
-                    color: pink;
+                    color: var(--color-secundary);
                     background-color: var(--color-w);
                 }
 
@@ -87,7 +87,7 @@
     }
    
     .border_bottom {
-        background-color: var(--color-b);
+        background-color: var(--color-border);
         height: .3rem;
     }
 
@@ -105,13 +105,13 @@
     }
 
     .border_bottom.bar_progress {
-        background-color: blueviolet;
+        background-color: var(--color-text);
         position: relative;
 
         &::after {
             content: '';
             position: absolute;
-            background-color: yellow;
+            background-color: var(--color-tertiary);
             border-radius: 5px;
             width: 0%;
             height: .3rem;

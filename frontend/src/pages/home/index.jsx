@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 
 // API:
 import { USER_GET_ALL } from "../../API/userApi";
+import { MATCH_POST } from "../../API/matchApi";
 
 // Contexts:
 // import UserContext from "../../contexts/userContext";
@@ -14,6 +15,8 @@ import imagesServer from '../../../public/configApi.json'
 // Components:
 import { NavBar } from "../../components/NavBar/NavBar";
 import { ActionsBottom } from "../../components/ActionsBottom/ActionsBottom";
+import { InfoUser } from "../../components/InfoUser/InfoUser";
+import { Match } from "../../components/Match/Match";
 
 // Utils
 // import { primeiraPalavra } from "../../utils/formatStrings";
@@ -30,16 +33,18 @@ export default function Home() {
     // Estados do componente:
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    // const [loadingSubmit, setLoadingSubmit] = useState(false);
+    const [loadingSubmit, setLoadingSubmit] = useState(false);
     
     // Dados pré-carregados:
     const [persons, setPersons] = useState([]);
     const [totalPersons, setTotalPersons] = useState(0);
 
     // Logica da UI:
+    const [startInteration, setStartInteration] = useState(false);
     const [step, setStep] = useState(0);
     const [animateMode, setAnimateMode] = useState('');
-    // const [action, setAction] = useState('');
+    const [showInfoUser, setShowInfoUser] = useState(false);
+    const [showMatch, setShowMatch] = useState(false);
 
 
     // Submit (Like or Dislike)
@@ -79,7 +84,7 @@ export default function Home() {
                     console.error('Requisição não autenticada.');
                 }
                 else {
-                    toast.error('Houve algum erro.');
+                    console.error('Houve algum erro.');
                 }
 
                 console.error('DETALHES DO ERRO:', error);
@@ -93,42 +98,89 @@ export default function Home() {
 
 
 
-    // function handleClickNopeOrLike(action) {
-    //     setLoadingSubmit(true);
-    //     // if(animateMode == '') {
-    //     setAnimateMode(action == 'like' ? 'animate__fadeOutBottomRight' : 'animate__fadeOutBottomLeft');
-    //     // }
-        
-    //     if(step < totalPersons) {
-    //         // limpa a animação depos de 600ms
-    //         setTimeout(()=> {
-    //             setAnimateMode('');
-    //             setStep(step + 1);
-    //             setLoadingSubmit(false);
-    //         }, 600);   
-    //     }
-    // }
 
-    // function handleClickToBack() {
-    //     setLoadingSubmit(true);
-    //     setAnimateMode('animate__devoltar');
+    async function submitPostLikeOrDeslike(idUser, status) {
+        try {
+            const response = await MATCH_POST(JSON.parse(tokenCookie), idUser, status);
+            console.log(response);
 
+            // if(response.data == 'Não houve match') {
+            //     setShowMatch(true);
+            // }
+        }
+        catch(error) {
+            if(error?.response?.data?.message == 'Unauthenticated.') {
+                console.error('Requisição não autenticada.');
+            }
+            else {
+                console.error('Houve algum erro.');
+            }
+
+            console.error('DETALHES DO ERRO:', error);
+        }
+    }
+
+    function handleClickNopeOrLike(action) {
+        setLoadingSubmit(true);
+        setShowInfoUser(false);
+
+        if(!startInteration) {
+            setStartInteration(true);
+            console.log('Inicio interação!');
+        }
+
+
+        // Dados enviados p/ async func de post API:
+        const status = action == 'like' ? 1 : 0;
+        submitPostLikeOrDeslike(persons[step].id, status);
+
+
+        // Logica local UI:
+        // if(animateMode == '') {
+        setAnimateMode(action == 'like' ? 'animate__fadeOutBottomRight' : 'animate__fadeOutBottomLeft');
+        // }
         
-    //     if(step < totalPersons) {
-    //         // limpa a animação depos de 600ms
-    //         setTimeout(()=> {
-    //             setAnimateMode('');
-    //             setStep(step + 1);
-    //             setLoadingSubmit(false);
-    //         }, 600);   
-    //     }
-    // }
-    
+        if(step < totalPersons) {
+            console.log('inicio time')
+            // limpa a animação depos de 600ms
+            setTimeout(()=> {
+                setAnimateMode('');
+                setStep(step + 1);
+                setLoadingSubmit(false);
+                console.log('fim time')
+            }, 500);   
+        }
+    }
+
+    function handleClickToBack() {
+        setLoadingSubmit(true);
+        setShowInfoUser(false);
+        setStep(step - 1);
+        setAnimateMode('animate__animated animate__fadeInBack');
+        
+        
+        // if(step < totalPersons) {
+            // limpa a animação depos de 600ms
+            setTimeout(()=> {
+                setAnimateMode('');
+                setLoadingSubmit(false);
+            }, 400);   
+        // }
+    }
+
+
+    function handleShowInfoUser() {
+        setShowInfoUser(true);
+    }
+    function handleBackGetAllUsers() {
+        setShowInfoUser(false);
+    }
   
+    
     return (
         <div className="Page Home">
             
-            <NavBar showBtnBack={false} />
+            <NavBar showBtnBack={showInfoUser} functionBack={handleBackGetAllUsers} />
 
             <main className='PageContent HomeContent grid animate__animated animate__fadeIn'>
 
@@ -150,40 +202,93 @@ export default function Home() {
                     ) : (
 
                     <div className="container_persons">
+                        {persons.length > 0 ? (
+                            showInfoUser ? (
 
-                        <div className="limit_card">
-                            {/* //=// talvez nem use o fixed */}
-                            <article className="card_person fixed hidden">
-                                <div className="photo">
-                                    <img src={imgEmpty} alt="" />
-                                </div>
-                            </article>
+                            <InfoUser userSelect={persons[step]} />
 
-                            <article className="card_person">
-                                <div className="photo">
-                                    <img src={imgEmpty} className='hidden' alt="" />
-                                    <img src="https://euphoriatest.bizsys.com.br/v1/images/thumbnails/thumb_6-2025-02-14_16-02-03-67af932b6e6fa.jpg" className='preview'
-                                    alt="" />
-                                </div>
-                                {/* <div className="details">
-                                    <p><span className="name_profile">{item.name}</span>, {item.age}</p>
-                                    <p className="txt_link">mais...</p>
-                                </div> */}
-                            </article>
-                        </div>
+                            ) : (
 
-                        
+                            <div className="limit_card">
+                                {/* //=// talvez nem use o fixed */}
+                                <article className="card_person fixed hidden">
+                                    <div className="photo">
+                                        <img src={imgEmpty} alt="" />
+                                    </div>
+                                </article>
+    
+    
+                                {/* Pessoa seguinte */}
+                                {persons[step+1] && (
+                                <article className={`card_person ${!startInteration ? 'hidden' : ''}`}>
+                                    <div className="photo">
+                                        <img src={imgEmpty} className='hidden' alt="" />
+                                        <img 
+                                        src={`${imagesServer.images_url}${persons[step+1]?.photos[0]?.thumb_photo}`} className='preview'
+                                        alt="" 
+                                        />
+                                    </div>
+                                    
+                                    <div className="details">
+                                        <p className="name_age">
+                                            <span className="name_profile">{persons[step+1].name}</span>, {persons[step+1].age}
+                                        </p>
 
+                                        <p className="txt_link">mais...</p>
+                                    </div>
+                                </article>
+                                )}
+    
+                                {/* Pessoa a mostra */}
+                                {step < totalPersons && (
+                                <article 
+                                className={`card_person ${animateMode}`} 
+                                onClick={handleShowInfoUser}
+                                >
+                                    <div className="photo">
+                                        <img src={imgEmpty} className='hidden' alt="" />
+                                        <img 
+                                        src={`${imagesServer.images_url}${persons[step]?.photos[0]?.thumb_photo}`} className='preview'
+                                        alt="" 
+                                        />
+                                    </div>
+                                    
+                                    <div className="details">
+                                        <p className="name_age">
+                                            <span className="name_profile">{persons[step].name}</span>, {persons[step].age}
+                                        </p>
+                                        <p className="txt_link">mais...</p>
+                                    </div>
+                                </article>
+                                )}
+                            </div>
+
+                            )
+                        ) : (
+
+                        <h1>NENHUMA PESSOAS ENCONTRADA</h1>
+
+                        )}
                     </div>
 
                     )                    
                 )}
 
 
-                {/* <ActionsBottom /> */}
+                <ActionsBottom 
+                loading={loading} 
+                loadingSubmit={loadingSubmit} 
+                handleClickNopeOrLike={handleClickNopeOrLike} 
+                handleClickToBack={handleClickToBack} 
+                step={step}
+                totalPersons={totalPersons}
+                />
 
             </main>
-
+            
+            {showMatch && (
+            <Match close={()=> setShowMatch(false)} />
+            )}
         </div>
     );
 }

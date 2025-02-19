@@ -83,7 +83,7 @@ export default function Photos() {
   
     return (
         <div className="Page Forms Profile">
-            <NavBar />
+            <NavBar pathBack="/settings" />
             
             <main className='PageContent FormsContent ProfileContent grid'>
                 <div className="title_page">

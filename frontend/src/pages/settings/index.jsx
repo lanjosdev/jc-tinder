@@ -22,7 +22,7 @@ import { NavBar } from "../../components/NavBar/NavBar";
 export default function Settings() {
     const {
         loading,
-        // profileDetails,
+        profileDetails,
         logoutUser
     } = useContext(UserContext);
     // const navigate = useNavigate();
@@ -51,7 +51,8 @@ export default function Settings() {
             <main className='PageContent SettingsContent grid animate__animated animate__bounceInRight'>
                 <div className="title_page">
                     <h1>
-                        <span>Perfil</span>
+                        <span className="name_profile">{profileDetails.name}, </span>
+                        <span>{profileDetails.age}</span>
                     </h1>
 
                     <button className="link" onClick={logoutUser} disabled={loading}>

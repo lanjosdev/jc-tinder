@@ -70,7 +70,7 @@
 .loader_black {
     width: 17px;
     height: 17px;
-    border: 2px solid var(--color-b);
+    border: 2px solid var(--color-text);
     border-bottom-color: transparent;
     border-radius: 50%;
     display: inline-block;
@@ -91,7 +91,7 @@
         width: 18rem;
         height: 18rem;
         border-radius: 50%;
-        border: 0.4rem solid var(--color-primary);
+        border: 0.4rem solid var(--color-text);
         opacity: 0;
         position: absolute;
         left: 0;
@@ -226,7 +226,7 @@
     }
 } */
 .btn {
-    border: .2rem solid black;
+    border: .2rem solid var(--color-border);
     padding: 1rem 2rem;
 
     /* font-size: 1.5rem; */
@@ -238,7 +238,7 @@
         background-color: var(--color-primary);
         
         color: var(--color-w);
-        box-shadow: .2rem .2rem 0 black;
+        box-shadow: .2rem .2rem 0 var(--color-border);
         height: 5rem;
         min-height: 5rem;
         padding: 1rem;
@@ -276,17 +276,18 @@
     justify-content: center;
     gap: .3rem; */
 
-    background-color: var(--color-w);
+    background-color: transparent;
     border: .2rem solid var(--color-text);
     border-radius: 2rem;
     padding: .2rem 1rem;
+    
     font-weight: 600;
     text-align: center;
 
     transition: all .3s ease;
 
     &:has(input:checked) {
-        background-color: palevioletred;
+        background-color: var(--color-secundary);
         border: .2rem solid var(--color-w);
         color: var(--color-w);
     }
@@ -415,6 +416,12 @@
     animation-fill-mode: both;
 }
 
+.animate__fadeInBack {
+    animation-name: fadeInUp;
+    animation-duration: 0.4s;
+    animation-fill-mode: both;
+}
+
 @keyframes fadeOutBottomRight {
     0% {
         opacity: 1;
@@ -432,6 +439,7 @@
     animation-duration: 1s;
     animation-fill-mode: both;
 }
+
 
 @keyframes rotation {
     0% {
@@ -452,4 +460,18 @@
         opacity: 0;
     }
 }
+
+/* @keyframes showOpacity {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+.animation_showOpacity {
+    animation-name: showOpacity;
+    animation-duration: 1s;
+    animation-fill-mode: both;
+} */
 /* ANIMATIONS-FIM */

@@ -1,6 +1,3 @@
-/* @import "@radix-ui/colors/black-alpha.css"; */
-/* @import "@radix-ui/colors/violet.css"; */
-
 .SliderRange {
 	
 	.SliderRoot {
@@ -16,7 +13,7 @@
 	}
 	
 	.SliderTrack {
-		background-color: #EBFE81;
+		background-color: var(--color-tertiary);
 		position: relative;
 		flex-grow: 1;
 		border-radius: 9999px;
@@ -26,7 +23,7 @@
 	
 	.SliderRange {
 		position: absolute;
-		background-color: #FF59E2;
+		background-color: var(--color-secundary);
 		border-radius: 9999px;
 		height: 100%;
 	}
@@ -35,7 +32,7 @@
 		display: block;
 		width: 4rem;
 		height: 4rem;
-		background-color: #FF59E2;
+		background-color: var(--color-secundary);
 		border: .2rem solid #69329A;
 		box-shadow: 1px 1px #69329A;
 		border-radius: 50%;

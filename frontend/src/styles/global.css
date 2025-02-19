@@ -1,12 +1,14 @@
 :root {
     --color-primary: #6C2E99;
-    --color-secundary: #333133;
+    --color-secundary: #FA5BE0;
+    --color-tertiary: #E0FF40;
     
     --color-bg-1: #EAE1F2;
-    --color-bg-2: #dddddd;
-    --color-bg-3: #a8a8ad;
-    --color-text: #222121;
+    --color-bg-2: #E2BFFF;
+    --color-text: #3C264D;
+    --color-border: #000;
     
+    /* Outras cores */
     --color-w: #fff;
     --color-b: #000;
     --color-neutral: #374151;
@@ -31,7 +33,7 @@
     --gray-800: #202024;
     --gray-900: #121214;
 
-
+    /* Tipografia e Espaçamento */
     --font-main: "Nunito";
     --p-vertical: 4rem;
     --p-lateral: 15px;

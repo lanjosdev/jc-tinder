@@ -259,7 +259,7 @@ export default function Preferences() {
   
     return (
         <div className="Page Forms Preference">
-            <NavBar />
+            <NavBar pathBack="/settings" />
             
             <main className='PageContent FormsContent PreferencesContent grid'>
                 <div className="title_page">

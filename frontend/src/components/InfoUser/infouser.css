@@ -1,0 +1,125 @@
+.InfoUser {
+    background-color: #ff000034;
+    
+    .title {
+
+        .name_profile {
+            font-weight: 800;
+        }
+        .age {
+            font-weight: 400;
+        }
+    }
+
+    .main {
+        background-color: var(--color-tertiary);
+        border: .3rem solid var(--color-border);
+        box-shadow: .2rem .2rem var(--color-border);
+        border-radius: 25px;
+
+        .slider_photos {
+            position: relative;
+            border-bottom: .3rem solid var(--color-border);
+            
+            .photo {
+                background-color: chartreuse;
+                position: absolute;
+                top: 0;
+                width: 100%;
+                height: 100%;
+
+                border-radius: 22px 22px 0 0;
+
+                line-height: 0;
+                display: flex;
+
+                img {
+                    border-radius: 22px 22px 0 0;
+
+                    max-width: 100%;
+                    object-fit: cover;
+                }
+            }
+            .photo.fixed {
+                position: static;
+            }
+
+            .controls {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                
+                display: flex;
+                
+                .back, .next {
+                    background-color: rgba(0, 0, 255, 0.425); 
+                    flex: 1;                   
+                    
+                    button {
+                        background-color: var(--color-secundary);
+                        border: .3rem solid var(--color-border);
+                        box-shadow: .2rem .2rem var(--color-border);
+                        border-radius: 15px;
+
+                        display: flex;
+                        justify-content: center;
+                        max-width: 4rem;
+
+                        color: var(--color-w);
+                        line-height: 0;
+
+                        padding: .5rem 0;
+
+                        i {
+                            font-size: 5rem;
+                        }
+                    }
+                }
+                .back {
+                    background-color: rgba(255, 0, 0, 0.397);
+                    display: flex;
+                    justify-content: flex-start;
+                    align-items: center;
+
+                    button {
+                        margin-left: 1rem;
+                    }
+                }
+                .next {
+                    display: flex;
+                    justify-content: flex-end;
+                    align-items: center;
+
+                    button {
+                        margin-right: 1rem;
+                    }
+                }
+            }
+        }
+
+
+
+        .infos {
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+
+            .label--input {
+                gap: .3rem;
+
+                .habits {
+                    display: flex;
+                    flex-wrap: wrap;
+                    gap: .5rem;
+
+                    .btn_radio {
+                        border: .1rem solid var(--color-text);
+                    }
+                }
+            }
+        }
+    }
+}

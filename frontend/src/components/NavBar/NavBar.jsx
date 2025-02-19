@@ -27,9 +27,11 @@ import './navbar.css';
 
 NavBar.propTypes = {
     showBtnBack: PropTypes.bool,
-    showBtnProfile: PropTypes.bool
+    showBtnProfile: PropTypes.bool,
+    pathBack: PropTypes.string,
+    functionBack: PropTypes.func
 }
-export function NavBar({ showBtnBack=true, showBtnProfile=true }) {
+export function NavBar({ showBtnBack=true, showBtnProfile=true, pathBack='/home', functionBack }) {
     const {
         loading,
         profileDetails
@@ -121,12 +123,23 @@ export function NavBar({ showBtnBack=true, showBtnProfile=true }) {
 
             <nav className="NavBarContent grid">
                 <div className="nav_left">
+                    {functionBack ? (
                     <Link 
-                    className={`btn back ${!showBtnBack ? 'hidden' : ''}`}
-                    onClick={()=> navigate(-1)} 
+                    className={`btn back ${!showBtnBack ? 'hidden' : ''}`} 
+                    onClick={functionBack}
+                    // onClick={()=> navigate(-1)}
                     >
                         <ion-icon name="chevron-back"></ion-icon>
                     </Link>
+                    ) : (
+                    <Link 
+                    className={`btn back ${!showBtnBack ? 'hidden' : ''}`} 
+                    to={pathBack}
+                    >
+                        <ion-icon name="chevron-back"></ion-icon>
+                    </Link>
+                    )}
+                    
 
                     <Link 
                     className='logo' 

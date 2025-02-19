@@ -26,7 +26,7 @@
     }
 
     .Window {
-        background-color: var(--color-bg-2);
+        background-color: var(--color-bg-1);
         width: 100%;
         max-width: 48rem;
         padding: 2rem;
