@@ -37,9 +37,16 @@ class UserController extends Controller
                 ->pluck('fk_gender_preferences_id')
                 ->toArray();
 
-            //pega os users que ja dei like
+            //pega os users que dei like
             $getAllUsersLike = Matche::where('fk_user_matches_id', $userRequest->id)
                 ->where('status', 1)
+                ->whereNull('deleted_at')
+                ->pluck('fk_target_user_matches_id')
+                ->toArray();
+            
+            //pega os users que dei deslike
+            $getAllUsersNotLike = Matche::where('fk_user_matches_id', $userRequest->id)
+                ->where('status', 0)
                 ->whereNull('deleted_at')
                 ->pluck('fk_target_user_matches_id')
                 ->toArray();
@@ -49,7 +56,7 @@ class UserController extends Controller
             $matchIds = is_array($getAllMatchs) ? $getAllMatchs : collect($getAllMatchs)->pluck('id')->toArray();
 
             //pega os usuario que ainda não dei like que não dei match 
-            $getAllUsers = User::whereNotIn('id', array_merge([$userRequest->id], $matchIds, $getAllUsersLike))
+            $getAllUsers = User::whereNotIn('id', array_merge([$userRequest->id], $matchIds, $getAllUsersLike, $getAllUsersNotLike))
                 ->whereIn('fk_gender_user_id', $preference)
                 ->where('level', 0)
                 ->inRandomOrder()
