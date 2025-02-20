@@ -92,5 +92,4 @@ Route::middleware(['auth:sanctum'])->group(function () {
     //sequences_photos
     Route::post('/update-sequence-photo', [SequenceController::class, 'updateSequence']);
 
-    Route::post('/teste', [testeController::class, 'store']);
 });
