@@ -113,7 +113,7 @@ class PhotoController extends Controller
                 }
             }
 
-            if (!empty($arrayIds)) {
+            if (!empty($arrayIds) || $photoUser) {
                 DB::commit();
 
                 return response()->json([
