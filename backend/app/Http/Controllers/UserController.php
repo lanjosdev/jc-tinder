@@ -7,6 +7,7 @@ use App\Models\Matche;
 use App\Models\Preference;
 use App\Models\User;
 use App\Models\Utils;
+use Carbon\Carbon;
 use Exception;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
@@ -43,11 +44,12 @@ class UserController extends Controller
                 ->whereNull('deleted_at')
                 ->pluck('fk_target_user_matches_id')
                 ->toArray();
-            
-            //pega os users que dei deslike
+
+            // pega os users que dei deslike nos últimos 48 horas
             $getAllUsersNotLike = Matche::where('fk_user_matches_id', $userRequest->id)
                 ->where('status', 0)
                 ->whereNull('deleted_at')
+                ->where('updated_at', '>=', Carbon::now()->subHours(48)) // Apenas os deslikes recentes
                 ->pluck('fk_target_user_matches_id')
                 ->toArray();
 
