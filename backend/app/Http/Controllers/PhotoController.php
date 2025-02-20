@@ -167,7 +167,7 @@ class PhotoController extends Controller
             //     ]);
             //     $result = json_decode($response->getBody(), true);
 
-            //     dd($result);
+            //     dd($result['success']);
 
             //     $responseResult[] = $result;
             // }

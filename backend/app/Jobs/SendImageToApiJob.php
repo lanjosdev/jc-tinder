@@ -50,19 +50,18 @@ class SendImageToApiJob implements ShouldQueue
     public function handle(): void
     {
 
-        // instacia o objeto
         $client = new Client();
         
         // recupera o token para conseguir comunicação com a api
         $apiKey = env('API_TOKEN');
 
-        
+        //validação para pegar o user
         $user = User::find($this->userId);
-
         if (!$user) {
             Log::error("Usuário não encontrado para a foto ID: {$this->photo->id}");
             return;
         }
+        
         try {
 
             $response = $client->request('POST', 'https://moderacao.bizsys.com.br/api/media_insert', [
@@ -73,7 +72,7 @@ class SendImageToApiJob implements ShouldQueue
                 'multipart' => [
                     [
                         'name' => 'text',
-                        'contents' => 'text', // Pode ser uma string vazia
+                        'contents' => 'text', // string
                     ],
                     [
                         'name' => 'identification',
@@ -111,12 +110,13 @@ class SendImageToApiJob implements ShouldQueue
                 ],
             ]);
 
+            //pega a responsta da api
             $result = json_decode($response->getBody(), true);
 
-            if ($result['success']) {
+            //validação para resposta da api 
+            if ($result['success'] === true) {
                 $this->photo->update(['send' => 1]);
             } else {
-
                 Log::error("Erro no envio da imagem ID {$this->photo->id}: " . json_encode($result));
             }
         } catch (Exception $e) {
