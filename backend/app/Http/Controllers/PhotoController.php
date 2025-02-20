@@ -110,8 +110,8 @@ class PhotoController extends Controller
                     SendImageToApiJob::dispatch($photoUser, $user->id, $user->phone);
                 }
             }
-
-            if ($arrayIds) {
+            
+            if (!empty($arrayIds)) {
                 DB::commit();
 
                 return response()->json([
