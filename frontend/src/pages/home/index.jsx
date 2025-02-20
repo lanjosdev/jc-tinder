@@ -13,6 +13,7 @@ import { MATCH_POST } from "../../API/matchApi";
 import imagesServer from '../../../public/configApi.json'
 
 // Components:
+import { toast } from "react-toastify";
 import { NavBar } from "../../components/NavBar/NavBar";
 import { ActionsBottom } from "../../components/ActionsBottom/ActionsBottom";
 import { InfoUser } from "../../components/InfoUser/InfoUser";
@@ -104,9 +105,10 @@ export default function Home() {
             const response = await MATCH_POST(JSON.parse(tokenCookie), idUser, status);
             console.log(response);
 
-            // if(response.data == 'Não houve match') {
-            //     setShowMatch(true);
-            // }
+            if(response.data.response_for_match) {
+                // setShowMatch(true);
+                toast.success('DEU MATCH');
+            }
         }
         catch(error) {
             if(error?.response?.data?.message == 'Unauthenticated.') {
@@ -119,6 +121,7 @@ export default function Home() {
             console.error('DETALHES DO ERRO:', error);
         }
     }
+
 
     function handleClickNopeOrLike(action) {
         setLoadingSubmit(true);
@@ -205,7 +208,7 @@ export default function Home() {
                         {persons.length > 0 ? (
                             showInfoUser ? (
 
-                            <InfoUser userSelect={persons[step]} />
+                            <InfoUser userData={persons[step]} />
 
                             ) : (
 

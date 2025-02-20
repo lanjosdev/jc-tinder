@@ -1,5 +1,5 @@
 .InfoUser {
-    background-color: #ff000034;
+    /* background-color: #ff000034; */
     
     .title {
 
@@ -20,9 +20,13 @@
         .slider_photos {
             position: relative;
             border-bottom: .3rem solid var(--color-border);
+            overflow-x: hidden;
+
+            display: flex;
+            justify-content: center;
             
             .photo {
-                background-color: chartreuse;
+                /* background-color: chartreuse; */
                 position: absolute;
                 top: 0;
                 width: 100%;
@@ -44,6 +48,30 @@
                 position: static;
             }
 
+
+            .paginate {
+                /* background-color: aqua; */
+                position: absolute;
+                bottom: 0;
+                /* left: 0; */
+
+                display: flex;
+                gap: 1rem;
+                padding: 1rem;
+
+                .dot {
+                    background-color: var(--color-primary);
+                    border: .2rem solid var(--color-border);
+                    border-radius: 50%;
+                    width: 1.5rem;
+                    height: 1.5rem;
+
+                    &.active {
+                        background-color: var(--color-tertiary);
+                    }
+                }
+            }
+            
             .controls {
                 position: absolute;
                 top: 0;
@@ -52,10 +80,12 @@
                 height: 100%;
                 
                 display: flex;
+                justify-content: space-between;
                 
                 .back, .next {
-                    background-color: rgba(0, 0, 255, 0.425); 
-                    flex: 1;                   
+                    /* background-color: rgba(0, 0, 255, 0.425);  */
+                    /* flex: 1;*/
+                    width: 35%;
                     
                     button {
                         background-color: var(--color-secundary);
@@ -78,7 +108,7 @@
                     }
                 }
                 .back {
-                    background-color: rgba(255, 0, 0, 0.397);
+                    /* background-color: rgba(255, 0, 0, 0.397); */
                     display: flex;
                     justify-content: flex-start;
                     align-items: center;
@@ -121,5 +151,24 @@
                 }
             }
         }
+    }
+
+
+
+    /* animations */
+    .animate__fadeInLeft {
+        animation-name: fadeInLeft;
+        animation-duration: 0.4s;
+        animation-fill-mode: both;
+    }
+    .animate__fadeOutLeft {
+        animation-name: fadeOutLeft;
+        animation-duration: 0.4s;
+        animation-fill-mode: both;
+    }
+    &.animate__zoomIn {
+        animation-name: zoomIn;
+        animation-duration: 0.4s;
+        animation-fill-mode: both;
     }
 }

@@ -19,19 +19,53 @@ import './infouser.css';
 
 
 InfoUser.propTypes = {
-    userSelect: PropTypes.object
+    userData: PropTypes.object
 }
-export function InfoUser({ userSelect }) {
-    console.log(userSelect)
-    const [userData, setUserData] = useState(userSelect || {});
+export function InfoUser({ userData }) {
+    // console.log(userData)
+    // const [userData, setUserData] = useState(userData || {});
 
     // Logica da UI:
     const [startInteration, setStartInteration] = useState(false);
     const [step, setStep] = useState(0);
     const [animateMode, setAnimateMode] = useState('');
+
+
+
+
+    function handleClickBack() {
+        if(step > 0) {
+            setStep(step - 1);
+            setAnimateMode('animate__fadeInLeft');
+            
+            // limpa a animação depos de 600ms
+            setTimeout(()=> {
+                setAnimateMode('');
+            }, 400);   
+        }
+    }
+
+    function handleClickNext() {
+        if(!startInteration) {
+            setStartInteration(true);
+            console.log('Inicio interação!');
+        }
+
+        if(step < userData.photos.length-1) {
+            setAnimateMode('animate__fadeOutLeft');
+            
+            // limpa a animação depos de 600ms
+            setTimeout(()=> {
+                setStep(step + 1);
+                setAnimateMode('');
+            }, 300);   
+        }
+    }
+
+
    
     return (
-        <div className="InfoUser">
+        <div className="InfoUser animate__animated animate__zoomIn">
             <div className="title">
                 <h1>
                     <span className="name_profile">{userData?.name}, </span>
@@ -45,7 +79,6 @@ export function InfoUser({ userSelect }) {
                         <img src={imgEmpty} className="hidden" alt="" />
                     </div>
                     
-
                     {/* Foto seguinte */}
                     {userData.photos[step+1] && (
                     <div className={`photo ${!startInteration ? 'hidden' : ''}`}>
@@ -55,24 +88,32 @@ export function InfoUser({ userSelect }) {
                     
                     {/* Foto a mostra */}
                     {step < userData.photos.length && (
-                    <div className={`photo ${animateMode}`}>
+                    <div className={`photo animate__animated ${animateMode}`}>
                         <img src={`${imagesServer.images_url}${userData.photos[step]?.thumb_photo}`} alt="" />
                     </div>
                     )}
-        
+
+    
+
+                    {/* Paginate dots */}
+                    <div className="paginate">
+                        {userData.photos.map((item, idx)=> (
+                        <div className={`dot ${step == idx ? 'active' : ''}`} key={idx}></div>
+                        ))}
+                    </div>
 
                     {/* Controls */}
                     <div className="controls">
-                        <div className='back'>
-                            {/* {step > 0 && ( */}
+                        <div className='back' onClick={handleClickBack}>
+                            {step > 0 && (
                                 <button>
                                     <i className="bi bi-chevron-compact-left"></i>
                                 </button>
-                            {/* )} */}
+                            )}
                         </div>
 
-                        <div className='next'>
-                            {step < userData.photos.length && (
+                        <div className='next' onClick={handleClickNext}>
+                            {step < userData.photos.length - 1 && (
                                 <button>
                                     <i className="bi bi-chevron-compact-right"></i>
                                 </button>

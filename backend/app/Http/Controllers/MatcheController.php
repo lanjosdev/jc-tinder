@@ -60,11 +60,32 @@ class MatcheController extends Controller
             // se existir algum user que deu match
             if ($users) {
                 $users = $users->map(function ($users) {
+
+                    $photosUserArray = DB::table('photos')
+                        // Faz o join com sequences
+                        ->join('sequences', 'photos.id', '=', 'sequences.fk_sequences_photos_id')
+                        ->where('photos.fk_user_photos_id', $users->id)
+                        ->whereNull('photos.deleted_at')
+                        // Seleciona também a ordem
+                        ->select('photos.id', 'photos.thumb_photo', 'photos.name_photo', 'sequences.order')
+                        // Ordena com base na tabela sequences
+                        ->orderBy('sequences.order', 'asc')
+                        ->get()
+                        ->map(function ($photo) {
+                            return (object) [
+                                'id' => $photo->id,
+                                'photo' => $photo->name_photo,
+                                'thumb_photo' => $photo->thumb_photo,
+                            ];
+                        })
+                        ->toArray();
+
                     return [
                         'id' => $users->id,
                         'name' => $users->name,
                         'phone' => $users->phone,
                         'age' => $this->utils->verifyAdult($users->birth_data),
+                        'photos' => !empty($photosUserArray) ? $photosUserArray[0] : $photosUserArray,
                     ];
                 });
             }
@@ -136,21 +157,40 @@ class MatcheController extends Controller
                 if ($matche || $getMatch) {
                     DB::commit();
 
-                    $responseMatch = Matche::where('fk_user_matches_id', $fk_target_user_matches_id)
+                    // $responseMatch = Matche::where('fk_user_matches_id', $fk_target_user_matches_id)
+                    //     ->where('fk_target_user_matches_id', $user->id)
+                    //     ->where('status', 1)
+                    //     ->get();
+
+                    //se existe um like do user da requisição para o user alvo
+                    $userMatch = Matche::where('fk_user_matches_id', $user->id)
+                        ->where('fk_target_user_matches_id', $fk_target_user_matches_id)
+                        ->where('status', 1)
+                        ->first();
+
+                    //se existe um like do user da alvo para o user da requisição
+                    $targetMatch = Matche::where('fk_user_matches_id', $fk_target_user_matches_id)
                         ->where('fk_target_user_matches_id', $user->id)
                         ->where('status', 1)
-                        ->get();
+                        ->first();
 
-                    if ($responseMatch) {
-                        $userMatch = User::where('id', $fk_target_user_matches_id)->get();
+                    //se os dois for like
+                    if ($userMatch && $targetMatch) {
 
-                        if ($userMatch) {
+                        //Busca o user alvo
+                        $userMatchExists = User::where('id', $fk_target_user_matches_id)->first();
+
+                        if ($userMatchExists) {
+                            //Monta um array de informações do user alvo no caso as fotos
                             $photosUserArray = DB::table('photos')
-                                ->join('sequences', 'photos.id', '=', 'sequences.fk_sequences_photos_id') // Faz o join com sequences
+                                // Faz o join com sequences
+                                ->join('sequences', 'photos.id', '=', 'sequences.fk_sequences_photos_id')
                                 ->where('photos.fk_user_photos_id', $fk_target_user_matches_id)
                                 ->whereNull('photos.deleted_at')
-                                ->select('photos.id', 'photos.thumb_photo', 'photos.name_photo', 'sequences.order') // Seleciona também a ordem
-                                ->orderBy('sequences.order', 'asc') // Ordena com base na tabela sequences
+                                // Seleciona também a ordem
+                                ->select('photos.id', 'photos.thumb_photo', 'photos.name_photo', 'sequences.order')
+                                // Ordena com base na tabela sequences
+                                ->orderBy('sequences.order', 'asc')
                                 ->get()
                                 ->map(function ($photo) {
                                     return (object) [
@@ -160,19 +200,24 @@ class MatcheController extends Controller
                                     ];
                                 })
                                 ->toArray();
+
+                            $responseMatch = true;
+
+                            //se user alvo nao for encontrado retorna match false
+                        } else {
+                            $responseMatch = false;
                         }
+                    } else {
+                        $responseMatch = false;
                     }
-
-
-                    $responseMatch = $responseMatch->isEmpty() ? false : true;
 
                     return response()->json([
                         'success' => true,
                         'message' => 'Resgistrado com sucesso.',
                         'data' => [
                             'response_for_match' => $responseMatch,
-                            'info_user_match' =>  $responseMatch == 'Match' ? $userMatch : null,
-                            'photo_user_match' => $responseMatch == 'Match' ? $photosUserArray : null
+                            'info_user_match' =>  $responseMatch == true ? $userMatchExists : null,
+                            'photo_user_match' => $responseMatch == true && !empty($photosUserArray) ? $photosUserArray[0] : null,
                         ],
                     ]);
                 }
