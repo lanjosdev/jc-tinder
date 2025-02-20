@@ -174,7 +174,7 @@ class PhotoController extends Controller
 
             
 
-            if ($photoUser) {
+            if (!empty($arrayIds)) {
                 DB::commit();
 
                 return response()->json([
