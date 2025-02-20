@@ -110,6 +110,16 @@ class PhotoController extends Controller
                     //envia uma imagem por vez para moderação
                     SendImageToApiJob::dispatch($photoUser, $user->id, $user->phone);
                 }
+
+                if (!empty($arrayIds)) {
+                    DB::commit();
+
+                    return response()->json([
+                        'success' => true,
+                        'message' => 'Foto(s) salva(s) com sucesso.',
+                        'data' => $arrayIds
+                    ]);
+                }
             }
 
             // $client = new Client();
@@ -172,17 +182,16 @@ class PhotoController extends Controller
             //     $responseResult[] = $result;
             // }
 
-            
 
-            if (!empty($arrayIds)) {
-                DB::commit();
+            // if (!empty($arrayIds)) {
+            //     DB::commit();
 
-                return response()->json([
-                    'success' => true,
-                    'message' => 'Foto(s) salva(s) com sucesso.',
-                    'data' => $arrayIds
-                ]);
-            }
+            //     return response()->json([
+            //         'success' => true,
+            //         'message' => 'Foto(s) salva(s) com sucesso.',
+            //         'data' => $arrayIds
+            //     ]);
+            // }
         } catch (ValidationException $ve) {
             DB::rollBack();
             return response()->json([
