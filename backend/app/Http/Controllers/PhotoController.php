@@ -32,7 +32,6 @@ class PhotoController extends Controller
         DB::beginTransaction();
 
         try {
-
             $user = $request->user();
 
             $validatedData = $request->validate(
