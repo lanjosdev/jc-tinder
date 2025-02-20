@@ -172,8 +172,6 @@ class PhotoController extends Controller
             //     $responseResult[] = $result;
             // }
 
-            
-
             if ($photoUser) {
                 DB::commit();
 
