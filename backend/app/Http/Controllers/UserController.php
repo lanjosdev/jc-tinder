@@ -31,6 +31,7 @@ class UserController extends Controller
     {
         try {
 
+            //user da requisição
             $userRequest = $request->user();
 
             //pega a preferencia do user da requisição
@@ -45,20 +46,20 @@ class UserController extends Controller
                 ->pluck('fk_target_user_matches_id')
                 ->toArray();
 
-            // pega os users que dei deslike nos últimos 48 horas
-            $getAllUsersNotLike = Matche::where('fk_user_matches_id', $userRequest->id)
-                ->where('status', 0)
-                ->whereNull('deleted_at')
-                ->where('updated_at', '>=', Carbon::now()->subHours(48)) // Apenas os deslikes recentes
-                ->pluck('fk_target_user_matches_id')
-                ->toArray();
+            // // pega os users que dei deslike nos últimos 48 horas
+            // $getAllUsersNotLike = Matche::where('fk_user_matches_id', $userRequest->id)
+            //     ->where('status', 0)
+            //     ->whereNull('deleted_at')
+            //     ->where('updated_at', '>=', Carbon::now()->subHours(48))
+            //     ->pluck('fk_target_user_matches_id')
+            //     ->toArray();
 
             //pega todos os meus matchs
             $getAllMatchs = $this->utils->getAllMatchs($userRequest->id);
             $matchIds = is_array($getAllMatchs) ? $getAllMatchs : collect($getAllMatchs)->pluck('id')->toArray();
 
             //pega os usuario que ainda não dei like que não dei match 
-            $getAllUsers = User::whereNotIn('id', array_merge([$userRequest->id], $matchIds, $getAllUsersLike, $getAllUsersNotLike))
+            $getAllUsers = User::whereNotIn('id', array_merge([$userRequest->id], $matchIds, $getAllUsersLike, /*$getAllUsersNotLike*/))
                 ->whereIn('fk_gender_user_id', $preference)
                 ->where('level', 0)
                 ->inRandomOrder()
