@@ -112,8 +112,7 @@ class PhotoController extends Controller
                 }
             }
 
-
-            if (!empty($arrayIds)) {
+            if ($arrayIds) {
                 DB::commit();
 
                 return response()->json([
