@@ -113,10 +113,6 @@ class SendImageToApiJob implements ShouldQueue
 
             $result = json_decode($response->getBody(), true);
 
-            //dd($result);
-            // verifica se a API retornou true
-            // Log::error("AAAAAErro no envio da imagem ID {$this->photo->id}: " . json_encode($result));
-
             if ($result['success']) {
                 $this->photo->update(['send' => 1]);
             } else {
