@@ -6,6 +6,7 @@ import { Routes, Route } from "react-router";
 import ControllerRouter from "./ControllerRouter";
 
 // Pages:
+import Cta from "../pages/cta";
 import Login from "../pages/login";
 import Register from "../pages/register";
 import Forms from "../pages/forms";
@@ -14,6 +15,8 @@ import Settings from "../pages/settings";
 import Profile from "../pages/profile";
 import Preferences from "../pages/preferences";
 import Photos from "../pages/photos";
+import Matches from "../pages/matches";
+import User from "../pages/user";
 
 
 
@@ -21,6 +24,7 @@ export default function AppRoutes() {
     return (
         <Routes>
 
+            <Route path="/" element={ <Cta/> } />
             <Route path="/login" element={ <Login/> } />
             <Route path="/register" element={ <Register/> } />
 
@@ -30,6 +34,8 @@ export default function AppRoutes() {
             <Route path="/profile" element={ <ControllerRouter> <Profile/> </ControllerRouter> } />
             <Route path="/preferences" element={ <ControllerRouter> <Preferences/> </ControllerRouter> } />
             <Route path="/photos" element={ <ControllerRouter> <Photos/> </ControllerRouter> } />
+            <Route path="/matches" element={  <Matches/>  } />
+            <Route path="/user/:id" element={  <User/>  } />
 
         </Routes>
     )

@@ -26,39 +26,33 @@ export async function MATCH_POST(token, idUser, status) {
    return response.data;
 }
 
-
-
-
-
-// Logar usuario (POST):
-export async function USER_LOGIN(phone, password) {
+// get all matches:
+export async function MATCH_GET_ALL(token) {
    console.log('CALL FUNCTION API');
 
-   const response = await axios.post(`${API_URL}/login`, {
-      "phone": phone,
-      "password": password
-   },
-   { 
-      headers: { "Accept": "application/json" } 
+   const response = await axios.get(`${API_URL}/get-all-match`, {
+      headers: { "Accept": "application/json", Authorization: "Bearer " + token } 
    });
 
    // console.log(response.data);
    return response.data;
 }
 
+
+
 // Logout usuario (POST):
-export async function USER_LOGOUT(token) {
-   console.log('CALL FUNCTION API');
+// export async function USER_LOGOUT(token) {
+//    console.log('CALL FUNCTION API');
 
-   const res = await fetch(`${API_URL}/logout`, {
-      method: 'POST',
-      headers: { "Accept": "application/json", Authorization: 'Bearer ' + token }
-   });
-   const response = await res.json();
+//    const res = await fetch(`${API_URL}/logout`, {
+//       method: 'POST',
+//       headers: { "Accept": "application/json", Authorization: 'Bearer ' + token }
+//    });
+//    const response = await res.json();
 
-   // console.log(response);
-   return response;
-}
+//    // console.log(response);
+//    return response;
+// }
 
 
 

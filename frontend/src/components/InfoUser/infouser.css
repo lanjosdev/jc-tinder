@@ -26,7 +26,7 @@
             justify-content: center;
             
             .photo {
-                /* background-color: chartreuse; */
+                background-color: var(--color-b);
                 position: absolute;
                 top: 0;
                 width: 100%;

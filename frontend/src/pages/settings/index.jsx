@@ -81,6 +81,13 @@ export default function Settings() {
                     >
                         <span>Organizar Fotos</span>
                     </Link>
+
+                    <Link 
+                    to='/matches'
+                    className="btn primary"
+                    >
+                        <span>Meus Matches</span>
+                    </Link>
                 </div>
             </main>
 
