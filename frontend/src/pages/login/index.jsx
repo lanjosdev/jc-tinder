@@ -12,10 +12,10 @@ import { InputPassword } from "../../components/InputPassword/InputPassword";
 // Utils
 
 // Assets:
-// import imgLogo from '../../assets/LOGO-BIZSYS_preto.png';
+import imgLogo from '../../assets/Logo.png';
 
 // Estilo:
-// import './style.css';
+import './style.css';
 
 
 
@@ -66,30 +66,38 @@ export default function Login() {
             
             <main className='PageContent LoginContent grid'>
                 <div className="title_page">
+                    <img src={imgLogo} alt="" />
                     <h1>Entrar</h1>
                 </div>
 
                 <div className="login_modes">
-                    {/* <div className="google_mode">
-                        ENTRAR COM GOOGLE
+                    <div className="google_mode">
+                        <button className="btn primary">
+                            <i className="bi bi-google"></i>
+                            <span>Entrar com conta Google</span>
+                        </button>
                     </div>
                     
-                    <div className="separator"></div> */}
+                    <div className="separator"></div>
 
                     <div className="phone_mode">
                         <form className="form" onSubmit={handleSubmitLogin} autoComplete="off">
                             <div className="label--input">
-                                <label>
-                                    <span>Com telefone</span>
-                                    <input className="input" type="tel" value={phone} onChange={handleChangePhone} required />
-                                </label>
+                                <label htmlFor="tel">Com telefone</label>
+
+                                <input id="tel" className="input" type="tel" 
+                                placeholder="WhatsApp (Ex: 11980556891)" 
+                                minLength="11" maxLength="11"
+                                value={phone}
+                                onChange={handleChangePhone}
+                                required 
+                                />
                             </div>
 
                             <div className="label--input">
-                                <label>
-                                    <span>Senha</span>
-                                    <InputPassword value={password} funcSetValue={handleChangePassword} />
-                                </label>
+                                <label>Senha</label>
+
+                                <InputPassword value={password} funcSetValue={handleChangePassword} />
                             </div>
 
 

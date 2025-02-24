@@ -233,11 +233,10 @@
     /* font-weight: 600; */
     /* letter-spacing: -0.5px; */
 
-
     &.primary {
         background-color: var(--color-primary);
+        color: var(--color-tertiary);
         
-        color: var(--color-w);
         box-shadow: .2rem .2rem 0 var(--color-border);
         height: 5rem;
         min-height: 5rem;
@@ -306,7 +305,7 @@
 .label--select {
     display: flex;
     flex-direction: column;
-    gap: 0.7rem;
+    gap: 0.5rem;
 
     > label {
         /* font-size: 1.5rem; */
@@ -330,7 +329,7 @@
 
 .separator {
     background-color: var(--color-text);
-    height: 1px;
+    height: .2rem;
     opacity: .7;
 }
 

@@ -91,12 +91,13 @@ export function NavBarSecundary({ isForms=false }) {
                             <ion-icon name="chevron-back"></ion-icon>
                         </button>
                     ) : (
-                        <button 
+                        <Link 
                         className='btn back'
-                        onClick={()=> navigate(-1)} 
+                        // onClick={()=> navigate(-1)} 
+                        to='/login'
                         >
                             <ion-icon name="chevron-back"></ion-icon>
-                        </button>
+                        </Link>
                     )}
 
                     <Link 

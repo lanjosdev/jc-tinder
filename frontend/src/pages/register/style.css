@@ -1,7 +1,7 @@
-.RegisterContent {
-    background-color: antiquewhite;
-
-
+.PageContent.RegisterContent {
+    /* background-color: antiquewhite; */
+    padding: 4rem;
+    gap: 2.5rem;
 
     .content_main {
         
@@ -9,11 +9,23 @@
             /* background-color: aqua; */
             display: flex;
             flex-direction: column;
-            gap: 1.5rem;
+            gap: 1.8rem;
+
+            .label--input label[for='nascimento'] {
+                margin-bottom: -0.5rem;
+            }
         }
     }
 
+    a {
+        text-align: center;
+    }
     
+
+
+    .btn {
+        max-width: 100%;
+    }
 
     /* Tratamento de erros */
     .label--input {

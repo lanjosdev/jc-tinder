@@ -1,0 +1,71 @@
+.PageContent.LoginContent {
+    /* background-color: aqua; */
+    padding: 5rem 4rem;
+    gap: 4.5rem;
+
+    .title_page {
+        /* background-color: antiquewhite; */
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 1rem;
+
+        h1 {
+            align-self: start;
+        }
+    }
+
+    .login_modes {
+        /* border: 2px solid red; */
+        display: flex;
+        flex-direction: column;
+        gap: 4rem;
+
+        .google_mode {
+            .btn {
+                background-color: var(--color-w);
+                color: var(--color-text);
+                border-radius: 35px;
+            }
+        }
+
+        .separator {
+            /* position: relative; */
+            margin: 0 -4rem;
+            opacity: 1;
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            &::before {
+                content: 'ou';
+                font-size: 2rem;
+                font-weight: 600;
+
+                background-color: var(--color-bg-1);
+                border: .23rem solid var(--color-text);
+                border-radius: 12px;
+                padding: .02rem .6rem .15rem;
+                
+                /* position: absolute; */
+            }
+        }
+
+        .phone_mode {
+            /* background-color: blanchedalmond; */
+    
+            .form {
+                display: flex;
+                flex-direction: column;
+                gap: 1.8rem;
+            }
+        }
+    }
+
+
+
+    .btn {
+        max-width: 100%;
+    }
+}

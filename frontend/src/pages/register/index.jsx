@@ -192,7 +192,7 @@ export default function Register() {
                         </div>
 
                         <div className="label--input">
-                            <label htmlFor="nascimento">Data de nascimento</label>
+                            <label htmlFor="nascimento">Data de Nascimento</label>
                             <small className={error.dateBirth ? 'txt-erro' : ''}>
                                 Para cadastrar é necessário ser maior de idade.
                             </small>
@@ -206,8 +206,8 @@ export default function Register() {
                         </div>
 
                         <div className="label--input">
-                            <label htmlFor="">Número de telefone</label>
-                            <input className="input" type="tel" 
+                            <label htmlFor="tel">Telefone</label>
+                            <input id="tel" className="input" type="tel" 
                             placeholder="WhatsApp (Ex: 11980556891)" 
                             minLength="11" maxLength="11"
                             value={phone}
@@ -249,9 +249,9 @@ export default function Register() {
                             <button className="btn primary" disabled={loading || loadingSubmit}>Cadastrar com Telefone</button>
                         </div>
                     </form>
-
-                    <Link to='/login'>Já possuo uma conta. Fazer login!</Link>
                 </div>
+
+                <Link to='/login'>Já possuo uma conta. <b>Fazer login!</b></Link>
             </main>
 
         </div>
