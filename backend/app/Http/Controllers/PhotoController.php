@@ -93,7 +93,7 @@ class PhotoController extends Controller
                 foreach ($savedImages as $index => $imagePath) {
                     $photoUser = $this->photo->create([
                         'name_photo' => $imagePath,
-                        'thumb_photo' => $thumbnailPaths[$index] ?? null,
+                        'thumb_photo' => $thumbnailPaths[$index],
                         'fk_user_photos_id' => $user->id,
                     ]);
 
