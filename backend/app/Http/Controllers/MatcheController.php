@@ -180,43 +180,42 @@ class MatcheController extends Controller
                         //Busca o user alvo
                         $userMatchExists = User::where('id', $fk_target_user_matches_id)->get();
 
-                        if ($userMatchExists instanceof \Illuminate\Support\Collection) {
+                        if ($userMatchExists) {
                             //Monta um array de informações do user alvo no caso as fotos
-                            $photosUserArray = DB::table('photos')
-                                // Faz o join com sequences
+                            $photoUser = DB::table('photos')
                                 ->join('sequences', 'photos.id', '=', 'sequences.fk_sequences_photos_id')
                                 ->where('photos.fk_user_photos_id', $fk_target_user_matches_id)
                                 ->whereNull('photos.deleted_at')
-                                // Seleciona também a ordem
                                 ->select('photos.id', 'photos.thumb_photo', 'photos.name_photo', 'sequences.order')
-                                // Ordena com base na tabela sequences
                                 ->orderBy('sequences.order', 'asc')
-                                ->get()
-                                ->map(function ($photo) {
-                                    return (object) [
-                                        'id' => $photo->id,
-                                        'photo' => $photo->name_photo,
-                                        'thumb_photo' => $photo->thumb_photo,
-                                    ];
-                                })
-                                ->toArray();
+                                ->first(); // Retorna apenas o primeiro
 
-                            $info_user = $userMatchExists->map(function ($userMatchExists ) use ($photosUserArray){
+                            // Verifica se encontrou alguma foto
+                            $photoUserObject = $photoUser ? (object) [
+                                'id' => $photoUser->id,
+                                'photo' => $photoUser->name_photo,
+                                'thumb_photo' => $photoUser->thumb_photo,
+                            ] : null;
+
+                            $info_user = $userMatchExists->map(function ($userMatchExists) use ($photoUserObject) {
+
                                 return [
                                     "id" => $userMatchExists->id,
                                     "name" => $userMatchExists->name,
                                     "adult" => $userMatchExists->adult,
                                     "phone" => $userMatchExists->phone,
+                                    "email" => $userMatchExists->email,
                                     "birth_data" => $userMatchExists->birth_data,
+                                    "level" => $userMatchExists->level,
                                     "about_me" => $userMatchExists->about_me,
                                     "fk_gender_user_id" => $userMatchExists->fk_gender_user_id,
                                     "fk_sexuality_user_id" => $userMatchExists->fk_sexuality_user_id,
                                     "fk_sub_gender_user_id" => $userMatchExists->fk_sub_gender_user_id,
                                     "minimum_age" => $userMatchExists->minimum_age,
                                     "maximum_age" => $userMatchExists->maximum_age,
-                                    'photo' => $photosUserArray,
+                                    "photo" => $photoUserObject,
                                 ];
-                            });
+                            })->first();
 
                             $responseMatch = true;
 
@@ -227,7 +226,7 @@ class MatcheController extends Controller
                     } else {
                         $responseMatch = false;
                     }
-
+                    // dd($info_user);
                     return response()->json([
                         'success' => true,
                         'message' => 'Resgistrado com sucesso.',
