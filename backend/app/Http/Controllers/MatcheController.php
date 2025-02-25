@@ -178,9 +178,9 @@ class MatcheController extends Controller
                     if ($userMatch && $targetMatch) {
 
                         //Busca o user alvo
-                        $userMatchExists = User::where('id', $fk_target_user_matches_id)->first();
+                        $userMatchExists = User::where('id', $fk_target_user_matches_id)->get();
 
-                        if ($userMatchExists) {
+                        if ($userMatchExists instanceof \Illuminate\Support\Collection) {
                             //Monta um array de informações do user alvo no caso as fotos
                             $photosUserArray = DB::table('photos')
                                 // Faz o join com sequences
@@ -201,6 +201,23 @@ class MatcheController extends Controller
                                 })
                                 ->toArray();
 
+                            $info_user = $userMatchExists->map(function ($userMatchExists ) use ($photosUserArray){
+                                return [
+                                    "id" => $userMatchExists->id,
+                                    "name" => $userMatchExists->name,
+                                    "adult" => $userMatchExists->adult,
+                                    "phone" => $userMatchExists->phone,
+                                    "birth_data" => $userMatchExists->birth_data,
+                                    "about_me" => $userMatchExists->about_me,
+                                    "fk_gender_user_id" => $userMatchExists->fk_gender_user_id,
+                                    "fk_sexuality_user_id" => $userMatchExists->fk_sexuality_user_id,
+                                    "fk_sub_gender_user_id" => $userMatchExists->fk_sub_gender_user_id,
+                                    "minimum_age" => $userMatchExists->minimum_age,
+                                    "maximum_age" => $userMatchExists->maximum_age,
+                                    'photo' => $photosUserArray,
+                                ];
+                            });
+
                             $responseMatch = true;
 
                             //se user alvo nao for encontrado retorna match false
@@ -216,8 +233,8 @@ class MatcheController extends Controller
                         'message' => 'Resgistrado com sucesso.',
                         'data' => [
                             'response_for_match' => $responseMatch,
-                            'info_user_match' =>  $responseMatch == true ? $userMatchExists : null,
-                            'photo_user_match' => $responseMatch == true && !empty($photosUserArray) ? $photosUserArray[0] : null,
+                            'info_user_match' =>  $responseMatch == true ? $info_user : null,
+                            // 'photo_user_match' => $responseMatch == true && !empty($photosUserArray) ? $photosUserArray[0] : null,
                         ],
                     ]);
                 }
