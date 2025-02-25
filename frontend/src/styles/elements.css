@@ -102,6 +102,16 @@
         animation-delay: 1s;
     }
 }
+.loader_content {
+    width: 10rem;
+    height: 10rem;
+    border: 2px solid var(--color-text);
+    border-bottom-color: transparent;
+    border-radius: 50%;
+    display: inline-block;
+    box-sizing: border-box;
+    animation: rotation 1s linear infinite;
+}
 
 
 .loading_route {

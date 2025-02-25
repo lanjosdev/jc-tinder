@@ -1,0 +1,64 @@
+.InputSelectOpt {
+    margin-top: .5rem;
+    background-color: var(--color-bg-2);
+    border: .2rem solid var(--color-text);
+    border-radius: 15px;
+    padding: 1rem;
+    /* color: var(--color-primary); */
+    
+    .top_select {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        font-weight: 500;
+        cursor: pointer;
+
+        i {
+            transition: transform .3s ease-in-out;
+
+            &.invert {
+                transform: rotateX(180deg);
+            }
+        }
+    }
+
+    .list_opt {
+        margin-top: 1rem;
+        display: flex;
+        flex-direction: column;
+        gap: .7rem;
+        overflow: auto;
+
+        height: 100%;
+        max-height: 37rem;
+
+        transition: all .4s ease;
+
+        .item {
+            cursor: pointer;
+            background-color: var(--color-bg-1);
+            border: .1rem solid var(--color-primary);
+            border-radius: 10px;
+            padding: .5rem;
+
+            line-height: 110%;
+
+            transition: all .3s ease;
+
+            &.checked {
+                background-color: var(--color-secundary);
+                border: .1rem solid var(--color-w);
+                color: var(--color-w);
+            }
+        }
+    }
+    .list_opt.hide {
+        margin-top: 0rem;
+        max-height: 0;
+    }
+}
+
+.InputSelectOpt.not_margin {
+    margin-top: 0;
+}

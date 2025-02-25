@@ -11,7 +11,7 @@ import { toast } from "react-toastify";
 // import { toast } from "react-toastify";
 
 // Utils:
-import { byteToMegabyte } from '../../../utils/convertUnit'
+// import { byteToMegabyte } from '../../../utils/convertUnit'
 
 // Assets:
 // import LogoHeader from '../../assets/logo-header.png';
@@ -120,7 +120,7 @@ export function ModalPhotoForms({
         setUrlsPhotos(newUrlsPhotos);   
 
         close();
-        alert('Tamanho do arquivo: ' + byteToMegabyte(file.size) + 'MB');
+        // alert('Tamanho do arquivo: ' + byteToMegabyte(file.size) + 'MB');
     }
 
     function handleDelFile() 

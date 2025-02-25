@@ -1,7 +1,7 @@
 .PageContent.LoginContent {
     /* background-color: aqua; */
     padding: 5rem 4rem;
-    gap: 4.5rem;
+    gap: 3.8rem;
 
     .title_page {
         /* background-color: antiquewhite; */
@@ -26,6 +26,8 @@
                 background-color: var(--color-w);
                 color: var(--color-text);
                 border-radius: 35px;
+
+                gap: 2rem;
             }
         }
 
