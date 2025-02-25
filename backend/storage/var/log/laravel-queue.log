@@ -1,0 +1,40 @@
+  2025-02-25 11:49:57 App\Jobs\SendImageToApiJob ..................... RUNNING
+  2025-02-25 11:49:57 App\Jobs\SendImageToApiJob ..................... RUNNING
+  2025-02-25 11:49:57 App\Jobs\SendImageToApiJob ..................... RUNNING
+  2025-02-25 11:49:57 App\Jobs\SendImageToApiJob ..................... RUNNING
+  2025-02-25 11:49:57 App\Jobs\SendImageToApiJob ..................... RUNNING
+  2025-02-25 11:49:57 App\Jobs\SendImageToApiJob ..................... RUNNING
+  2025-02-25 11:49:57 App\Jobs\SendImageToApiJob ..................... RUNNING
+  2025-02-25 11:49:57 App\Jobs\SendImageToApiJob ..................... RUNNING
+  2025-02-25 11:49:57 App\Jobs\SendImageToApiJob  2025-02-25 11:49:57 App\Jobs\SendImageToApiJob ................ 44.72ms FAIL
+ ................ 49.56ms FAIL
+  2025-02-25 11:49:57 App\Jobs\SendImageToApiJob ..................... RUNNING
+  2025-02-25 11:49:57 App\Jobs\SendImageToApiJob ..................... RUNNING
+  2025-02-25 11:49:57 App\Jobs\SendImageToApiJob ................. 3.18ms FAIL
+  2025-02-25 11:49:57 App\Jobs\SendImageToApiJob ................. 3.83ms FAIL
+  2025-02-25 11:49:57 App\Jobs\SendImageToApiJob ..................... RUNNING
+  2025-02-25 11:49:57 App\Jobs\SendImageToApiJob ..................... RUNNING
+  2025-02-25 11:49:58 App\Jobs\SendImageToApiJob ..................... 1s DONE
+  2025-02-25 11:49:58 App\Jobs\SendImageToApiJob ..................... 1s DONE
+  2025-02-25 11:49:58 App\Jobs\SendImageToApiJob ..................... 1s DONE
+  2025-02-25 11:49:58 App\Jobs\SendImageToApiJob ..................... 1s DONE
+  2025-02-25 11:49:58 App\Jobs\SendImageToApiJob ..................... 1s DONE
+  2025-02-25 11:49:59 App\Jobs\SendImageToApiJob ..................... 1s DONE
+  2025-02-25 11:49:59 App\Jobs\SendImageToApiJob ..................... 1s DONE
+  2025-02-25 11:49:59 App\Jobs\SendImageToApiJob ..................... 1s DONE
+  2025-02-25 11:50:19 App\Jobs\SendImageToApiJob ..................... RUNNING
+  2025-02-25 11:50:19 App\Jobs\SendImageToApiJob ..................... RUNNING
+  2025-02-25 11:50:21 App\Jobs\SendImageToApiJob ..................... 1s DONE
+  2025-02-25 11:50:21 App\Jobs\SendImageToApiJob ..................... 1s DONE
+  2025-02-25 11:53:21 App\Jobs\SendImageToApiJob ..................... RUNNING
+  2025-02-25 11:53:21 App\Jobs\SendImageToApiJob ..................... RUNNING
+  2025-02-25 11:53:22 App\Jobs\SendImageToApiJob ..................... 1s DONE
+  2025-02-25 11:53:22 App\Jobs\SendImageToApiJob ..................... 1s DONE
+  2025-02-25 11:59:32 App\Jobs\SendImageToApiJob ..................... RUNNING
+  2025-02-25 11:59:33 App\Jobs\SendImageToApiJob ..................... 1s DONE
+  2025-02-25 11:59:33 App\Jobs\SendImageToApiJob ..................... RUNNING
+  2025-02-25 11:59:35 App\Jobs\SendImageToApiJob ..................... 1s DONE
+  2025-02-25 12:04:53 App\Jobs\SendImageToApiJob ..................... RUNNING
+  2025-02-25 12:04:53 App\Jobs\SendImageToApiJob ..................... RUNNING
+  2025-02-25 12:04:54 App\Jobs\SendImageToApiJob ..................... 1s DONE
+  2025-02-25 12:04:54 App\Jobs\SendImageToApiJob ..................... 1s DONE
