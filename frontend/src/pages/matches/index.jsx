@@ -134,7 +134,7 @@ export default function Matches() {
 
                 {loading ? (
                     <div className="feedback_content">
-                        <span className="loader"></span>
+                        <span className="loader_content"></span>
                         {/* <p>Encontrando pessoas para você...</p> */}
                     </div>
                 ) : (

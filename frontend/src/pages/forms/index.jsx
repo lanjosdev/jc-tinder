@@ -15,6 +15,7 @@ import UserContext from "../../contexts/userContext";
 // Components:
 import { toast } from "react-toastify";
 import { NavBarSecundary } from "../../components/NavBar/Secundary/NavBarSecundary";
+import { InputSelectOpt } from "../../components/InputSelectOpt/InputSelectOpt";
 import { ModalPhotoForms } from "../../components/Modals/ModalPhotoForms/ModalPhotoForms";
 
 // Utils
@@ -45,7 +46,7 @@ export default function Forms() {
     
     // Logica da UI:
     //const totalSteps = 3;
-    const [step, setStep] = useState(1);
+    const [step, setStep] = useState(0);
     // const [animateMode, setAnimateMode] = useState('');
     //step 1
     const [showOptinalGender, setShowOptinalGender] = useState(false);
@@ -78,16 +79,31 @@ export default function Forms() {
 
 
 
+    useEffect(()=> {
+        console.log('Effect /Forms');
+
+        let stepInitial = 1;
+
+        if(profileDetails.gender_id) stepInitial = 2;
+        if(profileDetails.preferences.length > 0) stepInitial = 3;
+
+        if(profileDetails.photos.length > 0) {
+            navigate('/settings');
+        }
+        else {
+            setStep(stepInitial);
+        }
+
+        //=// Só para teste
+        // if(profileDetails.preferences.length > 0) {
+        //     setStep(3);
+        // }
+    }, [profileDetails, navigate]);
+
     //=// refatorar esses effects para virar useCallback e try em dupla com genders + gendersOptional (acho q um promises all)
     useEffect(()=> {
         async function getAllGenders() {
-            console.log('Effect /Forms');
             setLoading(true);
-
-            //=// Só para teste
-            if(profileDetails.preferences.length > 0) {
-                setStep(3);
-            }
             
             try {
                 setError(true);
@@ -100,7 +116,7 @@ export default function Forms() {
                     setError(false);
                 }
                 else if(response.success == false) {
-                    toast.error(response.message);
+                    console.error(response.message);
                 }
                 else {
                     toast.error('Erro inesperado.');
@@ -111,16 +127,16 @@ export default function Forms() {
                     console.error('Requisição não autenticada.');
                 }
                 else {
-                    toast.error('Houve algum erro.');
+                    console.error('Houve algum erro.');
                 }
 
-                console.error('DETALHES ERRO:', error);
+                console.error('DETALHES DO ERRO:', error);
             }
 
             setLoading(false);
         } 
         getAllGenders();
-    }, [tokenCookie, profileDetails]);
+    }, [tokenCookie]);
 
 
     useEffect(()=> {
@@ -137,7 +153,7 @@ export default function Forms() {
                     setError(false);
                 }
                 else if(response.success == false) {
-                    toast.error(response.message);
+                    console.error(response.message);
                 }
                 else {
                     toast.error('Erro inesperado.');
@@ -148,7 +164,7 @@ export default function Forms() {
                     console.error('Requisição não autenticada.');
                 }
                 else {
-                    toast.error('Houve algum erro.');
+                    console.error('Houve algum erro.');
                 }
 
                 console.error('DETALHES ERRO:', error);
@@ -174,7 +190,7 @@ export default function Forms() {
                     setError(false);
                 }
                 else if(response.success == false) {
-                    toast.error(response.message);
+                    console.error(response.message);
                 }
                 else {
                     toast.error('Erro inesperado.');
@@ -185,7 +201,7 @@ export default function Forms() {
                     console.error('Requisição não autenticada.');
                 }
                 else {
-                    toast.error('Houve algum erro.');
+                    console.error('Houve algum erro.');
                 }
 
                 console.error('DETALHES ERRO:', error);
@@ -213,7 +229,7 @@ export default function Forms() {
                         setError(false);
                     }
                     else if(response.success == false) {
-                        toast.error(response.message);
+                        console.error(response.message);
                     }
                     else {
                         toast.error('Erro inesperado.');
@@ -224,7 +240,7 @@ export default function Forms() {
                         console.error('Requisição não autenticada.');
                     }
                     else {
-                        toast.error('Houve algum erro.');
+                        console.error('Houve algum erro.');
                     }
         
                     console.error('DETALHES ERRO:', error);
@@ -239,6 +255,7 @@ export default function Forms() {
       
 
 
+    
     // Step 3
     function handleOpenModal(inputSelect) {
         // console.log(filesPhotos);
@@ -346,7 +363,7 @@ export default function Forms() {
                 toast.error('Houve algum erro.');
             }
 
-            console.error('DETALHES ERRO:', error);
+            console.error('DETALHES DO ERRO:', error);
         }
 
 
@@ -450,11 +467,11 @@ export default function Forms() {
     return (
         <div className="Page Forms">
 
-            <NavBarSecundary isForms={true} />
+            <NavBarSecundary isForms={true} step={step} setStep={setStep} showBtnBack={!profileDetails?.gender_id} />
 
             <main className='PageContent FormsContent grid'>
                 <div className="title_page">
-                    {step == 1 ? (
+                    {step <= 1 ? (
                     <h1>Agora, o que seu Perfil diz sobre você?</h1>
                     ) : (
                     step == 2 ? (
@@ -465,23 +482,28 @@ export default function Forms() {
                     )}
                 </div>
 
+                {loading || step <= 0 ? (
+
+                <div className="feedback_content">
+                    <span className="loader_content"></span>
+                </div>
+
+                ) : (
+                error ? (
+
+                <div className="feedback_content">
+                    <h2>Ops, algo deu errado!</h2>
+                    <p>Tente novamente recarregando a página.</p>
+
+                    <a href="/forms" className="btn primary">Recarregar</a>
+                </div>
+
+                ) : (
+
                 <div className="content_main">
-                    {loading ? (
-
-                    <div>CARREGANDO PAGE...</div>
-
-                    ) : (
-                    error ? (
-
-                    <div>!ERRO PAGE!</div>
-
-                    ) : (
-                    
-                    step == 1 ? (
+                    {step == 1 ? (
                     <form className="form" onSubmit={handleSubmitProfile} autoComplete="off">
-                        <div className="label--input" 
-                        // onBlur={()=> {setShowOptinalGender(false); console.warn('FORA');}}
-                        >
+                        <div className="label--input">
                             <label>Qual o seu gênero?</label>
                             
                             <div className="btns_radio_container">
@@ -500,34 +522,14 @@ export default function Forms() {
                             </div>
 
                             {genderSelect && (
-                            <div className="gender_optional">
-                                <p className="top_select" onClick={()=> setShowOptinalGender(prev => !prev)}>
-                                    <span>Selecione mais informações sobre seu gênero (opcional)</span>
-                                    <i className="bi bi-chevron-down"></i> 
-                                </p> 
-
-                                <ul className={`list_gender_optional ${showOptinalGender ? '' : 'hide'}`}>
-                                    {gendersOptionals
-                                    .filter(genderOpt => genderOpt.gender_main == genderSelect.name)
-                                    .map(genderOpt=> (
-                                    <li 
-                                    key={genderOpt.id} 
-                                    className={`item ${genderOpt.id == genderOptionalSelect?.id ? 'checked' : ''}`} 
-                                    onClick={()=> handleClickGenderOptional(genderOpt)}>
-                                        <p><b>{genderOpt.name}</b></p>
-                                        
-                                        <small>{genderOpt.description}</small>
-                                    </li>
-                                    ))}
-                                </ul>
-                            </div>
+                            <InputSelectOpt showListOpt={showOptinalGender} setShowListOpt={setShowOptinalGender} arrayOpts={gendersOptionals} targetSelect={genderSelect} optSelect={genderOptionalSelect} handleSelectOpt={handleClickGenderOptional} />
                             )}
                         </div>
 
                         <div className="label--input">
                             <label>Qual sua orientação sexual?</label>
 
-                            <div className="select">
+                            {/* <div className="select">
                                 <p className="top_select" onClick={()=> setShowSexualities(prev => !prev)}>
                                     <b>{sexualitySelect?.name || 'Selecione...'}</b>
                                     <i className="bi bi-chevron-down"></i> 
@@ -547,11 +549,13 @@ export default function Forms() {
                                     </li>
                                     ))}
                                 </ul>
-                            </div>
+                            </div> */}
+
+                            <InputSelectOpt titleSelect="Selecione..." showListOpt={showSexualities} setShowListOpt={setShowSexualities} arrayOpts={sexualities} optSelect={sexualitySelect} handleSelectOpt={handleClickSelectSexuality} />
                         </div>
 
                         <div className="label--input">
-                            <label htmlFor="about">Resumo (opcional)</label>
+                            <label htmlFor="about">Conte um resumo sobre você (opcional)</label>
                             <textarea 
                             id="about" 
                             className="input" 
@@ -650,7 +654,6 @@ export default function Forms() {
                         </div>
 
 
-
                         <div className="photo optionals">
                             <p>Adicione até mais <span>3 fotos</span> para sua galeria:</p>
 
@@ -715,11 +718,11 @@ export default function Forms() {
                     </form>
                     )
 
-                    )                    
+                    ) }
+                </div>      
 
-                    ))}
+                ))}
                     
-                </div>
             </main>
 
 

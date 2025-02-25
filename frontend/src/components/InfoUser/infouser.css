@@ -140,6 +140,10 @@
             .label--input {
                 gap: .3rem;
 
+                label {
+                    cursor: initial;
+                }
+
                 .habits {
                     display: flex;
                     flex-wrap: wrap;

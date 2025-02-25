@@ -1,9 +1,0 @@
-.ModalProduct {
-    overflow-y: auto;
-
-    &:has(.SearchProduct) {
-        .bg-modal {
-            background-color: #0000004f;
-        }
-    }
-}

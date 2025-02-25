@@ -1,8 +1,8 @@
 // Funcionalidades / Libs:
 import PropTypes from 'prop-types';
 // import Cookies from "js-cookie";
-import { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router';
+import { useEffect } from 'react';
+import { Link } from 'react-router';
 
 // API
 // import { PRODUCT_GET_ALERT } from '../../API/productApi';
@@ -23,9 +23,12 @@ import imgLogo from '../../../assets/Logo.png';
 
 
 NavBarSecundary.propTypes = {
-    isForms: PropTypes.bool
+    isForms: PropTypes.bool,
+    step: PropTypes.number,
+    setStep: PropTypes.func,
+    showBtnBack: PropTypes.bool
 }
-export function NavBarSecundary({ isForms=false }) {
+export function NavBarSecundary({ isForms=false, step, setStep, showBtnBack=true }) {
     // Estados do componente:
     // const [loadingMatches, setLoadingMatches] = useState(true);
     // const [error, setError] = useState(null);
@@ -34,7 +37,7 @@ export function NavBarSecundary({ isForms=false }) {
     // const navBarRef = useRef(null);
 
 
-    const navigate = useNavigate();
+    // const navigate = useNavigate();
 
 
 
@@ -85,8 +88,8 @@ export function NavBarSecundary({ isForms=false }) {
                 <div className="nav_left">
                     {isForms ? (
                         <button 
-                        className={`btn back ${1 == 1 ? 'hidden' : ''}`}
-                        // onClick={()=> setStep(prev=> prev - 1)} 
+                        className={`btn back ${(step <= 1 || !showBtnBack) ? 'hidden' : ''}`}
+                        onClick={()=> setStep(prev=> prev - 1)} 
                         >
                             <ion-icon name="chevron-back"></ion-icon>
                         </button>
@@ -110,7 +113,7 @@ export function NavBarSecundary({ isForms=false }) {
                 
             </nav>
 
-            <div className={`border_bottom ${isForms ? 'bar_progress' : ''} step${1}`}></div>
+            <div className={`border_bottom ${isForms ? 'bar_progress' : ''} step${step}`}></div>
 
         </header>
     )        
