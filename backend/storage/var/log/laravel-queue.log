@@ -38,3 +38,5 @@
   2025-02-25 12:04:53 App\Jobs\SendImageToApiJob ..................... RUNNING
   2025-02-25 12:04:54 App\Jobs\SendImageToApiJob ..................... 1s DONE
   2025-02-25 12:04:54 App\Jobs\SendImageToApiJob ..................... 1s DONE
+  2025-02-25 13:14:15 App\Jobs\SendImageToApiJob ..................... RUNNING
+  2025-02-25 13:14:17 App\Jobs\SendImageToApiJob ..................... 1s DONE
