@@ -44,7 +44,7 @@ class MatcheController extends Controller
                     ->first();
 
                 if ($matchingLike) {
-                    
+
                     // pega o match onde sou dono da ação
                     $myMatch = Matche::where('fk_user_matches_id', $user->id)
                         ->where('fk_target_user_matches_id', $like->fk_target_user_matches_id)
@@ -54,7 +54,7 @@ class MatcheController extends Controller
 
                     $matchedUsers[] = [
                         'user_id' => $like->fk_target_user_matches_id,
-                        'id_match' => $myMatch->id ?? null, 
+                        'id_match' => $myMatch->id ?? null,
                         'viewed' => $myMatch->viewed ?? false,
                     ];
                 }
@@ -288,12 +288,19 @@ class MatcheController extends Controller
                 ]);
             }
 
+            if ($match->viewed == 1) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Match já vizualizado anteriormente.',
+                ]);
+            }
+
             $validatedData = $request->validate(
                 $this->matche->rulesViewed(),
                 $this->matche->feedbackViewed()
             );
 
-            if ($validatedData && $match->viewed == 0) {
+            if ($validatedData) {
                 if ($request->viewed != 1) {
                     return response()->json([
                         'success' => false,
@@ -301,11 +308,6 @@ class MatcheController extends Controller
                     ]);
                 }
                 $UpdateMatch = $match->update(['viewed' => $request->viewed]);
-            } else {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Match já vizualizado anteriormente.',
-                ]);
             }
 
             if ($UpdateMatch) {

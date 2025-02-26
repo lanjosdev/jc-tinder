@@ -43,7 +43,7 @@ class Matche extends Model
     public function feedbackViewed()
     {
         return [
-            'viewed.required' => "Campo viewed é obrigatório.",
+            'viewed.required' => "Campo 'vizualizado' é obrigatório.",
         ];
     }
 }
