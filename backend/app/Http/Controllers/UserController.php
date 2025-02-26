@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Gender;
 use App\Models\Habit;
 use App\Models\Matche;
 use App\Models\Preference;
@@ -61,27 +62,16 @@ class UserController extends Controller
             //pega os usuario que ainda não dei like que não dei match 
             $getAllUsers = User::whereNotIn('id', array_merge([$userRequest->id], $matchIds, $getAllUsersLike, /*$getAllUsersNotLike*/))
                 ->whereIn('fk_gender_user_id', $preference)
+
+                ////// 
+                ->whereHas('preferences', function ($query) use ($userRequest) {
+                    $query->where('fk_gender_preferences_id', $userRequest->fk_gender_user_id);
+                })
+                /////
+                
                 ->where('level', 0)
                 ->inRandomOrder()
                 ->get();
-
-            // //query para retornar users que ainda não dei like 
-            // $getAllUsers = User::whereNotIn('id', function ($query) use ($userRequest) {
-            //     $query->select('fk_user_matches_id')
-            //         ->from('matches')
-            //         ->where('fk_user_matches_id', $userRequest->id) // onde o usuário fez gostei
-            //         ->orWhere('fk_target_user_matches_id', $userRequest->id); // ou onde o usuário é o alvo
-
-            // })
-            //     ->whereHas('gender', function ($query) {
-            //         $query->whereNull('deleted_at');
-            //     })
-            //     ->whereIn('fk_gender_user_id', $preference)
-            //     ->where('level', 0)
-            //     ->where('id', '!=', $userRequest->id)
-            //     ->inRandomOrder()
-            //     // ->orderBy('id', 'asc')
-            //     ->get();
 
 
             // Filtra os usuários dentro do intervalo de idade
