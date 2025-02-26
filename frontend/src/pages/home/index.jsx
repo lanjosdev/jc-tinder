@@ -13,8 +13,8 @@ import { MATCH_POST } from "../../API/matchApi";
 import imagesServer from '../../../public/configApi.json'
 
 // Components:
-import { toast } from "react-toastify";
 import { NavBar } from "../../components/NavBar/NavBar";
+import { FeedbackPersons } from "../../components/FeedbackPersons/FeedbackPersons";
 import { ActionsBottom } from "../../components/ActionsBottom/ActionsBottom";
 import { InfoUser } from "../../components/InfoUser/InfoUser";
 import { Match } from "../../components/Match/Match";
@@ -30,8 +30,9 @@ import './style.css';
 
 
 
+
 export default function Home() {
-    // Estados do componente:
+    // Status do componente:
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [loadingSubmit, setLoadingSubmit] = useState(false);
@@ -45,12 +46,9 @@ export default function Home() {
     const [step, setStep] = useState(0);
     const [animateMode, setAnimateMode] = useState('');
     const [showInfoUser, setShowInfoUser] = useState(false);
-    const [showMatch, setShowMatch] = useState(false);
+    const [arrayMatches, setArrayMatches] = useState([]);
+    const [refreshPage, setRefreshPage] = useState(false);
 
-
-    // Submit (Like or Dislike)
-    // const [userSelect, setUserSelect] = useState(null);
-    // const [statusPost, setStatusPost] = useState(0); // 1 = Like OR 0 = Dislike
     
     const tokenCookie = Cookies.get('token_jc');
 
@@ -94,7 +92,7 @@ export default function Home() {
             setLoading(false);
         } 
         getAllUsers();
-    }, [tokenCookie]);
+    }, [tokenCookie, refreshPage]);
     
 
 
@@ -106,8 +104,8 @@ export default function Home() {
             console.log(response);
 
             if(response.data.response_for_match) {
-                // setShowMatch(true);
-                toast.success('DEU MATCH');
+                // console.log('DEU MATCH');
+                setArrayMatches(prev => [...prev, response.data.info_user_match]);
             }
         }
         catch(error) {
@@ -121,7 +119,6 @@ export default function Home() {
             console.error('DETALHES DO ERRO:', error);
         }
     }
-
 
     function handleClickNopeOrLike(action) {
         setLoadingSubmit(true);
@@ -139,18 +136,14 @@ export default function Home() {
 
 
         // Logica local UI:
-        // if(animateMode == '') {
         setAnimateMode(action == 'like' ? 'animate__fadeOutBottomRight' : 'animate__fadeOutBottomLeft');
-        // }
         
         if(step < totalPersons) {
-            console.log('inicio time')
             // limpa a animação depos de 600ms
             setTimeout(()=> {
                 setAnimateMode('');
                 setStep(step + 1);
                 setLoadingSubmit(false);
-                console.log('fim time')
             }, 500);   
         }
     }
@@ -172,11 +165,20 @@ export default function Home() {
     }
 
 
+
     function handleShowInfoUser() {
         setShowInfoUser(true);
     }
+
     function handleBackGetAllUsers() {
         setShowInfoUser(false);
+    }
+
+    function RefreshPage() {
+        setStep(0);
+        setStartInteration(false);
+        setPersons([]);
+        setRefreshPage(prev => !prev);
     }
   
     
@@ -211,65 +213,68 @@ export default function Home() {
                             <InfoUser userData={persons[step]} />
 
                             ) : (
+                            
+                            step >= totalPersons ? (
+                                <FeedbackPersons refreshPage={RefreshPage} />
+                            ) : (
+                                <div className="limit_card">
+                                    {/* //=// talvez nem use o fixed */}
+                                    <article className="card_person fixed hidden">
+                                        <div className="photo">
+                                            <img src={imgEmpty} alt="" />
+                                        </div>
+                                    </article>
 
-                            <div className="limit_card">
-                                {/* //=// talvez nem use o fixed */}
-                                <article className="card_person fixed hidden">
-                                    <div className="photo">
-                                        <img src={imgEmpty} alt="" />
-                                    </div>
-                                </article>
-    
-    
-                                {/* Pessoa seguinte */}
-                                {persons[step+1] && (
-                                <article className={`card_person ${!startInteration ? 'hidden' : ''}`}>
-                                    <div className="photo">
-                                        <img src={imgEmpty} className='hidden' alt="" />
-                                        <img 
-                                        src={`${imagesServer.images_url}${persons[step+1]?.photos[0]?.thumb_photo}`} className='preview'
-                                        alt="" 
-                                        />
-                                    </div>
-                                    
-                                    <div className="details">
-                                        <p className="name_age">
-                                            <span className="name_profile">{persons[step+1].name}</span>, {persons[step+1].age}
-                                        </p>
+                                    {/* Pessoa seguinte */}
+                                    {persons[step+1] && (
+                                    <article className={`card_person ${!startInteration ? 'hidden' : ''}`}>
+                                        <div className="photo">
+                                            <img src={imgEmpty} className='hidden' alt="" />
+                                            <img 
+                                            src={`${imagesServer.images_url}${persons[step+1]?.photos[0]?.thumb_photo}`} className='preview'
+                                            alt="" 
+                                            />
+                                        </div>
+                                        
+                                        <div className="details">
+                                            <p className="name_age">
+                                                <span className="name_profile">{persons[step+1].name}</span>, {persons[step+1].age}
+                                            </p>
 
-                                        <p className="txt_link">mais...</p>
-                                    </div>
-                                </article>
-                                )}
-    
-                                {/* Pessoa a mostra */}
-                                {step < totalPersons && (
-                                <article 
-                                className={`card_person ${animateMode}`} 
-                                onClick={handleShowInfoUser}
-                                >
-                                    <div className="photo">
-                                        <img src={imgEmpty} className='hidden' alt="" />
-                                        <img 
-                                        src={`${imagesServer.images_url}${persons[step]?.photos[0]?.thumb_photo}`} className='preview'
-                                        alt="" 
-                                        />
-                                    </div>
-                                    
-                                    <div className="details">
-                                        <p className="name_age">
-                                            <span className="name_profile">{persons[step].name}</span>, {persons[step].age}
-                                        </p>
-                                        <p className="txt_link">mais...</p>
-                                    </div>
-                                </article>
-                                )}
-                            </div>
+                                            <p className="txt_link">mais...</p>
+                                        </div>
+                                    </article>
+                                    )}
+        
+                                    {/* Pessoa a mostra */}
+                                    {step < totalPersons && (
+                                    <article 
+                                    className={`card_person ${animateMode}`} 
+                                    onClick={handleShowInfoUser}
+                                    >
+                                        <div className="photo">
+                                            <img src={imgEmpty} className='hidden' alt="" />
+                                            <img 
+                                            src={`${imagesServer.images_url}${persons[step]?.photos[0]?.thumb_photo}`} className='preview'
+                                            alt="" 
+                                            />
+                                        </div>
+                                        
+                                        <div className="details">
+                                            <p className="name_age">
+                                                <span className="name_profile">{persons[step].name}</span>, {persons[step].age}
+                                            </p>
+                                            <p className="txt_link">mais...</p>
+                                        </div>
+                                    </article>
+                                    )}
+                                </div>
+                            )
 
                             )
                         ) : (
 
-                        <h1>NENHUMA PESSOAS ENCONTRADA</h1>
+                        <FeedbackPersons refreshPage={RefreshPage} title="Nenhuma pessoa encontrada." />
 
                         )}
                     </div>
@@ -289,8 +294,13 @@ export default function Home() {
 
             </main>
             
-            {showMatch && (
-            <Match close={()=> setShowMatch(false)} />
+
+            {/* Tela de Match */}
+            {arrayMatches.length > 0 && (
+            <Match 
+            arrayMatches={arrayMatches} 
+            setArrayMatches={setArrayMatches} 
+            />
             )}
         </div>
     );

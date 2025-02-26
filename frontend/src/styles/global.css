@@ -108,6 +108,7 @@ html {
     
     position: relative;
     overflow-y: hidden;
+    overflow-x: hidden;
 }
 body {
     background-color: var(--color-bg-1);
