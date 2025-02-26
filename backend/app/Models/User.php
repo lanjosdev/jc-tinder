@@ -265,7 +265,7 @@ class User extends Authenticatable
         return $this->belongsToMany(Preference::class, 'preferences', 'fk_user_preferences_id', 'fk_gender_preferences_id');
     }
 
-    public function preferencess()
+    public function preferences_user()
     {
         return $this->hasMany(Preference::class, 'fk_user_preferences_id');
     }

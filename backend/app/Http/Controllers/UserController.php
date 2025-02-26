@@ -64,7 +64,7 @@ class UserController extends Controller
                 ->whereIn('fk_gender_user_id', $preference)
 
                 ////// 
-                ->whereHas('preferencess', function ($query) use ($userRequest) {
+                ->whereHas('preferences_user', function ($query) use ($userRequest) {
                     $query->where('fk_gender_preferences_id', $userRequest->fk_gender_user_id);
                 })
                 /////
