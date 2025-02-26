@@ -101,6 +101,10 @@ class MatcheController extends Controller
                 });
             }
 
+            if ($users == null) {
+                $users = [];
+            }
+
 
             return response()->json([
                 'success' => true,
