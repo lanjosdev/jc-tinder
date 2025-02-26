@@ -1,5 +1,10 @@
 import PropTypes from "prop-types";
 
+// Assets:
+import iconNope from '../../assets/iconBt-Dislike.svg';
+import iconBack from '../../assets/iconBt-Recarregar.svg';
+import iconLike from '../../assets/iconBt-like.svg';
+
 // Estilo:
 import "./actionsbottom.css";
 
@@ -18,11 +23,11 @@ export function ActionsBottom({ loading, loadingSubmit, handleClickNopeOrLike, h
 	return (
 		<div className="ActionsBottom">
             <button 
-            className="btn" 
+            className="btn nope" 
             onClick={()=> handleClickNopeOrLike('nope')} 
             disabled={loading || loadingSubmit || step == totalPersons}
             >
-                Nope
+                <img src={iconNope} alt="" />
             </button>
 
             <button 
@@ -30,15 +35,15 @@ export function ActionsBottom({ loading, loadingSubmit, handleClickNopeOrLike, h
             onClick={handleClickToBack}
             disabled={loading || loadingSubmit || step == 0}
             >
-                Volta
+                <img src={iconBack} alt="" />
             </button>
 
             <button 
-            className="btn primary" 
+            className="btn like" 
             onClick={()=> handleClickNopeOrLike('like')} 
             disabled={loading || loadingSubmit || step == totalPersons}
             >
-                Like
+                <img src={iconLike} alt="" />
             </button>
         </div>
 	);

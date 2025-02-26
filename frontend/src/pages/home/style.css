@@ -25,31 +25,34 @@
         align-items: center;
         justify-content: center;
         gap: 2rem;
+        text-align: center;
     }
 }
 
 
-.Home {
-    border: 3px solid rgb(38, 198, 247);
+.Page.Home {
+    /* border: 3px solid rgb(38, 198, 247); */
     height: 100dvh;
     overflow-y: auto;
     overflow-x: hidden;
 }
 
-.HomeContent {
+.PageContent.HomeContent {
     /* border: 3px solid red; */
     padding-top: 2rem;
     padding-bottom: 9rem;
 
     .container_persons {
         /* border: 3px solid orange; */
+        flex: 1;
         padding: 0 3rem;
 
         .limit_card {
             position: relative;
 
             .card_person {
-                border: 3px solid var(--color-border);
+                border: .3rem solid var(--color-border);
+                box-shadow: .2rem .2rem var(--color-border);
                 border-radius: 25px;
                 position: absolute;
                 top: 0;
@@ -128,6 +131,7 @@
     }
 
 
+    /* Excessoes */
     &:has(.InfoUser) {
         padding-bottom: 11rem;
 

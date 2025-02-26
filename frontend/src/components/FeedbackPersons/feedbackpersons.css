@@ -1,0 +1,24 @@
+.FeedbackPersons {
+    /* border: 1px solid red; */
+    height: 100%;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3rem;
+    text-align: center;
+
+    .actions {
+        display: flex;
+        flex-direction: column;
+        gap: 1.2rem;
+
+        .btn {
+            max-width: 100%;
+        }
+        a.btn {
+            border: none;
+        }
+    }
+}

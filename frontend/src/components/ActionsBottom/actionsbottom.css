@@ -2,24 +2,60 @@
 /* @import "@radix-ui/colors/violet.css"; */
 
 .ActionsBottom {
-	border: 2px solid aqua;	
+	/* border: 2px solid aqua;	 */
 	background: #eae1f2;
 	background: linear-gradient(0deg, #eae1f2 46%, #eae1f2be 80%, #eae1f265 100%);
 
 	display: flex;
 	justify-content: center;
-	gap: 2rem;
+	align-items: center;
+	gap: 2.5rem;
 
 	position: absolute;
 	bottom: 0;
 	left: 0;
 	width: 100%;
 
-	padding: 1rem 15px 3.5rem;
+	padding: 1rem 15px 3rem;
 
 	.btn {
 		user-select: none; /* Impede a seleção do texto */
-		/* flex: 1; */
-		max-width: 100%;
+		cursor: auto;
+		
+		background-color: var(--color-tertiary);
+		/* width: 5rem; */
+		max-width: 5rem;
+		height: 5rem;
+		padding: 0;
+		border-radius: 50%;
+		box-shadow: .1rem .1rem 0 .1rem var(--color-border);
+
+		transition: all .1s ease;
+
+		&:active {
+            box-shadow: none;
+            transform: translateY(.3rem);
+        }
+
+		&[disabled] {
+			opacity: 1;
+			/* background-color: #dfff4160; */
+		}
+
+		img {
+			max-width: 50%;
+		}
+
+		&.like {
+			background-color: var(--color-secundary);
+		}
+		&.nope {
+			background-color: var(--color-primary);
+		}
+	}
+	.btn.like,
+	.btn.nope {
+		max-width: 8rem;
+		height: 8rem;
 	}
 }
