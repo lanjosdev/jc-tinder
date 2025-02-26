@@ -71,7 +71,7 @@ class MatcheController extends Controller
             }
 
             if ($users) {
-                $users = $users->map(function ($user) use ($matchedUsers) {
+                $myMatchs = $users->map(function ($user) use ($matchedUsers) {
                     $matchData = collect($matchedUsers)->firstWhere('user_id', $user->id);
 
                     $photosUserArray = DB::table('photos')
@@ -102,11 +102,11 @@ class MatcheController extends Controller
                 });
             }
 
-            if ($users) {
+            if ($myMatchs) {
                 return response()->json([
                     'success' => true,
                     'message' => 'Matches recuprados com sucesso.',
-                    'data' => $users,
+                    'data' => $myMatchs,
                 ]);
             }
         } catch (ValidationException $ve) {
