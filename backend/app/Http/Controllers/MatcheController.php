@@ -25,10 +25,9 @@ class MatcheController extends Controller
     public function getAllMatches(Request $request)
     {
         try {
-
             $user = $request->user();
 
-            // Pega os users que o usuário deu like
+            // Pega os usuários que o usuário autenticado deu like
             $userLikes = Matche::where('fk_user_matches_id', $user->id)
                 ->where('status', 1)
                 ->whereNull('deleted_at')
@@ -45,9 +44,17 @@ class MatcheController extends Controller
                     ->first();
 
                 if ($matchingLike) {
+                    // Busca o match onde o usuário autenticado é o dono da ação
+                    $myMatch = Matche::where('fk_user_matches_id', $user->id)
+                        ->where('fk_target_user_matches_id', $like->fk_target_user_matches_id)
+                        ->where('status', 1)
+                        ->whereNull('deleted_at')
+                        ->first();
+
                     $matchedUsers[] = [
                         'user_id' => $like->fk_target_user_matches_id,
-                        'viewed' => $matchingLike->viewed, // Propriedade 'viewed'
+                        'id_match' => $myMatch->id ?? null, // ID do match do usuário autenticado
+                        'viewed' => $myMatch->viewed ?? false, // Propriedade 'viewed' baseada no match do usuário autenticado
                     ];
                 }
             }
@@ -89,17 +96,19 @@ class MatcheController extends Controller
                         'phone' => $user->phone,
                         'age' => $this->utils->verifyAdult($user->birth_data),
                         'photos' => !empty($photosUserArray) ? $photosUserArray[0] : $photosUserArray,
-                        'viewed' => $matchData['viewed'],
+                        // 'id_match' => $matchData['id_match'] ?? null,
+                        'viewed' => $matchData['viewed'] ?? false,
                     ];
                 });
             }
 
-
-            return response()->json([
-                'success' => true,
-                'message' => 'Matches recuprados com sucesso.',
-                'data' => $users,
-            ]);
+            if ($users) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Matches recuprados com sucesso.',
+                    'data' => $users,
+                ]);
+            }
         } catch (ValidationException $ve) {
             return response()->json([
                 'success' => false,
