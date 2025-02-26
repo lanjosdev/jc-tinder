@@ -27,7 +27,7 @@ class MatcheController extends Controller
         try {
             $user = $request->user();
 
-            // Pega os usuários que o usuário autenticado deu like
+            // pega os likes que dei
             $userLikes = Matche::where('fk_user_matches_id', $user->id)
                 ->where('status', 1)
                 ->whereNull('deleted_at')
@@ -35,7 +35,7 @@ class MatcheController extends Controller
 
             $matchedUsers = [];
 
-            // Itera sobre os likes para encontrar os matches
+            // com base nos meus likes verifica se tem like desses users em mim
             foreach ($userLikes as $like) {
                 $matchingLike = Matche::where('fk_user_matches_id', $like->fk_target_user_matches_id)
                     ->where('fk_target_user_matches_id', $user->id)
@@ -44,7 +44,8 @@ class MatcheController extends Controller
                     ->first();
 
                 if ($matchingLike) {
-                    // Busca o match onde o usuário autenticado é o dono da ação
+                    
+                    // pega o match onde sou dono da ação
                     $myMatch = Matche::where('fk_user_matches_id', $user->id)
                         ->where('fk_target_user_matches_id', $like->fk_target_user_matches_id)
                         ->where('status', 1)
@@ -53,23 +54,22 @@ class MatcheController extends Controller
 
                     $matchedUsers[] = [
                         'user_id' => $like->fk_target_user_matches_id,
-                        'id_match' => $myMatch->id ?? null, // ID do match do usuário autenticado
-                        'viewed' => $myMatch->viewed ?? false, // Propriedade 'viewed' baseada no match do usuário autenticado
+                        'id_match' => $myMatch->id ?? null, 
+                        'viewed' => $myMatch->viewed ?? false,
                     ];
                 }
             }
 
-            // Obtém os IDs únicos dos usuários que deram match
+            //pega os IDs dos user que me deram match
             $matchedUserIds = array_unique(array_column($matchedUsers, 'user_id'));
 
-            // Se houver usuários com match, busca os detalhes
+            // se houver id pega informações
             if (!empty($matchedUserIds)) {
                 $users = User::whereIn('id', $matchedUserIds)->get();
             } else {
                 $users = null;
             }
 
-            // Se existir algum usuário que deu match
             if ($users) {
                 $users = $users->map(function ($user) use ($matchedUsers) {
                     $matchData = collect($matchedUsers)->firstWhere('user_id', $user->id);
