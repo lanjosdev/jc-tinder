@@ -67,7 +67,7 @@ class UserController extends Controller
                 ->whereHas('preferences_user', function ($query) use ($userRequest) {
                     $query->where('fk_gender_preferences_id', $userRequest->fk_gender_user_id);
                 })
-                
+
                 ->where('level', 0)
                 ->inRandomOrder()
                 ->get();
