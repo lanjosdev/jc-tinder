@@ -69,9 +69,9 @@ class MatcheController extends Controller
             } else {
                 $users = null;
             }
-            
+
             if ($users) {
-                
+
                 $responseMatch = $users->map(function ($user) use ($matchedUsers) {
                     $matchData = collect($matchedUsers)->firstWhere('user_id', $user->id);
 
@@ -97,10 +97,11 @@ class MatcheController extends Controller
                         'phone' => $user->phone,
                         'age' => $this->utils->verifyAdult($user->birth_data),
                         'photos' => !empty($photosUserArray) ? $photosUserArray[0] : $photosUserArray,
-                        // 'id_match' => $matchData['id_match'] ?? null,
                         'viewed' => $matchData['viewed'] ?? false,
                     ];
                 });
+            } else {
+                $responseMatch = null;
             }
 
             if ($responseMatch) {
