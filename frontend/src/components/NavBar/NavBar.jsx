@@ -2,7 +2,7 @@
 import PropTypes from 'prop-types';
 import Cookies from "js-cookie";
 import { useContext, useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router';
+import { Link } from 'react-router';
 
 // Config JSON:
 import imagesServer from '../../../public/configApi.json';
@@ -31,7 +31,7 @@ NavBar.propTypes = {
     pathBack: PropTypes.string,
     functionBack: PropTypes.func
 }
-export function NavBar({ showBtnBack=true, showBtnProfile=true, pathBack='/home', functionBack }) {
+export function NavBar({ showBtnBack=true, showBtnProfile=true, pathBack='/home', functionBack=null }) {
     const {
         loading,
         profileDetails
@@ -46,7 +46,7 @@ export function NavBar({ showBtnBack=true, showBtnProfile=true, pathBack='/home'
     // Logica da UI:
     // const navBarRef = useRef(null);
 
-    const navigate = useNavigate();
+    // const navigate = useNavigate();
     const tokenCookie = Cookies.get('token_jc');
 
 
@@ -124,13 +124,12 @@ export function NavBar({ showBtnBack=true, showBtnProfile=true, pathBack='/home'
             <nav className="NavBarContent grid">
                 <div className="nav_left">
                     {functionBack ? (
-                    <Link 
+                    <button 
                     className={`btn back ${!showBtnBack ? 'hidden' : ''}`} 
                     onClick={functionBack}
-                    // onClick={()=> navigate(-1)}
                     >
                         <ion-icon name="chevron-back"></ion-icon>
-                    </Link>
+                    </button>
                     ) : (
                     <Link 
                     className={`btn back ${!showBtnBack ? 'hidden' : ''}`} 

@@ -4,29 +4,28 @@ import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router";
 
 // API:
-// import { MATCH_GET_ALL } from "../../API/matchApi";
+import { MATCH_GET_ALL } from "../../API/matchApi";
 
 // Contexts:
 // import UserContext from "../../contexts/userContext";
 
 // Config JSON:
-// import imagesServer from '../../../public/configApi.json'
+import imagesServer from '../../../public/configApi.json';
 
 // Components:
-// import { toast } from "react-toastify";
-// import { NavBar } from "../../components/NavBar/NavBar";
+import { NavBar } from "../../components/NavBar/NavBar";
 
 // Utils
 
 // Assets:
 
 // Estilo:
-// import './style.css';
+import './style.css';
 
 
 
 export default function Matches() {
-    // Estados do componente:
+    // Status do componente:
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     
@@ -47,37 +46,37 @@ export default function Matches() {
             
             try {
                 setError(true);
-                // const response = await MATCH_GET_ALL(JSON.parse(tokenCookie));
-                // console.log(response);
-                const response = {
-                    success: true,
-                    data: [
-                        {
-                          id: 1,
-                          name: 'Carlos Silva',
-                          age: 30,
-                          phone: '11987654321'
-                        },
-                        {
-                          id: 2,
-                          name: 'Mariana Santos',
-                          age: 25,
-                          phone: '21987654321'
-                        },
-                        {
-                          id: 3,
-                          name: 'João Oliveira',
-                          age: 45,
-                          phone: '31987654321'
-                        },
-                        {
-                          id: 4,
-                          name: 'Ana Costa',
-                          age: 35,
-                          phone: '41987654321'
-                        }
-                      ]
-                };
+                const response = await MATCH_GET_ALL(JSON.parse(tokenCookie));
+                console.log(response);
+                // const response = {
+                //     success: true,
+                //     data: [
+                //         {
+                //           id: 1,
+                //           name: 'Carlos Silva',
+                //           age: 30,
+                //           phone: '11987654321'
+                //         },
+                //         {
+                //           id: 2,
+                //           name: 'Mariana Santos',
+                //           age: 25,
+                //           phone: '21987654321'
+                //         },
+                //         {
+                //           id: 3,
+                //           name: 'João Oliveira',
+                //           age: 45,
+                //           phone: '31987654321'
+                //         },
+                //         {
+                //           id: 4,
+                //           name: 'Ana Costa',
+                //           age: 35,
+                //           phone: '41987654321'
+                //         }
+                //       ]
+                // };
 
                 if(response.success) {
                     setMatches(response.data);
@@ -114,19 +113,18 @@ export default function Matches() {
 
         let phone = `55${selectUser.phone}`;
         let message = `Ol%C3%A1%20${selectUser.name}`;
-
         window.open(`https://wa.me/${phone}?text=${message}`, '_blank');
     }
 
   
     
     return (
-        <div className="Page Matches">
+        <div className="Page Matches Forms">
             
-            {/* <NavBar functionBack={()=> navigate(-1)} /> */}
+            <NavBar functionBack={()=> navigate(-1)} />
 
-            <main className='PageContent MatchesContent grid animate__animated animate__fadeIn'>
-                <div className="title_page">
+            <main className='PageContent MatchesContent FormsContent grid animate__animated animate__fadeIn'>
+                <div className="page_title">
                     <h1>
                         <span>Matches</span>
                     </h1>
@@ -149,22 +147,30 @@ export default function Matches() {
 
                     ) : (
 
-                    <ul className="container_matches">
+                    <ul className="page_content">
                         {matches.length > 0 ? (
 
                             matches.map((item)=> (
-                            <li key={item.id}>
-                                <p>
-                                    Você e <b>{item.name}</b>, {item.age} <br />
-                                    deram match!
-                                </p>
+                            <li className="item_match" key={item.id}>
+                                <div className="photo--text">
+                                    <div className="photo">
+                                        <img src={`${imagesServer.images_url}${item?.photos?.thumb_photo}`} alt="" />
+                                    </div>
 
-                                <div className="btns">
-                                    <Link to={`/user/${item.id}`}>
+                                    <p>
+                                        Você e <span><b>{item.name}</b>, {item.age}</span> <br />
+                                        deram match!
+                                    </p>
+                                </div>
+
+                                <div className="actions">
+                                    <Link className="btn user" to={`/user/${item.id}`}>
+                                        <i className="bi bi-person-circle"></i>
                                         <span>Ver perfil</span>
                                     </Link>
 
-                                    <button onClick={()=> handleClickOpenChat(item)}>
+                                    <button className="btn" onClick={()=> handleClickOpenChat(item)}>
+                                        <i className="bi bi-whatsapp"></i>
                                         <span>Conversar</span>
                                     </button>
                                 </div>
@@ -174,7 +180,7 @@ export default function Matches() {
                         ) : (
 
                             <li>
-                                <h1>NENHUMA MATCH NO MOMENTO</h1>
+                                <h1>NENHUM MATCH NO MOMENTO</h1>
                             </li>
 
                         )}

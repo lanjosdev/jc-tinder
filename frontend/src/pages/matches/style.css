@@ -1,138 +1,83 @@
-.Page {
-    border: 3px solid yellow;
-    min-height: 100vh;
-    min-height: 100dvh;
+.PageContent.MatchesContent {
+    border: 2px solid red;    
 
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between; 
-}
+    .page_title {
+        background-color: var(--color-bg-1);
+        position: sticky;
+        top: 7.8rem;
 
-.PageContent {
-    /* border: 1px solid blue; */
-    flex: 1;
+        margin: -4rem -15px 0;
+        padding: 4rem var(--p-lateral) 0;
+        box-shadow: 0 0 15px 10px var(--color-bg-1);
+    }
 
-    display: flex;
-    flex-direction: column;
-    padding: var(--p-vertical) var(--p-lateral);
-    
-    .feedback_content {
-        /* border: 2px solid black; */
-        flex: 1;
-        
+    .page_content {
+        /* border: 1px solid blue; */
         display: flex;
         flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        gap: 2rem;
-    }
-}
+        gap: 1.5rem;
 
+        .item_match {
+            background-color: var(--color-bg-2);
+            border: .1rem solid var(--color-primary);
+            border-radius: 17px;
+            padding: 1.5rem;
 
-.Home {
-    border: 3px solid rgb(38, 198, 247);
-    height: 100dvh;
-    overflow-y: auto;
-    overflow-x: hidden;
-}
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
 
-.HomeContent {
-    /* border: 3px solid red; */
-    padding-top: 2rem;
-    padding-bottom: 9rem;
+            font-size: 1.8rem;
 
-    .container_persons {
-        /* border: 3px solid orange; */
-        padding: 0 3rem;
+            .photo--text {
+                display: flex;
+                align-items: center;
+                gap: 1rem;
 
-        .limit_card {
-            position: relative;
-
-            .card_person {
-                border: 3px solid var(--color-border);
-                border-radius: 25px;
-                position: absolute;
-                top: 0;
-                width: 100%;
-    
                 .photo {
-                    background-color: var(--color-b);
-                    border-radius: 22px;
-                    position: relative;
-                    /* line-height: 0;  OU */
-                    display: flex;
-    
-                    img {
-                        border-radius: 22px;
-                        max-width: 100%;
-                    }
-                    .preview {
-                        position: absolute;
-                        width: 100%;
-                        height: 100%;
+                    /* background-color: yellow; */
+                    width: 7rem;
+                    height: 7rem;
 
+                    img {
+                        border-radius: 50%;
+                        max-width: 100%;
+                        height: 100%;
                         object-fit: cover;
                     }
-    
                 }
-                .details {
-                    position: absolute;
-                    bottom: 0;
-                    left: 0;
-                    border-radius: 0 0 22px 22px;
 
-                    width: 100%;
-                    display: flex;
-                    justify-content: space-between;
-                    align-items: center;
-                    gap: 1rem;
+                p {
 
-                    
-                    background: #000000;
-                    background: linear-gradient(0deg, #00000036 46%, #00000021 85%, #00000000 100%);
-                    padding: 1.5rem;
-                    
-                    color: var(--color-w);
-                    user-select: none; /* Impede a seleção do texto */
-                    cursor: pointer;
-
-                    > p {
-                        font-size: 2rem;
-                        white-space: nowrap;
-                    }
-                    .name_age {
-                        display: flex;
-                        font-size: 2.2rem;
-
-                        .name_profile {
-                            display: inline-block;
-                            font-weight: 800;
-                            width: 100%;
-                            max-width: 18rem;
-                            
-                            text-overflow: ellipsis;
-                            overflow: hidden;
-                            white-space: nowrap;
-                        }
-                    }
-                    .txt_link {
-                        text-decoration: underline;
+                    span {
+                        font-size: 2.3rem;
                     }
                 }
             }
-            .card_person.fixed {
-                outline: 4px solid yellow;
-                position: static;
+
+            .actions {
+                /* background-color: aqua; */
+                display: flex;
+                gap: 2rem;
+                padding: 0 2rem;
+
+                .btn {
+                    border: none;
+                    background-color: var(--color-tertiary);
+
+                    font-size: inherit;
+                    max-width: 100%;
+
+                    &.user {
+                        background-color: var(--color-secundary);
+                        color: var(--color-w);
+
+                        i {
+                            opacity: 0.8;
+                        }
+                    }
+                }
             }
         }
     }
-
-
-    &:has(.InfoUser) {
-        padding-bottom: 11rem;
-
-        .container_persons {
-            padding: 0;
-        }
-    }    
 }

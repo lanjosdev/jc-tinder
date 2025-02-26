@@ -34,8 +34,8 @@ export default function AppRoutes() {
             <Route path="/profile" element={ <ControllerRouter> <Profile/> </ControllerRouter> } />
             <Route path="/preferences" element={ <ControllerRouter> <Preferences/> </ControllerRouter> } />
             <Route path="/photos" element={ <ControllerRouter> <Photos/> </ControllerRouter> } />
-            <Route path="/matches" element={  <Matches/>  } />
-            <Route path="/user/:id" element={  <User/>  } />
+            <Route path="/matches" element={ <ControllerRouter> <Matches/> </ControllerRouter> } />
+            <Route path="/user/:id" element={ <ControllerRouter> <User/> </ControllerRouter> } />
 
         </Routes>
     )
