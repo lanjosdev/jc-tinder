@@ -55,7 +55,7 @@ class MatcheController extends Controller
                     $matchedUsers[] = [
                         'user_id' => $like->fk_target_user_matches_id,
                         'id_match' => $myMatch->id ?? null,
-                        'viewed' => $myMatch->viewed ?? false,
+                        'viewed' => isset($myMatch->viewed) ? (bool) $myMatch->viewed : false,
                     ];
                 }
             }
@@ -72,7 +72,7 @@ class MatcheController extends Controller
 
             if ($users) {
 
-                $responseMatch = $users->map(function ($user) use ($matchedUsers) {
+                $users = $users->map(function ($user) use ($matchedUsers) {
                     $matchData = collect($matchedUsers)->firstWhere('user_id', $user->id);
 
                     $photosUserArray = DB::table('photos')
@@ -100,15 +100,13 @@ class MatcheController extends Controller
                         'viewed' => $matchData['viewed'] ?? false,
                     ];
                 });
-            } else {
-                $responseMatch = null;
             }
 
-            if ($responseMatch) {
+            if ($users) {
                 return response()->json([
                     'success' => true,
                     'message' => 'Matches recuprados com sucesso.',
-                    'data' => $responseMatch,
+                    'data' => $users,
                 ]);
             }
         } catch (ValidationException $ve) {
