@@ -63,11 +63,10 @@ class UserController extends Controller
             $getAllUsers = User::whereNotIn('id', array_merge([$userRequest->id], $matchIds, $getAllUsersLike, /*$getAllUsersNotLike*/))
                 ->whereIn('fk_gender_user_id', $preference)
 
-                ////// 
+                //limita a visualizacao do user que combina com vc no quesito preferencia
                 ->whereHas('preferences_user', function ($query) use ($userRequest) {
                     $query->where('fk_gender_preferences_id', $userRequest->fk_gender_user_id);
                 })
-                /////
                 
                 ->where('level', 0)
                 ->inRandomOrder()
@@ -77,7 +76,7 @@ class UserController extends Controller
             // Filtra os usuários dentro do intervalo de idade
             $getAllUsers = $getAllUsers->filter(function ($users) use ($userRequest) {
 
-                // Aqui você calcula a idade do usuário
+                // calcula a idade do usuário
                 $userAge = $this->utils->verifyAdult($users->birth_data);
 
                 return $userAge >= $userRequest->minimum_age && $userAge <= $userRequest->maximum_age;

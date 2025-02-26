@@ -25,17 +25,18 @@ class MatcheController extends Controller
     public function getAllMatches(Request $request)
     {
         try {
+
             $user = $request->user();
 
-            //pega os users que dei like
+            // Pega os users que o usuário deu like
             $userLikes = Matche::where('fk_user_matches_id', $user->id)
                 ->where('status', 1)
                 ->whereNull('deleted_at')
                 ->get();
 
-            $matchedUserIds = [];
+            $matchedUsers = [];
 
-            //guarda na variavel os ids dos users "like"
+            // Itera sobre os likes para encontrar os matches
             foreach ($userLikes as $like) {
                 $matchingLike = Matche::where('fk_user_matches_id', $like->fk_target_user_matches_id)
                     ->where('fk_target_user_matches_id', $user->id)
@@ -44,31 +45,33 @@ class MatcheController extends Controller
                     ->first();
 
                 if ($matchingLike) {
-                    $matchedUserIds[] = $like->fk_target_user_matches_id;
+                    $matchedUsers[] = [
+                        'user_id' => $like->fk_target_user_matches_id,
+                        'viewed' => $matchingLike->viewed, // Propriedade 'viewed'
+                    ];
                 }
             }
-            //guarda ids sem repetição
-            $matchedUserIds = array_unique($matchedUserIds);
 
-            //se diferente de vazio pega todos users com base nos id's informados
+            // Obtém os IDs únicos dos usuários que deram match
+            $matchedUserIds = array_unique(array_column($matchedUsers, 'user_id'));
+
+            // Se houver usuários com match, busca os detalhes
             if (!empty($matchedUserIds)) {
                 $users = User::whereIn('id', $matchedUserIds)->get();
             } else {
                 $users = null;
             }
 
-            // se existir algum user que deu match
+            // Se existir algum usuário que deu match
             if ($users) {
-                $users = $users->map(function ($users) {
+                $users = $users->map(function ($user) use ($matchedUsers) {
+                    $matchData = collect($matchedUsers)->firstWhere('user_id', $user->id);
 
                     $photosUserArray = DB::table('photos')
-                        // Faz o join com sequences
                         ->join('sequences', 'photos.id', '=', 'sequences.fk_sequences_photos_id')
-                        ->where('photos.fk_user_photos_id', $users->id)
+                        ->where('photos.fk_user_photos_id', $user->id)
                         ->whereNull('photos.deleted_at')
-                        // Seleciona também a ordem
                         ->select('photos.id', 'photos.thumb_photo', 'photos.name_photo', 'sequences.order')
-                        // Ordena com base na tabela sequences
                         ->orderBy('sequences.order', 'asc')
                         ->get()
                         ->map(function ($photo) {
@@ -81,14 +84,16 @@ class MatcheController extends Controller
                         ->toArray();
 
                     return [
-                        'id' => $users->id,
-                        'name' => $users->name,
-                        'phone' => $users->phone,
-                        'age' => $this->utils->verifyAdult($users->birth_data),
+                        'id' => $user->id,
+                        'name' => $user->name,
+                        'phone' => $user->phone,
+                        'age' => $this->utils->verifyAdult($user->birth_data),
                         'photos' => !empty($photosUserArray) ? $photosUserArray[0] : $photosUserArray,
+                        'viewed' => $matchData['viewed'],
                     ];
                 });
             }
+
 
             return response()->json([
                 'success' => true,
@@ -237,6 +242,70 @@ class MatcheController extends Controller
                         ],
                     ]);
                 }
+            }
+        } catch (ValidationException $ve) {
+            DB::rollBack();
+            return response()->json([
+                'success' => false,
+                'message' => 'Erro de validação.',
+                'errors' => $ve->errors(),
+            ]);
+        } catch (QueryException $qe) {
+            DB::rollBack();
+            return response()->json([
+                'success' => false,
+                'message' => "Error DB: " . $qe->getMessage(),
+            ]);
+        } catch (Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'success' => false,
+                'message' => "Error: " . $e->getMessage(),
+            ]);
+        }
+    }
+
+    public function viewed(Request $request, $id)
+    {
+        DB::beginTransaction();
+        try {
+
+            $match = Matche::where('id', $id)->first();
+
+            if (!$match) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Nenhum resultado encontrado',
+                ]);
+            }
+
+            $validatedData = $request->validate(
+                $this->matche->rulesViewed(),
+                $this->matche->feedbackViewed()
+            );
+
+            if ($validatedData && $match->viewed == 0) {
+                if ($request->viewed != 1) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Válido apenas 1.',
+                    ]);
+                }
+                $UpdateMatch = $match->update(['viewed' => $request->viewed]);
+            } else {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Match já vizualizado anteriormente.',
+                ]);
+            }
+
+            if ($UpdateMatch) {
+                DB::commit();
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Match atualizado com sucesso.',
+                    'date' => $match
+                ]);
             }
         } catch (ValidationException $ve) {
             DB::rollBack();

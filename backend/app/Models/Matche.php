@@ -9,7 +9,8 @@ class Matche extends Model
     protected $fillable = [
         'fk_user_matches_id',
         'fk_target_user_matches_id',
-        'status'
+        'status',
+        'viewed',
     ];
     protected $tables = 'matches';
     protected $dates = ['deleted_at'];
@@ -21,7 +22,7 @@ class Matche extends Model
             'status' => 'required|boolean:0,1'
         ];
     }
-    
+
     public function feedbackMatche()
     {
         return [
@@ -29,7 +30,20 @@ class Matche extends Model
             'fk_target_user_matches_id.exists' => 'Nenhum resultado encontrado, por favor verifique.',
 
             'status.required' => "Campo status é obrigatório.",
-            'status.boolean' => "Válido apenas 0 ou 1.",
+            'status.boolean' => "Válido apenas 1.",
+        ];
+    }
+
+    public function rulesViewed()
+    {
+        return [
+            'viewed' => 'required|',
+        ];
+    }
+    public function feedbackViewed()
+    {
+        return [
+            'viewed.required' => "Campo viewed é obrigatório.",
         ];
     }
 }

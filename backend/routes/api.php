@@ -86,7 +86,8 @@ Route::middleware(['auth:sanctum'])->group(function () {
     //match
     Route::post('/match', [MatcheController::class, 'matche']);
     Route::get('/get-all-match', [MatcheController::class, 'getAllMatches']);
-
+    //post viewed match
+    Route::post('/viewed/{id}', [MatcheController::class, 'viewed']);
 
 
     //sequences_photos
