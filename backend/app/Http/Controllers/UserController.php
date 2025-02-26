@@ -63,11 +63,11 @@ class UserController extends Controller
             $getAllUsers = User::whereNotIn('id', array_merge([$userRequest->id], $matchIds, $getAllUsersLike, /*$getAllUsersNotLike*/))
                 ->whereIn('fk_gender_user_id', $preference)
 
-                ////// 
-                ->whereHas('preferences', function ($query) use ($userRequest) {
-                    $query->where('fk_gender_preferences_id', $userRequest->fk_gender_user_id);
-                })
-                /////
+                // ////// 
+                // ->whereHas('preferences', function ($query) use ($userRequest) {
+                //     $query->where('fk_gender_preferences_id', $userRequest->fk_gender_user_id);
+                // })
+                // /////
                 
                 ->where('level', 0)
                 ->inRandomOrder()
