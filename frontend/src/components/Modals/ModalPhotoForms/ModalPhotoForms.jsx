@@ -167,7 +167,7 @@ export function ModalPhotoForms({
                 <div className="label--input">
                     <label>
                         <i className="bi bi-camera-fill"></i>
-                        <span>Adicionar foto nova</span>
+                        <span>Tirar foto nova</span>
 
                         <input 
                         type="file" 

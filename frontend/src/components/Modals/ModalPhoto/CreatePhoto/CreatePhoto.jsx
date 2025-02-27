@@ -17,6 +17,7 @@ import { toast } from "react-toastify";
 
 // Assets:
 import imgEmpty from '../../../../assets/photo-empty.jpg'
+import iconAdd from '../../../../assets/bt_addPhoto.svg';
 
 // Estilo:
 // import './createphoto.css';
@@ -148,15 +149,16 @@ export function CreatePhoto({ close, setLoadingModal, file }) {
                 <img src={urlPhotoPreview} className='preview' alt="" />
             </div>   
 
-            <div className="text_confirm">
-                {/* icon */}
-                <p>Deseja adicionar esta foto?</p>
-            </div>
-
-            <div className="btns_container">
-                <button onClick={close} disabled={loadingSubmit}>Cancelar</button>
-                <button onClick={handleSubmitCreatePhoto} disabled={loadingSubmit}>Confirmar</button>
-            </div>  
+            <div className="text--actions">
+                <div className="text_confirm">
+                    <img src={iconAdd} alt="" />
+                    <p>Deseja adicionar esta foto?</p>
+                </div>
+                <div className="btns_container">
+                    <button className="btn cancel" onClick={close} disabled={loadingSubmit}>Cancelar</button>
+                    <button className="btn primary" onClick={handleSubmitCreatePhoto} disabled={loadingSubmit}>Confirmar</button>
+                </div>
+            </div> 
         </div>
     )        
 }
