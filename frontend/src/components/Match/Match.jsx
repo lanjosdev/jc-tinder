@@ -102,7 +102,7 @@ export function Match({ arrayMatches, setArrayMatches }) {
 
                         <div className="photo your_match">
                             <img
-                            src={`${imagesServer.images_url}${arrayMatches[0]?.photo.thumb_photo}`} alt="Foto do perfil"
+                            src={`${imagesServer.images_url}${arrayMatches[0]?.photo?.thumb_photo}`} alt="Foto do perfil"
                             />
                         </div>
                     </div>

@@ -4,17 +4,13 @@ import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router";
 
 // API:
-// import { MATCH_GET_ALL } from "../../API/matchApi";
+import { USER_GET_BY_ID } from "../../API/userApi";
 
 // Contexts:
 // import UserContext from "../../contexts/userContext";
 
-// Config JSON:
-// import imagesServer from '../../../public/configApi.json'
-
 // Components:
-// import { toast } from "react-toastify";
-// import { NavBar } from "../../components/NavBar/NavBar";
+import { NavBar } from "../../components/NavBar/NavBar";
 import { InfoUser } from "../../components/InfoUser/InfoUser";
 
 // Utils
@@ -22,14 +18,15 @@ import { InfoUser } from "../../components/InfoUser/InfoUser";
 // Assets:
 
 // Estilo:
-// import './style.css';
+import './style.css';
 
 
 
 export default function User() {
     const { id } = useParams();
-    // console.log(id);
-    // Estados do componente:
+    const navigate = useNavigate();
+
+    // Status do componente:
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     
@@ -37,9 +34,9 @@ export default function User() {
     const [userData, setUserData] = useState(null);
 
     // Logica da UI:
+
     
     const tokenCookie = Cookies.get('token_jc');
-    const navigate = useNavigate();
     
    
         
@@ -50,22 +47,22 @@ export default function User() {
             
             try {
                 setError(true);
-                // const response = await MATCH_GET_ALL(JSON.parse(tokenCookie));
-                // console.log(response);
-                const response = {
-                    success: true,
-                    data: {
-                        id: 1,
-                        name: 'Carlos Silva',
-                        age: 30,
-                        phone: '11987654321',
-                        gender: 'Homem',
-                        sexuality: 'Bissexual'
-                    }
-                };
+                const response = await USER_GET_BY_ID(JSON.parse(tokenCookie), id);
+                console.log(response);
+                // const response = {
+                //     success: true,
+                //     data: {
+                //         id: 1,
+                //         name: 'Carlos Silva',
+                //         age: 30,
+                //         phone: '11987654321',
+                //         gender: 'Homem',
+                //         sexuality: 'Bissexual'
+                //     }
+                // };
 
                 if(response.success) {
-                    setUserData(response.data);
+                    setUserData(response.data[0]);
 
                     setError(false);
                 }
@@ -90,23 +87,29 @@ export default function User() {
             setLoading(false);
         } 
         getByIdUser();
-    }, [tokenCookie]);
+    }, [tokenCookie, id]);
     
 
 
     
+    function handleOpenChat() {
+        // console.log(userData);
 
-  
+        const phone = `55${userData.phone}`;
+        const message = `Ol%C3%A1%20${userData.name}`;
+        window.open(`https://wa.me/${phone}?text=${message}`, '_blank');
+    }
+    
     
     return (
-        <div className="Page User">
+        <div className="Page User Home">
             
-            {/* <NavBar functionBack={()=> navigate(-1)} /> */}
+            <NavBar pathBack="/matches" />
 
             <main className='PageContent UserContent grid animate__animated animate__fadeIn'>
                 {loading ? (
                     <div className="feedback_content">
-                        <span className="loader"></span>
+                        <span className="loader_content"></span>
                     </div>
                 ) : (
                     error ? (
@@ -115,13 +118,21 @@ export default function User() {
                         <h2>Ops, algo deu errado!</h2>
                         <p>Tente novamente recarregando a página.</p>
 
-                        <a href="/user" className="btn primary">Recarregar</a>
+                        <a href={`/user/${id}`} className="btn primary">Recarregar</a>
                     </div>
 
                     ) : (
 
-                    // <InfoUser userData={userData} />
-                    <div>Componente</div>
+                    <>
+                    <InfoUser userData={userData} />
+
+                    <div className="action">
+                        <button className="btn" onClick={handleOpenChat}>
+                            <i className="bi bi-whatsapp"></i>
+                            <span>Conversar</span>
+                        </button>
+                    </div>
+                    </>
 
                     )                    
                 )}

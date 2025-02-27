@@ -82,140 +82,142 @@ export default function Forms() {
     useEffect(()=> {
         console.log('Effect /Forms');
 
-        let stepInitial = 1;
+        if(profileDetails.photos.length > 0) {
+            navigate('/home');
+            return;
+        }
 
+        let stepInitial = 1;
         if(profileDetails.gender_id) stepInitial = 2;
         if(profileDetails.preferences.length > 0) stepInitial = 3;
 
-        if(profileDetails.photos.length > 0) {
-            navigate('/settings');
-        }
-        else {
-            setStep(stepInitial);
-        }
-
-        //=// Só para teste
-        // if(profileDetails.preferences.length > 0) {
-        //     setStep(3);
-        // }
+        setStep(stepInitial);
+        
     }, [profileDetails, navigate]);
+
 
     //=// refatorar esses effects para virar useCallback e try em dupla com genders + gendersOptional (acho q um promises all)
     useEffect(()=> {
         async function getAllGenders() {
-            setLoading(true);
+            if(step > 0 && step < 3) {
+                setLoading(true);
             
-            try {
-                setError(true);
-                // const response = await CATEGORY_GET_ALL(JSON.parse(tokenCookie), 'active=true');
-                const response = await GENDER_GET_ALL(JSON.parse(tokenCookie));
-                console.log(response);
+                try {
+                    setError(true);
+                    // const response = await CATEGORY_GET_ALL(JSON.parse(tokenCookie), 'active=true');
+                    const response = await GENDER_GET_ALL(JSON.parse(tokenCookie));
+                    console.log(response);
 
-                if(response.success) {
-                    setGenders(response.data);
-                    setError(false);
+                    if(response.success) {
+                        setGenders(response.data);
+                        setError(false);
+                    }
+                    else if(response.success == false) {
+                        console.error(response.message);
+                    }
+                    else {
+                        toast.error('Erro inesperado.');
+                    }
                 }
-                else if(response.success == false) {
-                    console.error(response.message);
+                catch(error) {
+                    if(error?.response?.data?.message == 'Unauthenticated.') {
+                        console.error('Requisição não autenticada.');
+                    }
+                    else {
+                        console.error('Houve algum erro.');
+                    }
+
+                    console.error('DETALHES DO ERRO:', error);
                 }
-                else {
-                    toast.error('Erro inesperado.');
-                }
+
+                setLoading(false);
             }
-            catch(error) {
-                if(error?.response?.data?.message == 'Unauthenticated.') {
-                    console.error('Requisição não autenticada.');
-                }
-                else {
-                    console.error('Houve algum erro.');
-                }
-
-                console.error('DETALHES DO ERRO:', error);
-            }
-
-            setLoading(false);
         } 
         getAllGenders();
-    }, [tokenCookie]);
+    }, [tokenCookie, step]);
 
 
     useEffect(()=> {
         async function getAllGendersOptionals() {
-            setLoading(true);
+            if(step == 1) {
+                setLoading(true);
             
-            try {
-                setError(true);
-                const response = await GENDER_OPTIONAL_GET_ALL(JSON.parse(tokenCookie));
-                console.log(response);
+                try {
+                    setError(true);
+                    const response = await GENDER_OPTIONAL_GET_ALL(JSON.parse(tokenCookie));
+                    console.log(response);
 
-                if(response.success) {
-                    setGendersOptionals(response.data);
-                    setError(false);
+                    if(response.success) {
+                        setGendersOptionals(response.data);
+                        setError(false);
+                    }
+                    else if(response.success == false) {
+                        console.error(response.message);
+                    }
+                    else {
+                        toast.error('Erro inesperado.');
+                    }
                 }
-                else if(response.success == false) {
-                    console.error(response.message);
+                catch(error) {
+                    if(error?.response?.data?.message == 'Unauthenticated.') {
+                        console.error('Requisição não autenticada.');
+                    }
+                    else {
+                        console.error('Houve algum erro.');
+                    }
+
+                    console.error('DETALHES ERRO:', error);
                 }
-                else {
-                    toast.error('Erro inesperado.');
-                }
+
+                setLoading(false);
             }
-            catch(error) {
-                if(error?.response?.data?.message == 'Unauthenticated.') {
-                    console.error('Requisição não autenticada.');
-                }
-                else {
-                    console.error('Houve algum erro.');
-                }
-
-                console.error('DETALHES ERRO:', error);
-            }
-
-            setLoading(false);
         } 
         getAllGendersOptionals();
-    }, [tokenCookie]);
+    }, [tokenCookie, step]);
 
     
     useEffect(()=> {
         async function getAllSexualities() {
-            setLoading(true);
+            if(step == 1) {
+                setLoading(true);
             
-            try {
-                setError(true);
-                const response = await SEXUALITY_GET_ALL(JSON.parse(tokenCookie));
-                console.log(response);
+                try {
+                    setError(true);
+                    const response = await SEXUALITY_GET_ALL(JSON.parse(tokenCookie));
+                    console.log(response);
 
-                if(response.success) {
-                    setSexualities(response.data);
-                    setError(false);
+                    if(response.success) {
+                        setSexualities(response.data);
+                        setError(false);
+                    }
+                    else if(response.success == false) {
+                        console.error(response.message);
+                    }
+                    else {
+                        toast.error('Erro inesperado.');
+                    }
                 }
-                else if(response.success == false) {
-                    console.error(response.message);
+                catch(error) {
+                    if(error?.response?.data?.message == 'Unauthenticated.') {
+                        console.error('Requisição não autenticada.');
+                    }
+                    else {
+                        console.error('Houve algum erro.');
+                    }
+
+                    console.error('DETALHES ERRO:', error);
                 }
-                else {
-                    toast.error('Erro inesperado.');
-                }
+
+                setLoading(false);
             }
-            catch(error) {
-                if(error?.response?.data?.message == 'Unauthenticated.') {
-                    console.error('Requisição não autenticada.');
-                }
-                else {
-                    console.error('Houve algum erro.');
-                }
-
-                console.error('DETALHES ERRO:', error);
-            }
-
-            setLoading(false);
         } 
         getAllSexualities();
-    }, [tokenCookie]);
+    }, [tokenCookie, step]);
 
 
     useEffect(()=> {
         async function getAllHabits() {
-            if(genders.length > 0 && step == 2 && habits.length == 0) {
+            if(step == 2) {
                 console.log('PEGA HABITOSSSS');
                 setLoading(true);
             
@@ -251,7 +253,7 @@ export default function Forms() {
             }
         } 
         getAllHabits();
-    }, [genders, habits, step, tokenCookie]);
+    }, [tokenCookie, step]);
       
 
 

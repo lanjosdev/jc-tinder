@@ -2,7 +2,7 @@
 import PropTypes from 'prop-types';
 import Cookies from "js-cookie";
 import { useState, useContext, useEffect } from 'react';
-import { Navigate } from 'react-router';
+import { Navigate, useLocation } from 'react-router';
 
 // API:
 import { USER_PROFILE_DETAILS } from '../API/userApi';
@@ -24,6 +24,8 @@ ControllerRouter.propTypes = {
     children: PropTypes.array.isRequired,
 }
 export default function ControllerRouter({ children }) {
+    const { pathname } = useLocation();
+    
     const {
         refreshContext,
         profileDetails, 
@@ -92,7 +94,11 @@ export default function ControllerRouter({ children }) {
         ) : (
             
             profileDetails ? (
-                children
+                (profileDetails.photos.length == 0 && pathname != '/forms') ? (
+                    <Navigate to='/forms' />
+                ) : (
+                    children
+                )
             ) : (
                 <Navigate to='/login' />
             )
