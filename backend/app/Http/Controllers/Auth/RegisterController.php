@@ -55,7 +55,7 @@ class RegisterController extends Controller
             if ($adult != 1 || $age < 18) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Não é possível particpar do app sendo menor de idade.',
+                    'message' => 'Não é possível participar do app sendo menor de idade.',
                 ]);
             }
 
