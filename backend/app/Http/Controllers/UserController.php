@@ -216,20 +216,6 @@ class UserController extends Controller
                     })
                     ->toArray();
 
-                // $photosUser = DB::table('photos')
-                //     ->where('fk_user_photos_id', $user->id)
-                //     ->whereNull('deleted_at')
-                //     ->select('id', 'thumb_photo', 'name_photo')
-                //     ->get()
-                //     ->map(function ($photo) {
-                //         return (object) [
-                //             'id' => $photo->id,
-                //             'photo' => $photo->name_photo,
-                //             'thumb_photo' => $photo->thumb_photo,
-                //         ];
-                //     })
-                //     ->toArray();
-
                 $photosUserArray = DB::table('photos')
                     ->join('sequences', 'photos.id', '=', 'sequences.fk_sequences_photos_id') // Faz o join com sequences
                     ->where('photos.fk_user_photos_id', $user->id)
@@ -272,7 +258,7 @@ class UserController extends Controller
                         ? $this->utils->formattedDate($user, 'deleted_at')
                         : $user->deleted_at ?? null,
                 ];
-            });
+            })->first();
 
             if ($getUserId) {
                 return response()->json([
