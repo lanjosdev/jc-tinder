@@ -14,6 +14,7 @@ import UserContext from "../../contexts/userContext";
 // Components:
 import { toast } from "react-toastify";
 import { NavBar } from "../../components/NavBar/NavBar";
+import { InputSelectOpt } from "../../components/InputSelectOpt/InputSelectOpt";
 
 // Utils
 
@@ -26,13 +27,13 @@ import { NavBar } from "../../components/NavBar/NavBar";
 
 
 export default function Profile() {
-    const {
-        setRefreshContext,
-        profileDetails
-    } = useContext(UserContext);
-    // Estados do componente:
+    const { setRefreshContext, profileDetails } = useContext(UserContext);
+    const navigate = useNavigate();
+
+    // Status do componente:
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [validateSubmit, setValidateSubmit] = useState(false);
     const [loadingSubmit, setLoadingSubmit] = useState(false);
     // Modal
     // const [showModal, setShowModal] = useState(false);
@@ -73,7 +74,6 @@ export default function Profile() {
     
 
     const tokenCookie = Cookies.get('token_jc');
-    const navigate = useNavigate();
 
 
 
@@ -189,6 +189,24 @@ export default function Profile() {
         } 
         getAllSexualities();
     }, [tokenCookie, profileDetails]);
+
+    useEffect(()=> {
+        async function checkValidateSubmitDatas() {
+            const requirements = name.replace(/\s+/g, '').length > 0 && phone.replace(/[^0-9]/g, '').length == 11 && aboutMe.replace(/\s+/g, '').length > 0;
+
+            const nameHasChange = profileDetails.name != name;
+            const dateBirthHasChange = profileDetails.birth_data != dateBirth;
+            const phoneHasChange = profileDetails.phone != phone;
+            const genderHasChange = profileDetails.gender_id != genderSelect.id;
+            const genderOptionalHasChange = profileDetails.sub_gender_id != genderOptionalSelect?.id;
+            const sexualityHasChange = profileDetails.sexuality_id != sexualitySelect.id;
+            const aboutMeHasChange = profileDetails.about_me != aboutMe;
+
+            setValidateSubmit(requirements && (nameHasChange || dateBirthHasChange || phoneHasChange || genderHasChange || genderOptionalHasChange || sexualityHasChange || aboutMeHasChange));          
+            // setValidateSubmit(true);          
+        }
+        checkValidateSubmitDatas();
+    }, [profileDetails, aboutMe, dateBirth, genderOptionalSelect, genderSelect, name, phone, sexualitySelect]);
 
 
 
@@ -375,34 +393,42 @@ export default function Profile() {
                             </div>
 
                             {genderSelect && (
-                            <div className="gender_optional">
-                                <p className="top_select" onClick={()=> setShowOptinalGender(prev => !prev)}>
-                                    <span>Selecione mais informações sobre seu gênero (opcional)</span>
-                                    <i className="bi bi-chevron-down"></i> 
-                                </p> 
+                            <InputSelectOpt 
+                            showListOpt={showOptinalGender} 
+                            setShowListOpt={setShowOptinalGender} 
+                            arrayOpts={gendersOptionals} 
+                            targetSelect={genderSelect} 
+                            optSelect={genderOptionalSelect} 
+                            handleSelectOpt={handleClickGenderOptional} 
+                            />
+                            // <div className="gender_optional">
+                            //     <p className="top_select" onClick={()=> setShowOptinalGender(prev => !prev)}>
+                            //         <span>Selecione mais informações sobre seu gênero (opcional)</span>
+                            //         <i className="bi bi-chevron-down"></i> 
+                            //     </p> 
 
-                                <ul className={`list_gender_optional ${showOptinalGender ? '' : 'hide'}`}>
-                                    {gendersOptionals
-                                    .filter(genderOpt => genderOpt.gender_main == genderSelect.name)
-                                    .map(genderOpt=> (
-                                    <li 
-                                    key={genderOpt.id} 
-                                    className={`item ${genderOpt.id == genderOptionalSelect?.id ? 'checked' : ''}`} 
-                                    onClick={()=> handleClickGenderOptional(genderOpt)}>
-                                        <p><b>{genderOpt.name}</b></p>
+                            //     <ul className={`list_gender_optional ${showOptinalGender ? '' : 'hide'}`}>
+                            //         {gendersOptionals
+                            //         .filter(genderOpt => genderOpt.gender_main == genderSelect.name)
+                            //         .map(genderOpt=> (
+                            //         <li 
+                            //         key={genderOpt.id} 
+                            //         className={`item ${genderOpt.id == genderOptionalSelect?.id ? 'checked' : ''}`} 
+                            //         onClick={()=> handleClickGenderOptional(genderOpt)}>
+                            //             <p><b>{genderOpt.name}</b></p>
                                         
-                                        <small>{genderOpt.description}</small>
-                                    </li>
-                                    ))}
-                                </ul>
-                            </div>
+                            //             <small>{genderOpt.description}</small>
+                            //         </li>
+                            //         ))}
+                            //     </ul>
+                            // </div>
                             )}
                         </div>
 
                         <div className="label--input">
                             <label>Qual sua orientação sexual?</label>
 
-                            <div className="select">
+                            {/* <div className="select">
                                 <p className="top_select" onClick={()=> setShowSexualities(prev => !prev)}>
                                     <b>{sexualitySelect?.name || 'Selecione...'}</b>
                                     <i className="bi bi-chevron-down"></i> 
@@ -422,7 +448,9 @@ export default function Profile() {
                                     </li>
                                     ))}
                                 </ul>
-                            </div>
+                            </div> */}
+
+                            <InputSelectOpt titleSelect="Selecione..." showListOpt={showSexualities} setShowListOpt={setShowSexualities} arrayOpts={sexualities} optSelect={sexualitySelect} handleSelectOpt={handleClickSelectSexuality} />
                         </div>
 
                         <div className="label--input">
@@ -437,13 +465,13 @@ export default function Profile() {
                         </div>
 
 
-                        {/* {((name !== profileDetails.name || dateBirth !== profileDetails.birth_data || phone !== profileDetails.phone || genderSelect?.name !== profileDetails.gender || genderOptionalSelect?.name !== profileDetails.sub_gender || sexualitySelect?.name !== profileDetails.sexuality || aboutMe !== profileDetails.about_me) && (phone.length == 11 && name !== '' && aboutMe != '')) && ( */}
+                        {validateSubmit && (
                         <div className="btns_container animate__animated animate__fadeInUp">
                             <button className="btn primary" disabled={loadingSubmit}>
                                 Confirmar Alterações
                             </button>
                         </div>
-                        {/* )} */}
+                        )}
                     </form>
 
                     ))}
