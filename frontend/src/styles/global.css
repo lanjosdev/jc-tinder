@@ -103,12 +103,11 @@ html {
 }
 
 #root {
-    min-height: 100vh;
-    min-height: 100dvh;
-    
     position: relative;
-    overflow-y: hidden;
-    overflow-x: hidden;
+    height: 100vh;
+    height: 100dvh;
+    
+    overflow: hidden;
 }
 body {
     background-color: var(--color-bg-1);

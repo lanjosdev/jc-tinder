@@ -179,8 +179,13 @@ export default function Matches() {
 
                         ) : (
 
-                            <li>
-                                <h1>NENHUM MATCH NO MOMENTO</h1>
+                            <li className="feedback_content">
+                                <h2>Você ainda não tem matches!</h2>
+                                <p>Veja mais perfis na tela principal.</p>
+
+                                <Link className="btn primary" to="/home">
+                                    Ver mais perfis
+                                </Link>
                             </li>
 
                         )}

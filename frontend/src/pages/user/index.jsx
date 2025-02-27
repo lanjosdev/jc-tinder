@@ -62,7 +62,7 @@ export default function User() {
                 // };
 
                 if(response.success) {
-                    setUserData(response.data[0]);
+                    setUserData(response.data);
 
                     setError(false);
                 }

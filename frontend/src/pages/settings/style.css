@@ -1,0 +1,59 @@
+.PageContent.SettingsContent {
+    border: 3px solid red;
+    gap: 3.5rem;
+
+    .title_page {
+        display: flex;
+        align-items: center;
+        gap: 2rem;
+
+        .photo {
+            /* background-color: yellow; */
+            width: 8rem;
+            height: 8rem;
+
+            img {
+                border: .1rem solid var(--color-text);
+                border-radius: 50%;
+                max-width: 100%;
+                height: 100%;
+                object-fit: cover;
+            }
+        }
+    }
+
+    .links_container {
+        /* background-color: aqua; */
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+
+        .btn {
+            color: var(--color-w);
+            max-width: 100%;
+            height: auto;
+            max-height: 8rem;
+
+            justify-content: flex-start;
+            gap: 2rem;
+            padding: 1.2rem 2rem;
+
+
+            img {
+                max-width: 3rem;
+            }
+        }
+    }
+
+    .main_bottom {
+        align-self: center;
+    }
+
+
+    /* Global */
+    .btn,
+    .link {
+        font-size: 1.8rem;
+        font-weight: 800;
+    }
+}

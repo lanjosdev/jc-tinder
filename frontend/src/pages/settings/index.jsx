@@ -6,16 +6,22 @@ import { Link } from "react-router";
 // Contexts:
 import UserContext from "../../contexts/userContext";
 
+// Config JSON:
+import imagesServer from '../../../public/configApi.json';
+
 // Components:
 import { NavBar } from "../../components/NavBar/NavBar";
 
 // Utils
 
 // Assets:
-// import imgLogo from '../../assets/LOGO-BIZSYS_preto.png';
+import iconEditProfile from '../../assets/iconBt-EditarPerfil.svg';
+import iconEditPreferences from '../../assets/iconBt-AlterarPrefs.svg';
+import iconEditPhotos from '../../assets/iconBt-Photo.svg';
+import iconMatches from '../../assets/iconBt-Photo_1.svg';
 
 // Estilo:
-// import './style.css';
+import './style.css';
 
 
 
@@ -48,49 +54,57 @@ export default function Settings() {
         <div className="Page Settings">
             <NavBar />
             
-            <main className='PageContent SettingsContent grid animate__animated animate__bounceInRight'>
+            <main className='PageContent SettingsContent grid animate__animated animate__bounceInRight animate__faster'>
                 <div className="title_page">
+                    <div className="photo">
+                        <img src={`${imagesServer.images_url}${profileDetails?.photos[0]?.thumb_photo}`} alt="" />
+                    </div>
                     <h1>
                         <span className="name_profile">{profileDetails.name}, </span>
                         <span>{profileDetails.age}</span>
                     </h1>
-
-                    <button className="link" onClick={logoutUser} disabled={loading}>
-                        Sair do app
-                    </button>
                 </div>
 
                 <div className="links_container">
                     <Link 
-                    to='/profile'
                     className="btn primary"
+                    to='/profile'
                     >
+                        <img src={iconEditProfile} alt="" />
                         <span>Editar Informações do Perfil</span>
                     </Link>
 
                     <Link 
-                    to='/preferences'
                     className="btn primary"
+                    to='/preferences'
                     >
+                        <img src={iconEditPreferences} alt="" />
                         <span>Alterar Preferências</span>
                     </Link>
 
                     <Link 
-                    to='/photos'
                     className="btn primary"
+                    to='/photos'
                     >
+                        <img src={iconEditPhotos} alt="" />
                         <span>Organizar Fotos</span>
                     </Link>
 
                     <Link 
-                    to='/matches'
                     className="btn primary"
+                    to='/matches'
                     >
+                        <img src={iconMatches} alt="" />
                         <span>Meus Matches</span>
                     </Link>
                 </div>
-            </main>
 
+                <div className="main_bottom">
+                    <button className="link" onClick={logoutUser} disabled={loading}>
+                        Sair do app
+                    </button>
+                </div>
+            </main>
         </div>
     );
 }
