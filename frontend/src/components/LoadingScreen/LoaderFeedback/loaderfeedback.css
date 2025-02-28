@@ -1,0 +1,18 @@
+.LoaderFeedback {
+    background-color: #ff5e00;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 1.5rem;
+
+    &.heightStretch {
+        height: 100%;
+    }
+
+
+    p {
+        font-size: 1.8rem;
+        font-weight: 500;
+    }
+}

@@ -23,7 +23,7 @@ import { Match } from "../../components/Match/Match";
 // import { primeiraPalavra } from "../../utils/formatStrings";
 
 // Assets:
-import imgEmpty from '../../assets/photo-empty.jpg';
+import imgEmpty from '../../assets/photo-empty.webp';
 
 // Estilo:
 import './style.css';
@@ -220,7 +220,6 @@ export default function Home() {
                                 <FeedbackPersons refreshPage={RefreshPage} />
                             ) : (
                                 <div className="limit_card">
-                                    {/* //=// talvez nem use o fixed */}
                                     <article className="card_person fixed hidden">
                                         <div className="photo">
                                             <img src={imgEmpty} alt="" />

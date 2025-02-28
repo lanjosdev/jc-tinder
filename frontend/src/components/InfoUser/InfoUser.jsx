@@ -11,7 +11,7 @@ import imagesServer from '../../../public/configApi.json'
 // Utils:
 
 // Assets:
-import imgEmpty from '../../assets/photo-empty.jpg';
+import imgEmpty from '../../assets/photo-empty.webp';
 
 // Estilo:
 import './infouser.css';

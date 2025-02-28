@@ -1,4 +1,4 @@
-// Funcionalidades / Libs:
+// Hooks / Libs:
 import Cookies from "js-cookie";
 import { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router";
@@ -17,6 +17,7 @@ import { toast } from "react-toastify";
 import { NavBarSecundary } from "../../components/NavBar/Secundary/NavBarSecundary";
 import { InputSelectOpt } from "../../components/InputSelectOpt/InputSelectOpt";
 import { ModalPhotoForms } from "../../components/Modals/ModalPhotoForms/ModalPhotoForms";
+import { LoadingScreen } from "../../components/LoadingScreen/LoadingScreen";
 
 // Utils
 // import { primeiraPalavra } from "../../utils/formatStrings";
@@ -47,6 +48,7 @@ export default function Forms() {
     // Logica da UI:
     //const totalSteps = 3;
     const [step, setStep] = useState(0);
+    const [imgEmpty, setImgEmpty] = useState(null);
     // const [animateMode, setAnimateMode] = useState('');
     //step 1
     const [showOptinalGender, setShowOptinalGender] = useState(false);
@@ -91,7 +93,7 @@ export default function Forms() {
         if(profileDetails.gender_id) stepInitial = 2;
         if(profileDetails.preferences.length > 0) stepInitial = 3;
 
-        setStep(stepInitial);
+        setStep(3);
         
     }, [profileDetails, navigate]);
 
@@ -249,11 +251,46 @@ export default function Forms() {
                 }
         
                 setLoading(false);
-
             }
         } 
         getAllHabits();
     }, [tokenCookie, step]);
+
+
+    useEffect(()=> {
+        const preloadLinkImage = document.querySelector('[href="/photo-empty.webp"]');
+        console.log(preloadLinkImage);
+
+        if(step == 3 && preloadLinkImage) {    
+            setLoading(true);
+            preloadLinkImage.setAttribute('rel', 'preload');
+
+
+            const preloadImageDefault = ()=> {
+                const img = new Image();
+                img.src = '/photo-empty.webp';
+                
+                img.onload = ()=> {
+                    // setImgDefaultLoaded(true);
+                    setImgEmpty(img.src);
+                    setLoading(false);
+                };
+                img.onerror = ()=> {
+                    setError(true);
+                    setLoading(false);
+                };
+            }
+            preloadImageDefault();
+        }
+                
+
+
+        // Função de limpeza do componente
+        return () => {
+            // console.log('=============DESMONTA /FORMS');
+            preloadLinkImage.removeAttribute('rel');
+        }
+    }, [step]);
       
 
 
@@ -714,7 +751,7 @@ export default function Forms() {
 
                         {filesPhotos.length > 0 && (
                         <div className="btns_container animate__animated animate__fadeInUp">
-                            <button className="btn primary" disabled={loadingSubmit}>Finalizar</button>
+                            <button className="btn primary" disabled={loadingSubmit}>{loadingSubmit ? <span className="loader"></span> : 'Finalizar'}</button>
                         </div>
                         )}             
                     </form>
@@ -739,6 +776,8 @@ export default function Forms() {
                 inputSelect={inputSelect}
                 />
             )}
+
+            {(loadingSubmit && step == 3) && <LoadingScreen />}
 
         </div>
     );
