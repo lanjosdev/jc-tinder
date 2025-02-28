@@ -1,0 +1,13 @@
+
+.PageContent.ProfileContent {
+
+    .content_main {
+        height: 100%;
+
+        /* Excessoes de estilos */
+        .feedback_content {
+            /* background-color: aqua; */
+            height: 100%;
+        }
+    }
+}

@@ -123,23 +123,25 @@ export default function Home() {
     function handleClickNopeOrLike(action) {
         setLoadingSubmit(true);
         setShowInfoUser(false);
+        setAnimateMode(action == 'like' ? 'animate__fadeOutBottomRight' : 'animate__fadeOutBottomLeft');
 
         if(!startInteration) {
             setStartInteration(true);
-            console.log('Inicio interação!');
+            // console.log('Inicio interação!');
         }
 
 
         // Dados enviados p/ async func de post API:
+        const idUser = persons[step].id;
         const status = action == 'like' ? 1 : 0;
-        submitPostLikeOrDeslike(persons[step].id, status);
+        submitPostLikeOrDeslike(idUser, status);
 
 
         // Logica local UI:
-        setAnimateMode(action == 'like' ? 'animate__fadeOutBottomRight' : 'animate__fadeOutBottomLeft');
+        // setAnimateMode(action == 'like' ? 'animate__fadeOutBottomRight' : 'animate__fadeOutBottomLeft');
         
         if(step < totalPersons) {
-            // limpa a animação depos de 600ms
+            // limpa a animação depos de 500ms
             setTimeout(()=> {
                 setAnimateMode('');
                 setStep(step + 1);

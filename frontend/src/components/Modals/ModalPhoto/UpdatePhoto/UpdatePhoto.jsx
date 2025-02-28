@@ -16,7 +16,8 @@ import { toast } from "react-toastify";
 //import { formatarHora } from '../../../utils/formatarNumbers';
 
 // Assets:
-import imgEmpty from '../../../../assets/photo-empty.jpg'
+import imgEmpty from '../../../../assets/photo-empty.jpg';
+import iconUpdate from '../../../../assets/icon-PhotoTrocar.svg';
 
 // Estilo:
 // import './updatephoto.css';
@@ -150,14 +151,22 @@ export function UpdatePhoto({ close, setLoadingModal, inputSelect, file }) {
                 <img src={urlPhotoPreview} className='preview' alt="" />
             </div>   
 
-            <div className="text_confirm">
-                {/* icon */}
-                <p>Deseja substituir com esta foto?</p>
-            </div>
 
-            <div className="btns_container">
-                <button onClick={close} disabled={loadingSubmit}>Cancelar</button>
-                <button onClick={handleSubmitUpdatePhoto} disabled={loadingSubmit}>Confirmar</button>
+            <div className="text--actions">
+                <div className="text_confirm">
+                    <img src={iconUpdate} alt="" />
+                    <p>Deseja substituir com esta foto?</p>
+                </div>
+
+                <div className="btns_container">
+                    <button className="btn cancel" onClick={close} disabled={loadingSubmit}>
+                        Cancelar
+                    </button>
+
+                    <button className="btn primary" onClick={handleSubmitUpdatePhoto} disabled={loadingSubmit}>
+                        Confirmar
+                    </button>
+                </div>
             </div>  
         </div>
     )        

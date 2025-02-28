@@ -1,11 +1,11 @@
 .WindowConfirm {
-    background-color: pink;
+    background-color: var(--color-bg-1);
     width: 100%;
     max-width: 32rem;
 
-    border: .2rem solid var(--color-w);
+    border: .2rem solid var(--color-border);
     border-radius: 22px;
-    box-shadow: 2px 2px 0 var(--color-w);
+    box-shadow: .2rem .2rem var(--color-border);
     
     .photo {
         display: flex;
@@ -31,11 +31,33 @@
         }
     }
 
-    .text_confirm {
+    .text--actions {
+        /* background-color: red; */
+        padding: 1rem 1.5rem 1.5rem;
 
+        .text_confirm {
+            /* background-color: aqua; */
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            font-size: 1.8rem;
+            font-weight: 500;
+
+            img {
+                max-width: 4rem;
+            }
+
+        }
+    
+        .btns_container {
+            /* background-color: aquamarine; */
+            padding: 0 1rem;
+            gap: 1.5rem;
+
+            .btn {
+                max-width: 100%;
+            }    
+        }
     }
-
-    .btns_container {
-
-    }
+    
 }

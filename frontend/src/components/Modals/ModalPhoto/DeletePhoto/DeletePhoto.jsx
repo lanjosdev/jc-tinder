@@ -19,14 +19,11 @@ import { toast } from "react-toastify";
 //import { formatarHora } from '../../../utils/formatarNumbers';
 
 // Assets:
-// import LogoHeader from '../../assets/logo-header.png';
+import imgEmpty from '../../../../assets/photo-empty.jpg';
+import iconRemove from '../../../../assets/icon-PhotoExcluir.svg';
 
 // Estilo:
 import './deletephoto.css';
-// Utils:
-//import { formatarHora } from '../../../utils/formatarNumbers';
-// Assets:
-import imgEmpty from '../../../../assets/photo-empty.jpg';
 
 
 DeletePhoto.propTypes = {
@@ -103,15 +100,23 @@ export function DeletePhoto({ close, setLoadingModal, inputSelect }) {
                 <img src={`${imagesServer.images_url}${inputSelect.thumb_photo}`} className='preview' alt="" />
             </div>   
 
-            <div className="text_confirm">
-                {/* icon */}
-                <p>Deseja deletar esta foto?</p>
-            </div>
 
-            <div className="btns_container">
-                <button onClick={close} disabled={loadingSubmit}>Cancelar</button>
-                <button onClick={handleSubmitDeletePhoto} disabled={loadingSubmit}>Confirmar</button>
-            </div>  
+            <div className="text--actions">
+                <div className="text_confirm">
+                    <img src={iconRemove} alt="" />
+                    <p>Deseja deletar esta foto?</p>
+                </div>
+
+                <div className="btns_container">
+                    <button className="btn cancel" onClick={close} disabled={loadingSubmit}>
+                        Cancelar
+                    </button>
+
+                    <button className="btn primary" onClick={handleSubmitDeletePhoto} disabled={loadingSubmit}>
+                        Confirmar
+                    </button>
+                </div>
+            </div>
         </div>
     )        
 }

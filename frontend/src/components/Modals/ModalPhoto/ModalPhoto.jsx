@@ -10,7 +10,7 @@ import { CreatePhoto } from "./CreatePhoto/CreatePhoto";
 import { UpdatePhoto } from "./UpdatePhoto/UpdatePhoto";
 
 // Utils:
-import { byteToMegabyte } from "../../../utils/convertUnit";
+// import { byteToMegabyte } from "../../../utils/convertUnit";
 
 // Assets:
 // import LogoHeader from '../../assets/logo-header.png';
@@ -80,7 +80,7 @@ export function ModalPhoto({ close, inputSelect }) {
         console.log('ARQUIVO OK');                                               
         console.log(optWindow);
         setFilePhoto(file);   
-        alert('Tamanho do arquivo: ' + byteToMegabyte(file.size) + 'MB');
+        // alert('Tamanho do arquivo: ' + byteToMegabyte(file.size) + 'MB');
         setOptionWindow(optWindow);
     }
 
@@ -119,7 +119,7 @@ export function ModalPhoto({ close, inputSelect }) {
                 <div className="label--input">
                     <label>
                         <i className="bi bi-camera-fill"></i>
-                        <span>Adicionar foto nova</span>
+                        <span>Tirar foto nova</span>
 
                         <input 
                         type="file" 

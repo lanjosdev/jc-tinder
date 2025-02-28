@@ -234,6 +234,7 @@
 .btn {
     border: .2rem solid var(--color-border);
     padding: 1rem 2rem;
+    user-select: none;
 
     /* font-size: 1.5rem; */
     /* font-weight: 600; */
@@ -242,6 +243,19 @@
     &.primary {
         background-color: var(--color-primary);
         color: var(--color-tertiary);
+        
+        box-shadow: .2rem .2rem 0 var(--color-border);
+        height: 5rem;
+        min-height: 5rem;
+        padding: 1rem;
+
+        &:active {
+            box-shadow: none;
+            transform: translateY(3px);
+        }
+    }
+    &.cancel {
+        background-color: var(--color-w);
         
         box-shadow: .2rem .2rem 0 var(--color-border);
         height: 5rem;
@@ -263,11 +277,6 @@
         &:hover {
             transform: scale(0.8);
         }
-    }
-    &.secundary {
-        background-color: var(--color-bg);
-        
-        color: var(--color-w);
     }
 }
 .btn_radio {
