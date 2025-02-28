@@ -289,7 +289,7 @@ class MatcheController extends Controller
                     'message' => 'Nenhum resultado encontrado',
                 ]);
             }
-
+            
             if ($match->viewed == 1) {
                 return response()->json([
                     'success' => false,

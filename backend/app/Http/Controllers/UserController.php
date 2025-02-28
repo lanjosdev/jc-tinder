@@ -217,11 +217,14 @@ class UserController extends Controller
                     ->toArray();
 
                 $photosUserArray = DB::table('photos')
-                    ->join('sequences', 'photos.id', '=', 'sequences.fk_sequences_photos_id') // Faz o join com sequences
+                    // faz o join com sequences
+                    ->join('sequences', 'photos.id', '=', 'sequences.fk_sequences_photos_id')
                     ->where('photos.fk_user_photos_id', $user->id)
                     ->whereNull('photos.deleted_at')
-                    ->select('photos.id', 'photos.thumb_photo', 'photos.name_photo', 'sequences.order') // Seleciona também a ordem
-                    ->orderBy('sequences.order', 'asc') // Ordena com base na tabela sequences
+                    // seleciona também a ordem
+                    ->select('photos.id', 'photos.thumb_photo', 'photos.name_photo', 'sequences.order')
+                    // ordena com base na tabela sequences
+                    ->orderBy('sequences.order', 'asc')
                     ->get()
                     ->map(function ($photo) {
                         return (object) [
