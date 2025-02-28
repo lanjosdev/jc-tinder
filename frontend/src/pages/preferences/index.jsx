@@ -165,33 +165,6 @@ export default function Preferences() {
         setGendersIdsPreference(newGenderPreferences);
     }
 
-    // function handleChangeMinAge(e) {
-    //     if(e.target.value >= maxAgePreference) {
-    //         setMinAgePreference(parseInt(e.target.value));
-    //         setMaxAgePreference(parseInt(e.target.value)+1);
-
-    //         // if(e.target.value == 100) {
-    //         //     setMaxAgePreference(100);
-    //         // }
-
-    //         return;
-    //     }
-    //     // else {
-    //     setMinAgePreference(parseInt(e.target.value));
-    //     // }
-    // }
-    
-    // function handleChangeMaxAge(e) {
-    //     if(e.target.value <= minAgePreference-1) {
-    //         setMaxAgePreference(parseInt(e.target.value));
-    //         setMinAgePreference(parseInt(e.target.value));
-    //         return;
-    //     }
-    //     // else {
-    //     setMaxAgePreference(parseInt(e.target.value));
-    //     // }
-    // }
-
     function handleChangeHabitPreference(selectHabit) {
         console.log(selectHabit);
 
@@ -209,7 +182,6 @@ export default function Preferences() {
             setHabitsPreview(prev=> [...prev, selectHabit]);
         }
     }
-    
 
 
     // SUBMIT API (UPDATE)
@@ -271,12 +243,21 @@ export default function Preferences() {
                 <div className="content_main">
                     {loading ? (
 
-                    <div>CARREGANDO PAGE...</div>
+                    <div className="feedback_content">
+                        <span className="loader_content"></span>
+                    </div>
 
                     ) : (
                     error ? (
 
-                    <div>!ERRO AO CARREGAR A PÁGINA!</div>
+                    <div className="feedback_content">
+                        <h2>Ops, algo deu errado!</h2>
+                        <p>Tente novamente recarregando a página.</p>
+    
+                        <a href="/preferences" className="btn primary">
+                            Recarregar
+                        </a>
+                    </div>
 
                     ) : (
 

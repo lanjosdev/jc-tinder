@@ -1,6 +1,14 @@
-.PreferencesContent {
+.PageContent.PreferencesContent {
 
     .content_main {
+        /* border: 3px solid red; */
+        height: 100%;
+
+        /* Excessoes de estilos */
+        .feedback_content {
+            /* background-color: aqua; */
+            height: 100%;
+        }
         
         .label--input.agr_group {
             label {

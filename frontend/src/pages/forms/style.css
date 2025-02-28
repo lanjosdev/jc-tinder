@@ -1,5 +1,5 @@
 .Page.Forms {
-    border: 3px solid blue;
+    /* border: 3px solid blue; */
     height: 100dvh;
     overflow: auto;
 }
@@ -135,6 +135,6 @@
     /* Excessoes de estilos */
     .feedback_content {
         /* background-color: aqua; */
-        transform: translateY(-4rem);
+        transform: translateY(-3rem);
     }
 }

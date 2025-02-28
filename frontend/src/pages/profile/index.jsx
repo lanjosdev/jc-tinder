@@ -22,7 +22,7 @@ import { InputSelectOpt } from "../../components/InputSelectOpt/InputSelectOpt";
 // import imgLogo from '../../assets/LOGO-BIZSYS_preto.png';
 
 // Estilo:
-// import './style.css';
+import './style.css';
 
 
 
@@ -91,7 +91,7 @@ export default function Profile() {
 
                 if(response.success) {
                     setGenders(response.data);
-                    setError(false);
+                    setError(null);
                 }
                 else if(response.success == false) {
                     toast.error(response.message);
@@ -128,7 +128,7 @@ export default function Profile() {
 
                 if(response.success) {
                     setGendersOptionals(response.data);
-                    setError(false);
+                    setError(null);
                 }
                 else if(response.success == false) {
                     toast.error(response.message);
@@ -165,7 +165,7 @@ export default function Profile() {
 
                 if(response.success) {
                     setSexualities(response.data);
-                    setError(false);
+                    setError(null);
                 }
                 else if(response.success == false) {
                     toast.error(response.message);
@@ -300,7 +300,7 @@ export default function Profile() {
         <div className="Page Forms Profile">
             <NavBar pathBack="/settings" />
             
-            <main className='PageContent FormsContent ProfileContent grid'>
+            <main className='PageContent ProfileContent FormsContent grid'>
                 <div className="title_page">
                     <h1>
                         <span>Editar Perfil</span>
@@ -310,12 +310,21 @@ export default function Profile() {
                 <div className="content_main">
                     {loading ? (
 
-                    <div>CARREGANDO PAGE...</div>
+                    <div className="feedback_content">
+                        <span className="loader_content"></span>
+                    </div>
 
                     ) : (
                     error ? (
 
-                    <div>!ERRO AO CARREGAR A PÁGINA!</div>
+                    <div className="feedback_content">
+                        <h2>Ops, algo deu errado!</h2>
+                        <p>Tente novamente recarregando a página.</p>
+    
+                        <a href="/profile" className="btn primary">
+                            Recarregar
+                        </a>
+                    </div>
 
                     ) : (
                     
