@@ -48,7 +48,7 @@ export default function Forms() {
     // Logica da UI:
     //const totalSteps = 3;
     const [step, setStep] = useState(0);
-    const [imgEmpty, setImgEmpty] = useState(null);
+    const [imgEmpty, setImgEmpty] = useState('/photo-empty.webp');
     // const [animateMode, setAnimateMode] = useState('');
     //step 1
     const [showOptinalGender, setShowOptinalGender] = useState(false);
@@ -282,14 +282,6 @@ export default function Forms() {
             }
             preloadImageDefault();
         }
-                
-
-
-        // Função de limpeza do componente
-        return () => {
-            // console.log('=============DESMONTA /FORMS');
-            preloadLinkImage.removeAttribute('rel');
-        }
     }, [step, imgEmpty]);
       
 
@@ -476,6 +468,10 @@ export default function Forms() {
                 ////toast.success('FORM COMPLETO');
 
                 setRefreshContext(prev => !prev);
+                const preloadLinkImage = document.querySelector('[href="/photo-empty.webp"]');
+                if(preloadLinkImage) {
+                    preloadLinkImage.removeAttribute('rel');
+                } 
                 navigate('/home');
             }
             else if(response.success == false) {
@@ -777,7 +773,7 @@ export default function Forms() {
                 />
             )}
 
-            {(loadingSubmit && step == 3) && <LoadingScreen />}
+            {(loadingSubmit && step == 3) && <LoadingScreen textFeedback={`Realizando upload da${filesPhotos.length > 1 ? 's imagens' : ' imagem'}`} />}
 
         </div>
     );

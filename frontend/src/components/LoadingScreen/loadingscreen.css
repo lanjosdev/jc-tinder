@@ -12,4 +12,6 @@
     place-items: center;
 
     background-color: #ffffff9d;
+    -webkit-backdrop-filter: blur(2px);
+    backdrop-filter: blur(2px);
 }
