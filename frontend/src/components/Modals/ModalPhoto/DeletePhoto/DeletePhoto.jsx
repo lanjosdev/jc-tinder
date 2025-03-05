@@ -14,6 +14,7 @@ import imagesServer from '../../../../../public/configApi.json';
 
 // Components:
 import { toast } from "react-toastify";
+import { LoadingScreen } from "../../../LoadingScreen/LoadingScreen";
 
 // Utils:
 //import { formatarHora } from '../../../utils/formatarNumbers';
@@ -113,10 +114,15 @@ export function DeletePhoto({ close, setLoadingModal, inputSelect }) {
                     </button>
 
                     <button className="btn primary" onClick={handleSubmitDeletePhoto} disabled={loadingSubmit}>
-                        Confirmar
+                        {loadingSubmit ? <span className="loader"></span> : 'Confirmar'}
                     </button>
                 </div>
             </div>
+
+
+            {loadingSubmit && (
+                <LoadingScreen textFeedback={'Deletando imagem'} />
+            )}
         </div>
     )        
 }

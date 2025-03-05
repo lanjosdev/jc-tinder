@@ -11,6 +11,7 @@ import UserContext from "../../../../contexts/userContext";
 
 // Components:
 import { toast } from "react-toastify";
+import { LoadingScreen } from "../../../LoadingScreen/LoadingScreen";
 
 // Utils:
 //import { formatarHora } from '../../../utils/formatarNumbers';
@@ -156,9 +157,16 @@ export function CreatePhoto({ close, setLoadingModal, file }) {
                 </div>
                 <div className="btns_container">
                     <button className="btn cancel" onClick={close} disabled={loadingSubmit}>Cancelar</button>
-                    <button className="btn primary" onClick={handleSubmitCreatePhoto} disabled={loadingSubmit}>Confirmar</button>
+                    <button className="btn primary" onClick={handleSubmitCreatePhoto} disabled={loadingSubmit}>
+                        {loadingSubmit ? <span className="loader"></span> : 'Confirmar'}
+                    </button>
                 </div>
             </div> 
+
+
+            {loadingSubmit && (
+                <LoadingScreen textFeedback={'Realizando upload da imagem'} />
+            )}
         </div>
     )        
 }

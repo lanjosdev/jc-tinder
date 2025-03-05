@@ -23,7 +23,7 @@ import { LoadingScreen } from "../../components/LoadingScreen/LoadingScreen";
 // import { primeiraPalavra } from "../../utils/formatStrings";
 
 // Assets:
-import imgEmpty from '../../assets/photo-empty.jpg';
+// import imgEmpty from '../../assets/photo-empty.jpg';
 
 // Estilo:
 import './style.css';
@@ -93,7 +93,7 @@ export default function Forms() {
         if(profileDetails.gender_id) stepInitial = 2;
         if(profileDetails.preferences.length > 0) stepInitial = 3;
 
-        setStep(3);
+        setStep(stepInitial);
         
     }, [profileDetails, navigate]);
 
@@ -259,9 +259,9 @@ export default function Forms() {
 
     useEffect(()=> {
         const preloadLinkImage = document.querySelector('[href="/photo-empty.webp"]');
-        console.log(preloadLinkImage);
+        // console.log(preloadLinkImage);
 
-        if(step == 3 && preloadLinkImage) {    
+        if(step == 3 && preloadLinkImage && !imgEmpty) {    
             setLoading(true);
             preloadLinkImage.setAttribute('rel', 'preload');
 
@@ -290,7 +290,7 @@ export default function Forms() {
             // console.log('=============DESMONTA /FORMS');
             preloadLinkImage.removeAttribute('rel');
         }
-    }, [step]);
+    }, [step, imgEmpty]);
       
 
 

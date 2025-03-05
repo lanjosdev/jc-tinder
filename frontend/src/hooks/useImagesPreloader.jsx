@@ -10,9 +10,17 @@ export function useImagesPreloader(srcList) {
     // setLoadedCount(prev => prev + 1);
 
     useEffect(()=> {
+        console.log('Effect Hook useImagesPreloader');
+        ////console.log(srcList);
+
+
         let loadedImages = 0;
         const totalImages = srcList.length;
-        
+        if(totalImages <= 0) {
+            setHasError(true);
+            return;
+        }
+
         const preloadImages = ()=> {
             srcList.forEach((srcEach)=> {
                 const img = new Image();
@@ -24,20 +32,16 @@ export function useImagesPreloader(srcList) {
                         setImagesPreloaded(true);
                     }
                 };
-                // img.onerror = ()=> {
-                //     // Tratar com states de error
-                // };
+                img.onerror = ()=> {
+                    setHasError(true);
+                };
             });
-
-            // Tratamento de erro
-            if(loadedImages != totalImages) {
-                setHasError(true);
-            }
-            console.log('fim loop')
-        };        
+        };
         preloadImages();
 
-        console.log('FIM HOOK: useImagesPreloader')
+
+
+        //// console.log('FIM HOOK: useImagesPreloader')
     }, [srcList]);
     
 
